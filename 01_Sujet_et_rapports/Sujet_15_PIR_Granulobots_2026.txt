@@ -1,0 +1,58 @@
+PIR Project - CITI Lab. - Chroma Team - I-Factory
+Code Optimization and Simulation of a Self-Coordinating Robotic Aggregate
+Tuteurs: Baudouin Saintyves (baudouin.saintyves@inria.fr), Olivier Simonin (olivier.simonin@insa-lyon.fr)
+Context: Designing robust robotic systems that can adapt timely to unknown environmental constraints at low energy and com-
+putation cost is a major challenge in robotics. In the most common robotics paradigm, a central computer processes information
+from a well defined set of sensors and communication devices to control a well defined set of actuators in displacement. In such
+a context, adaptability typically goes with more actuated degrees of freedom and sensing parameters, which is detrimental to
+robustness, as well as energy and computation efficiency. To address this problem, people have proposed more distributed
+design approaches, similar to biological systems [5], toward robotic matter [1].
+A promising approach is to use principles of soft matter [2,3] to design robotic materials that rely on their complex mechanical
+properties to achieve tasks with minimal silicon computation. We proposed a granular robotic material design, the Granulobots
+(Fig. 1) as the first autonomous modular system that can deform like an active soft material, exhibiting rigid to soft solid and
+liquid response properties [4]. We showed that, when coupled with self-organizing properties, this allows a robotic aggregate
+made of multiple identical units to self-coordinate locomotion gait in different environmental conditions, and in a decentralized
+and mechanical way. This research contribute to a broader picture aiming toward a "co-design" framework, integrating well cho-
+sen mechanical properties with algorithmic development to optimize robustness, autonomy, as well as material, manufacturing
+and energy efficiency.
+/gid00035/gid00064/gid00075/gid00075/gid00001/gid00065/gid00068/gid00064/gid00081/gid00072/gid00077/gid00070/gid00082
+/gid00040/gid00068/gid00064/gid00081/gid00068/gid00067/gid00001/gid00076/gid00078/gid00083/gid00078/gid00081
+/gid00038/gid00077/gid00066/gid00078/gid00067/gid00068/gid00081
+/gid00049/gid00036/gid00035
+/gid00035/gid00064/gid00083/gid00083/gid00068/gid00081/gid00072/gid00068/gid00082
+/gid00049/gid00068/gid00081/gid00076/gid00064/gid00077/gid00068/gid00077/gid00083/gid00001/gid00076/gid00064/gid00070/gid00077/gid00068/gid00083/gid00082 /gid00001/gid00046/gid00072/gid00066/gid00081/gid00078/gid00066/gid00078/gid00077/gid00083/gid00081/gid00078/gid00075/gid00075/gid00068/gid00081
+/gid00001/gid00001/gid00001/gid00001/gid00001/gid00001/gid00001/gid00001/gid00001/gid00001/gid00001/gid00001/gid00001/gid00086/gid00072/gid00083/gid00071/gid00001/gid00056/gid00072/gid00039/gid00072
+/gid00034/gid00066/gid00066/gid00068/gid00075/gid00068/gid00081/gid00078/gid00076/gid00068/gid00083/gid00068/gid00081
+/gid00012/gid00070/gid00088/gid00081/gid00078/gid00082/gid00066/gid00078/gid00079/gid00068
+/gid00046/gid00064/gid00070/gid00077/gid00068/gid00083/gid00078/gid00076/gid00068/gid00083/gid00068/gid00081
+/gid00046/gid00078/gid00083/gid00078/gid00081/gid00001/gid00049/gid00056/gid00046
+/gid00066/gid00078/gid00077/gid00083/gid00081/gid00078/gid00075/gid00075/gid00068/gid00081
+/gid00051/gid00040/gid00035
+/gid00045/gid00068/gid00067
+/gid00054/gid00052/gid00035/gid00001/gid00066/gid00071/gid00064/gid00081/gid00070/gid00072/gid00077/gid00070
+/gid00079/gid00078/gid00081/gid00083
+Figure 1: The Granulobot Platform.
+Project: In this project we will explores strategies toward robotic aggregates that can choose autonomously the right parame-
+ters to self-coordinate their locomotion in a given environment. We will experiment directly on the hardware platform, and will
+explore the development of a simulation platform to simplify the testing protocols of distributed algorithms, and to extend it to a
+larger number of particles.
+Project steps:
+•We will start by presenting the Granulobot platform to the students, going through the mechanical design, the electronic
+circuit, the firmware code and software platform to communicate with the robot.
+•One subgroup will work on optimizing the existing firmware code of the granulobot while the other group will develop a
+software simulator (we will first identify which existing simulator can be used to build a simulation).
+•Both group will implement on their respective platforms, strategies to help robotic aggregate find self-coordinating loco-
+motion states from arbitrary initial parameters.
+•if time allow, both group will work together to compare the results between the hardware robots and the simulation
+platform.
+1
+
+References
+[1]M. A. McEvoy, N. Correll. "Materials that couple sensing,actuation, computation,and communication"Science, 2015.
+[2]Wim van Saarloos, Vincenzo Vitelli, and Zorana Zeravcic "Soft Matter: Concepts, Phenomena, and Applications"Princeton
+University Press, 2024.
+[3]T. Vicsek, A. Zafeiris. "Collective motion",Physics Reports, 2012.
+[4] B. Saintyves, M. Spenko, H. Jaeger. “A self-organizing robotic aggregate using solid and liquid-like collective states",
+Science Robotics, 10.1126/scirobotics.adh4130, 2024
+[5] O. Simonin, O. Grunder A cooperative multi-robot architecture for moving a paralyzed robot,Mechatronics, 2009
+2

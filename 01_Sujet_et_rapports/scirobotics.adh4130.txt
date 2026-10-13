@@ -1,0 +1,1628 @@
+Saintyves et al., Sci. Robot. 9, eadh4130 (2024)     24 January 2024
+Science RoboticS  |  ReSeaR ch aR ticle
+1 of 14
+COLLECTIVE BEHAVIOR
+A self- organizing robotic aggregate using solid  
+and liquid- like collective states
+Baudouin Saintyves1*, Matthew Spenko2, Heinrich M. Jaeger1,3
+Designing robotic systems that can change their physical form factor as well as their compliance to adapt to environ-
+mental constraints remains a major conceptual and technical challenge. To address this, we introduce the Granulobot, a 
+modular system that blurs the distinction between soft, modular, and swarm robotics. The system consists of gear- 
+like units that each contain a single actuator such that units can self- assemble into larger, granular aggregates using 
+magnetic coupling. These aggregates can reconfigure dynamically and also split into subsystems that might later 
+recombine. Aggregates can self- organize into collective states with solid-  and liquid- like properties, thus displaying 
+widely differing compliance. These states can be perturbed locally via actuators or externally via mechanical feed-
+back from the environment to produce adaptive shape- shifting in a decentralized manner. This, in turn, can gener-
+ate locomotion strategies adapted to different conditions. Aggregates can move over obstacles without using 
+external sensors or coordinates to maintain a steady gait over different surfaces without electronic communication 
+among units. The modular design highlights a physical, morphological form of control that advances the develop-
+ment of resilient robotic systems with the ability to morph and adapt to different functions and conditions.
+INTRODUCTION
+The development of autonomous and efficient agents that can adapt 
+to a variety of environments and perform different functions by re-
+configuring their bodies is one of the frontiers in the field of robotics. 
+There is an increasing need for systems that offer multifunctional, 
+self- assembling, highly compliant capabilities in concert with resil-
+ience and robustness ( 1). To this end, although traditional robotic 
+design tends to distinguish and separate components dealing with 
+sensing, actuation, computation, and communication, an alterna-
+tive strategy distributes components that each integrate these func-
+tions (2). For instance, modular design approaches replace a single 
+mechanical body with an aggregate of subunits that can couple to-
+gether and rearrange (3–6). However, this coupling often leads to 
+rigid connections between docked units, which then implies that 
+changes in the overall aggregate shape require an iterative reconfig-
+uration process whereby units need to disconnect, move, and then 
+reconnect at another location. This is incompatible with variable 
+mechanical compliance of the overall structure and limits adaptabil-
+ity to changing tasks or environments.
+Soft robotics may overcome some of these limitations (7–15). 
+Still, although robotic systems with a single soft body are able to 
+achieve highly variable and adaptive behaviors (16), the inherent 
+need to model materials in the large deformation limit makes the 
+design difficult. Furthermore, inspired by flocking observed in na-
+ture (17, 18), multi- agent swarm approaches have been successful in 
+generating autonomous, as well as resilient, robotic systems by using 
+a large number of individual robotic units where large- scale collec-
+tive behaviors emerge through local rules between neighboring 
+units (19–23). Such noncentralized control is able to absorb local 
+perturbations in the inherent noise of the collective organization, 
+and the failure of a few in a swarm of similar units does not neces-
+sarily affect the capabilities at the collective scale (23, 24). However, 
+robotic swarms have so far been limited to low- density, fluid- like 
+systems with very little overall rigidity of the system as a whole.
+The system described in this paper, Granulobots, combines sev-
+eral desirable features of modular, soft, and multi- agent swarm ro-
+botics. The Granulobot design is inspired by granular matter’s highly 
+strain- adaptive behavior and ability to transform between rigid and 
+fluid- like states via a jamming transition (25). The remarkable fea-
+tures of granular matter arise from collective effects in assemblies 
+made of simple building blocks and depend on interparticle contact 
+properties. Expanding beyond jamming- based granular actuator 
+systems (7, 26–31) and gear- based metamaterials (32–34), replacing 
+passive grains with motorized particles adds new options for loco-
+motion (35–39). In granular systems, overall malleable behavior can 
+be achieved even with individually rigid subunits by designing loose 
+and detachable coupling (36). With the Granulobots, we introduce 
+an original coupling design that enables continuous deformations 
+and dynamical coupling in aggregates of self- assembling motorized 
+units. In dense assemblies of multiple Granulobots, this allows for 
+both solid-  and liquid- like collective behaviors under a gravity field, 
+which then can be exploited for a range of locomotion strategies. 
+The result is a form of active granular material that can, at the same 
+time, form the building blocks of a soft robot.
+In this article, a swarm of Granulobot units, each with a single 
+actuated degree of freedom that enables it to roll like a wheel on the 
+ground, can self- assemble into larger granular aggregates (see Fig. 1A 
+and movie S1). Units can then shift their positions simultaneously to 
+generate arbitrary overall shapes. An individual Granulobot unit 
+consists of a cylindrical body with an embedded control circuit and 
+two permanent magnets that can rotate about the cylinder’s axis. 
+One magnet rotates freely, whereas the other one is actuated with a 
+motor. This design allows individual units to move autonomously, 
+mechanically connect with neighbors via magnets, form a continu-
+ously deformable aggregate, and apply torque to a neighbor (Fig. 1B). 
+The aggregate’s ability to reorganize its global torque state dynami-
+cally allows for collective shape- shifting into the vertical plane and 
+against gravity.
+Two modes of controlling the behavior of individual units provide 
+access to a rich set of aggregate behaviors, with responses ranging 
+1James Franck institute, University of chicago, chicago, il 60637, USa. 2Mechanical, 
+Materials, and a erospace engineering, i llinois institute of technology, chicago, il 
+60616, USa. 3Department of Physics, University of chicago, chicago, il 60637, USa.
+*corresponding author. email: saintyves@ uchicago. edu
+copyright © 2024 the 
+authors, some rights 
+reserved; exclusive 
+licensee american 
+association for the 
+advancement of 
+Science. no claim to 
+original U.S. 
+Government Works 
+Downloaded from https://www.science.org at University of Chicago on February 04, 2024
+
+
+Saintyves et al., Sci. Robot. 9, eadh4130 (2024)     24 January 2024
+Science RoboticS  |  ReSeaR ch aR ticle
+2 of 14
+from rigid and solid to viscous and liquid- like (Fig. 1C). Coupled with 
+feedback control, an onboard encoder sensor helps each Granulobot 
+unit maintain the angular position of its actuated rotor, which leads 
+to a solid- like, stiff elastic response of the aggregate. Feedback con-
+trol can also be used to generate spontaneous, self- organized oscil-
+lations. This makes it possible to implement locomotion strategies 
+based on collective rolling or rhythmic undulation (40–42). In con-
+trast, when using open- loop control, the angular position of the ro-
+tors is not maintained, allowing for irreversible deformation of the 
+aggregate in response to mechanical load. This can be exploited to 
+create a wide range of fluid- like behaviors of the aggregate, includ-
+ing locomotion, which causes the robot to act like a soft system that 
+yields and conforms to external forces. Without applied power, a 
+state with structural resistance can be maintained because of a static 
+friction threshold. This is in contrast to other state- changing materi-
+als, such as electro-  and magnetorheological fluids, that require 
+large power consumption to maintain a rigid state, which limits 
+their use in autonomous robotics (43).
+RESULTS
+Granulobot design principle
+An individual Granulobot unit is itself an autonomous robot, cylin-
+drical in shape with an internal actuator that controls a single rotary 
+degree of freedom. It can magnetically couple to other units to form 
+more complex aggregates that can change their shape (Fig. 1A). The 
+actuator, a brushed direct current (DC) motor, rotates a permanent 
+magnet, referred to as the actuated magnet, around a central axis 
+(Fig. 1B). A second permanent magnet, referred to as the free mag-
+net, is attached to a passive, freely rotating shaft that can move at the 
+same fixed radius around the cylinder’s 
+central axis. When units come into close 
+proximity, the magnetic attraction cou-
+ples an actuated magnet with a free mag-
+net, which allows the units to transmit 
+torque between themselves. When the mo-
+tor drives the actuated magnet to rotate 
+(Fig.  1B), the magnetic coupling forces 
+the free magnet to follow by rotating 
+around the robot’s central axis. Because 
+Granulobots are designed with frictional, 
+smooth gear- like surfaces, the produced 
+torques can thus be transferred from the 
+neighbor’s free magnet to its robot body. 
+This results in one unit rotating around 
+the other.
+The actuated magnet also acts as an 
+eccentric weight that, when rotated, shifts 
+the unit’s center of gravity and causes an 
+isolated Granulobot to roll. This enables 
+the locomotion of individual units and 
+makes it possible for them to autono-
+mously assemble into an aggregate once 
+they come within the range of the mag-
+netic coupling force (Fig. 1A). Docking 
+is ensured by using opposite polarities 
+for the magnets. Two possibilities arise: 
+Either both magnets have the same po-
+larity in a given unit, in which case units 
+with one polarity dock with units of the other polarity, or all units 
+are identical with one polarity for the actuated magnet and the op-
+posite polarity for the free magnet, as shown in Fig. 1B. All results 
+presented here are valid for both cases. Because the free magnet is 
+not attached to any other structure, it slides freely along a circular 
+track. Although we limited the present study to the connectivity of 
+two units, where each unit is magnetically coupled to no more than 
+two neighbors, in principle, this design allows for the possibility of 
+adding additional free magnets to enable more complex aggre-
+gate configurations (see fig.  S1 for units that can couple to three 
+neighbors).
+Once aggregates are formed, the system is able to reconfigure 
+and control its behaviors using decentralized algorithms enabled 
+through robot- robot interactions. Each Granulobot contains a 
+battery- powered circuit with Wi- Fi capabilities (see Materials and 
+Methods) that can be used for real- time robot- robot communica-
+tion. For the work discussed here, Wi- Fi communication with a cen-
+tral computer was only used to gather data for post- analysis and for 
+sending initialization commands to all robots. All control strategies 
+were autonomously and decentrally implemented by the units 
+through their interactions.
+Control of individual units and 
+aggregate formation/disassembly
+In each individual Granulobot unit i , torque balance with respect 
+to its actuated rotor leads to the following relation among the ro-
+tor’s angular speed ̇θi ; the torque Γ l,i produced by an external load 
+(from a neighboring unit or external perturbation); the voltage Ui 
+applied to the motor, which produces a torque kU i; and the fric-
+tional torque from the motor’s and unit’s moving parts, which 
+A B
+C
+Fig. 1. Granulobots: A modular platform bridging soft robotics and active granular materials. (A) time- lapse of 
+a swarm of Granulobot units self- assembling into an aggregate and then reconfiguring simultaneously. (B) coupling 
+and actuation mechanism inside the Granulobot units. each two- wheeled unit uses magnetic coupling to connect to 
+its neighbors. inside a given unit, a single, rotary degree of freedom can be activated to generate torque, which en-
+ables this unit to roll along the frictional contact with its neighbor, as indicated by the arrows. (C) Granulobot aggre-
+gate behaviors, ranging from active liquid to active solid, depending on the type of control. c ontrolling in an open 
+loop enables behaviors resembling an active liquid with tunable viscosity and the ability to move and morph. i n 
+closed- loop individuals, units use local, onboard feedback, and the aggregate can exhibit a range of solid- like behav-
+iors with locomotion gaits that include collective rolling and synchronized undulation. For sufficiently small applied 
+mechanical loads and voltages to the units, friction maintains the aggregate in a passive state that can resemble 
+jammed granular matter or an elastic solid, depending on the units’ spatial arrangement.
+Downloaded from https://www.science.org at University of Chicago on February 04, 2024
+
+
+Saintyves et al., Sci. Robot. 9, eadh4130 (2024)     24 January 2024
+Science RoboticS  |  ReSeaR ch aR ticle
+3 of 14
+resists rotation and has magnitude Γ f > 0 (taken to be the same for 
+all units)
+where η0 ̇θi is the torque produced by the motor’ s back electromotive 
+force (EMF) and k > 0 and η0 > 0 are parameters characterizing the 
+motor’s load response (see Materials and Methods for the derivation 
+of Eq. 1 and the sign convention for the torques).
+As long as ∣Γl, i + kUi∣ < Γf, a Granulobot is effectively in a passive 
+state and does not move. For initially unconnected units in a swarm 
+with Γl = 0, a voltage Ui ≥ Γf/k is required to start autonomous roll-
+ing and enable units to connect with each other. Once the units have 
+self- assembled, a change in the torque that a given unit exerts with 
+its active rotor on its neighbor can lead the whole assembly to reor-
+ganize. As soon as an aggregate comprises three or more units, 
+shape- shifting can enable collective locomotion. For example, in 
+Fig. 2A, the middle unit lifted off the ground, which allowed the ag-
+gregate to move (here to the left) by having all wheels that touch the 
+ground rotate in the same direction.
+In larger aggregates, applying torque can physically move units 
+on top of others and deform the assembly into an arbitrary configu-
+ration within the vertical plane (Fig. 2B and movie S1). At the points 
+where units contact each other, magnetic attraction provides a normal 
+force strong enough to ensure no- slip gear- like coupling, whereas 
+units that touch in the absence of magnetic attraction can slide as 
+long as forces exceed the static friction arising from the units’ 
+smooth gear surface. These two frictional behaviors prevent seizing 
+when three consecutive units are in contact with each other.
+During such reconfiguration, geometrical constraints that pre-
+vent a unit from rotating about its neighbor’s central axis can still 
+arise. If further rotation is nevertheless forced and the actuation 
+torque applied becomes stronger than the magnetic coupling, then 
+the actuated magnet will separate from its counterpart in the neigh-
+boring unit. An ability for individual units to detach thus emerges 
+from the collective properties of the assembly, without the use of any 
+additional actuator. This allows the reorganization of neighbors in 
+aggregates and the creation of separate entities that can function as 
+autonomous robots (Fig. 2C and movie S1).
+Choosing a functional form for the voltage U i in Eq. 1 makes it 
+possible to generate different behaviors for the individual Granulobot 
+units and therefore to design a rich set of collective mechanical 
+behaviors for the aggregate. In the following equation, we use a general 
+form for each unit i that combines constant torque and position 
+control by setting a voltage bias ui and monitoring the angular posi-
+tion θi from an encoder embedded in each unit’s circuitry
+The parameters G/k > 0 and αη0/k, with α ∈ [−1, ∞], determine how 
+the drive voltage responds to changes in the rotor’s movement and 
+can be thought of as the coefficients of a proportional- derivative 
+feedback loop [Kp and Kd, respectively (44)]. Using such active con-
+trol, a unit’s electromechanical behavior for ∣Γl, i + kUi∣ ≥ Γf in Eq. 1, 
+beyond the passive state, is then described by
+Here, G tunes the Granulobot’s ability to maintain its rotor at a tar-
+geted position under load, thus acting analogous to a torsion spring 
+constant, and (1 + α)η0 tunes the rotor’s damping, analogous to vis-
+cous dissipation; α > 0 increases the damping generated by the back 
+emf η0 ̇θi , and α = −1 actively cancels it. Last, kui corresponds to a 
+torque bias produced by the motor.
+Within this framework, driving Granulobots in an “open loop” in 
+Fig. 1C corresponds to setting parameters α  = G = 0, ignoring on-
+board sensor information about θ and ̇θ , and controlling the system 
+only via the bias voltages u i. By contrast, a “closed loop” refers to 
+α ≥ −1 and G > 0 so that the sensor data inform the response. In the 
+next section, we describe how choices for these parameters control 
+the aggregate behavior indicated in Fig. 1C. In a subsequent section, 
+we then demonstrate how collective states can be leveraged for dif-
+ferent aggregate locomotion control strategies that can be used in 
+different environmental conditions.
+Granulobot aggregate behavior
+Figure 3 shows the different states of a Granulobot aggregate as a 
+function of the average applied torque load 〈∣Γl∣〉 to the aggregate 
+and two of the control parameters, the voltage bias magnitude ∣u∣ 
+and the gain G of the feedback for the angular rotor position. Each 
+unit within the aggregate experiences a typical torque load of mag-
+nitude 〈∣Γl∣〉 because both ∣u∣ and G are set equal for all Granulobots 
+(the sign of Γ l,i and u i can vary from unit to unit). The dissipation 
+parameter α scales the effective viscosity and the relaxation time, 
+respectively, in the liquid and the solid state of the aggregate but for 
+α  ≥−1 does not change the behaviors qualitatively. The load re-
+sponses of individual units corresponding to the different aggregate 
+states are sketched in the boxes (see Materials and Methods for ex-
+perimental data and modeling). In the following parts, we describe 
+the different behaviors that correspond to the states colored blue, 
+green, red, and yellow in Fig. 3 and provide experimental data for 
+closed- chain aggregates of N = 8 to 10 in Figs. 4 to 6 (see Materials 
+and Methods for discussion on variability among units and its effect 
+on crossing between states).
+η0 ̇θi=
+/braceleft.s30 ∣Γ l,i+ kU i∣ ≤ Γf
+Γl,i+ kU i−Γ fsgn( ̇θi) ∣Γ l,i+ kU i∣ > Γf (1)
+U i = ui −
+/parenleft.s2
+α η0
+k
+̇θi + G
+k θi
+/parenright.s2
+(2)
+kui+Γ l,i−Γ fsgn /parenleft.s1̇θi
+/parenright.s1= (1 +α )η0 ̇θi+ G θi (3)
+A
+B
+C
+Fig. 2. Self- assembly, shape- shifting, and dynamic reconfiguration. Red ar -
+rows represent the actuated magnets’ direction of rotation. blue arrows represent 
+Granulobots in the process of reconfiguration. (A) individual Granulobot units can 
+roll and attach magnetically into larger assemblies, which then can move using a 
+subset of units as wheels. (B) exerting torque onto their neighbors, individual units, 
+and groups of units can simultaneously reposition themselves and thus rearrange 
+the assembly’s shape. (C) by exerting torque larger than the magnetic binding be-
+tween neighbors, units can split off and form autonomous robots on their own.
+Downloaded from https://www.science.org at University of Chicago on February 04, 2024
+
+
+Saintyves et al., Sci. Robot. 9, eadh4130 (2024)     24 January 2024
+Science RoboticS  |  ReSeaR ch aR ticle
+4 of 14
+Passive state
+If all biases ui = ∣u∣ are sufficiently small, the aggregate remains stat-
+ic until the frictional torque Γf in a unit can be overcome. This is the 
+passive state shaded blue in Fig. 3. When contacts among the units 
+in the aggregate involve only magnetic linkages, the passive aggre-
+gate has some degree of elasticity reflecting the stiffness of the mag-
+netic coupling. When both magnetic and nonmagnetic contacts are 
+involved, as in densely packed configurations where a given unit can 
+also be in frictional contact by touching other units, this can create 
+geometric constraints and lead to a granular jammed state with po-
+tentially very little elastic behavior (Fig.  1C). Such jammed state’s 
+response to load will depend strongly on the specific overall config-
+uration of units within the aggregate.
+In the following, to simplify the presentation, we consider ag-
+gregates where all nonmagnetic contacts slip easily and their contri-
+bution to friction can be neglected. In this case, the boundaries of 
+the passive state in Fig. 3 are defined by the weakest coupling be-
+tween units in the aggregate, which corresponds to Granulobots 
+where the bias u i has the same sign as the load, thus effectively re-
+ducing the frictional resistance. This leads to a yield torque
+which vanishes once ∣u∣ exceeds a threshold bias
+ and gives rise to the wedge shape of the passive state in Fig. 3.
+Liquid- like states
+These states occupy the green (∣u∣, Γl) 
+plane in Fig.  3, where G  =  0. The bias 
+voltage threshold u* delineates behavior 
+akin to a yield stress fluid for u < u* and 
+corresponding to an active fluid for 
+u > u*. For a highly deformable, steady 
+liquid- like load response to emerge, 
+neighboring magnetically coupled units 
+ideally all need to rotate in opposite di-
+rections. In an aggregate comprising a 
+closed chain of an even number of units 
+N, this translates into
+Such a regime is reached autonomously 
+by setting
+in each of the individual units (in this case, 
+onboard sensing of the rotor’s direction 
+of rotation is required). The mechanical 
+coupling then drives a self- organization 
+process that, after a brief transient regime, 
+converges to a state with bias voltages of 
+opposite sign on neighboring units,
+(Fig.  4A and movie S2). Alternatively, 
+the liquid state can be achieved in a fully 
+open loop, with no sensing of sgn( ̇θi) , by 
+initializing neighboring units via a global command to use ∣u∣ of 
+opposite signs (see Materials and Methods), and with α = 0.
+From Eq. 3, for G = 0, the load response of all individual units is 
+described by an equation of the form
+written here for positive Γl,i and therefore ̇θi > 0 and sgn( ̇θi) = 1 . If 
+∣u∣ < u*, this relationship between applied load and resulting rota-
+tion speed has the same functional form as the relationship between 
+applied stress and shear rate for a yield stress fluid (see sketch of 
+Γl( ̇θ) in Fig. 3). For such fluid an effective, rate- dependent viscosity 
+ηeff is defined by the ratio of stress to shear rate. By analogy, we here 
+define a unit’s viscous damping as
+To compare this with the viscous behavior of a multiunit Granulobot 
+aggregate in its liquid state, we characterize the collective viscous 
+flow by performing experiments where we time the collapse of cir -
+cular chain units (Fig. 4B and movie S2). We choose an initial con-
+figuration such that before the collapse, for u = 0, the load for all 
+units in the aggregate is slightly below their frictional yield torque, 
+and therefore the chain’s circular shape is maintained. We then 
+switch on the bias ∣u∣ to drive the system into the liquid state and 
+Γ∗
+l =Γ f − k ∣ u ∣ (4)
+u∗ =Γ f ∕ k (5)
+N/uni2211.s1
+i
+̇θi ≈ 0 (6)
+u i =∣ u ∣ sgn( ̇θi) (7)
+u i =− u i−1 = (− 1)i ∣ u ∣ (8)
+Γl,i = (1 +α )η0 ̇θi + k(u ∗ −∣ u ∣ ) (9)
+ηeﬀ =Γ l,i∕ ̇θi =η 0 + k(u∗ −∣ u ∣ ) ̇θi
+−1
+(10)
+Fig. 3. Dynamical states of a Granulobot aggregate. Different states a Granulobot aggregate can exhibit as a func-
+tion of open- loop voltage bias ∣u∣, closed- loop proportional gain G, and the average applied torque load 〈∣Γ l∣〉. the 
+exploded view shows in more detail the parameter dependence of the different states. Schematic diagrams in the 
+boxes indicate the associated load responses of individual units. o ur experiments on closed-  chain Granulobot ag-
+gregates reproduce qualitatively the behavior shown in the sketches. in the liquid- like regime (G = 0; green), this in-
+cludes the linear increase of the torque load response with angular speed ̇θ , where the slope corresponds to an 
+effective viscosity ηeff. With decreasing voltage bias ∣u∣, the behavior changes from an active liquid that flows even 
+without applied load to a yield stress fluid that only flows if 〈∣Γ l∣〉 ≥ Γf − k∣u∣. in the active viscoplastic regime (G > 0 
+and ∣u∣ < u*; red), the torque load increases linearly with angular displacement θ and with a hysteresis Δθ = k(u* − 
+∣u∣)/G when unloading. in the active, self- oscillating solid- like regime (G > 0 and ∣u∣ ≥ u*; yellow), the torque load in-
+creases linearly and reversibly with average angular displacement, as for an ideal elastic response. i ncreasing the 
+rotor damping from α = −1 changes the self- oscillation of individual units from sinusoidal form to alternating expo-
+nential decay, and the aggregate behavior transitions from undamped, purely elastic to viscoelastic solid.
+Downloaded from https://www.science.org at University of Chicago on February 04, 2024
+
+
+Saintyves et al., Sci. Robot. 9, eadh4130 (2024)     24 January 2024
+Science RoboticS  |  ReSeaR ch aR ticle
+5 of 14
+measure the relaxation time, τ, needed for the aggregate to reach its 
+minimum potential energy and thus its equilibrium state. To bypass 
+the transient phase of the self- organizing process and ensure the 
+system behaves as a liquid as soon as the voltage bias is applied, 
+we enforce
+Note how adjacent units rotate in oppo-
+site directions and how this complex 
+sequence of interdependent rotations 
+emerges simply in response to external 
+forcing. Hence, it can accommodate ar -
+bitrary starting configurations and will 
+always proceed in a liquid- like manner 
+toward the equilibrium configuration that 
+minimizes gravitational potential energy.
+Figure  4C shows measurements of 
+ηeff (red circles) and τ (blue circles) as a 
+function of the voltage bias ∣u∣. The plot-
+ted ηeff is for an individual unit, obtained 
+by applying a fixed torque Γ l,i and mea-
+suring the resulting angular speed ̇θi as a 
+function of ∣u∣. For comparison with the 
+collapse experiments, the torque load is 
+chosen slightly lower than the friction 
+torque, such that the rotor is also static at 
+u = 0. The experimental data are well de-
+scribed by the analytical form of Eq. 10 
+(black dotted line) using Eq. 9 to obtain 
+̇θi and taking as a typical load Γl,i = mgr, 
+the torque applied to a unit’s active rotor 
+of radius r by the weight of a neighbor -
+ing unit at right angle with respect 
+to gravity
+We observe that the aggregate collapse 
+time τ reproduces this behavior, consistent 
+with a collective viscosity that scales 
+with bias ∣u∣ in the same way as ηeff. This 
+demonstrates how the collective viscosi-
+ty can be tuned by setting the viscous 
+load response of the individual units via 
+∣u∣. Changing the damping via α, which is 
+set to zero in all data shown in this section, 
+only scales the behavior with a prefactor.
+For vanishing voltage bias ∣u∣, the pas-
+sive state is approached, and τ and η eff 
+diverge. Conversely, as ∣u∣ is increased to 
+the point that it reaches u*, the yield 
+stress vanishes and the aggregate viscos-
+ity attains a load- independent value that 
+scales as2).
+Effectively, the system now behaves like 
+a Newtonian liquid. If ∣u∣ is increased above u*, then individual 
+units rotate with a finite speed
+already in the absence of any substantial load (see the final equilib-
+rium state in Fig.  4B and movie S2). In this state, the aggregate u i = (− 1)i ∣ u ∣ (11)
+ηeﬀ = (1 +α )η0
+mgr
+mgr − k(u∗ −∣ u ∣ ) (12)
+ηeﬀ ∼ (1 +α )η0 (13)
+̇θi = k(∣ u ∣− u ∗)
+(1 +α )η0
+(14)
+0
+10
+/uni0336 2
+10
+/uni0336 1
+10
+0
+1 23
+, N=10
+10
+2
+10
+1
+0 2 46 81 00 2 46
+g 1  2  3  4  5
+ 6  7  8  9 10
+10
+3
+/uni0336 2
+0
+1
+2
+/uni0336 1
+, N=1
+45
+CBA
+Fig. 4. Active liquid- like state in a closed- chain aggregate. N = 10 units with rotor damping α = 0 and torsion 
+spring constant G = 0. (A) Rotation speeds of individual units as a function of time for an aggregate placed horizon-
+tally with u i =∣ u ∣ sgn( ̇θ) . here, ∣u∣ = 1 V. the different traces show the rotation speeds of individual units, and the 
+black line shows their sum. a fter a transient self-  organization period, indicated by the interval between the vertical 
+dashed lines, the individual units have autonomously reached a configuration where neighbors rotate in opposite 
+directions and the net rotation is zero. (B) Rotation speed of individual units as a function of time during a vertical 
+collapse experiment with ∣u∣ = 1 V. the inset shows the ring configuration before the collapse and the final collapsed 
+state. traces of the rotation speed for individual units and of the sum of all speeds are color- coded as in (a). (C) com-
+parison of a single unit’s damping parameter η eff, defined by the ratio Γl,i ∕ ̇θi , with the relaxation time scale τ, mea-
+sured for a collapsing chain of 10 units. both are plotted as a function of voltage bias ∣u∣. Data for the single unit were 
+obtained from measurements of ̇θi for a fixed load Γl, i = 0.020 n m (red circles). also shown is ηeff evaluated using the 
+analytical form for ̇θi obtained from eq. 3, for a typical load Γl.i = mgr, where m is the unit’s mass, r is its radius, and g 
+is the acceleration of gravity (black dotted line). the relaxation time scale τ, measured for the collapsing chain (blue 
+circles), closely tracks the evolution of the damping parameter with voltage bias ∣u∣.
+10 15 20
+0
+1
+2
+3
+0
+1
+2
+3
+4
+5
+502 510 15 20502 5
+a
+b
+c
+a
+b
+c
+A B
+Fig. 5. Tensile load response of a closed- chain aggregate. Force-  displacement curves measured for N  = 8 units 
+with rotor damping α = −1 and applying a vertical displacement rate of 1 mm/s. (A) liquid- like response with torsion 
+spring constant G = 0 n m/rad, voltage bias ∣ u ∣= 0.15 V ≃ u∗
+0 > u∗ (green curve), and hysteretic response in the vis-
+coplastic solid state with G = 2.0 n m/rad, ∣u∣ = 0.1 V < u*. inset: Still frame from a video of the Granulobot chain in the 
+instron materials tester used to generate the data in (a) and. in this image, the back side of the units is visible, show-
+ing the circuit board and the battery. (B) Reversible elastic response in the self- oscillating solid with G = 2.0 n m/rad 
+and ∣u∣ = 1 V > u* (loading in red, unloading in blue). the periodic variations are due to shape oscillations of the ag-
+gregate. insets: enlarged images of the Granulobot chain in the i nstron showing identical configurations at the be -
+ginning (a) and end (c) of the load cycle, and elongation when the maximum strain was applied (b).
+Downloaded from https://www.science.org at University of Chicago on February 04, 2024
+
+
+Saintyves et al., Sci. Robot. 9, eadh4130 (2024)     24 January 2024
+Science RoboticS  |  ReSeaR ch aR ticle
+6 of 14
+behaves in a manner that can be characterized as an active liquid 
+with low effective viscosity. The green curve in Fig. 5A presents data 
+from a constant speed tensile test when ∣u∣ = u*, so Γ f is actively 
+compensated for by the voltage bias, with rotors remaining static 
+when not loaded. We observe a quasi- flat, strain- independent be-
+havior, consistent with what we expect for a Newtonian liquid- like 
+response. In practice, a unit starts to rotate at a slightly larger bias 
+than the estimate from calibration torque- displacement curves
+This can be explained by static friction at zero angular speed 
+that is larger than the kinetic friction producing Γ f (see Materials 
+and Methods).
+Solid- like states
+These states use feedback to sense the rotor movement and drive it 
+toward its equilibrium angular position during a load perturbation. 
+They are colored red and yellow in Fig. 3. With increasing G, the 
+response of individual units, and thus also 
+of the aggregate, becomes more elastic 
+and rigid.
+Considering a bias that always acts 
+against the frictional torques  , 
+Eq. 3 can be written as
+When ∣u∣ = u* (the vertical dotted plane 
+in Fig. 3), this behavior corresponds to 
+a viscoelastic solid, the response of a 
+damper, and a spring in parallel (45). In 
+this specific state, vanishing damping, 
+which occurs when α = −1, corresponds 
+to an undamped mass- spring oscillator.
+When ∣u∣ < u*, the unit’s response is 
+analogous to a viscoplastic solid (col-
+ored red in Fig. 3), which corresponds to 
+a spring, a damper, and a frictional ele-
+ment in parallel (45). In this regime, 
+where the characteristic response time 
+of a rotor is
+effective position control with a fast re-
+sponse is achieved by choosing a posi-
+tive α and a large G. Otherwise, if α = −1, 
+then the damping η0 ̇θi is actively com -
+pensated for, and a perturbation of the 
+rotor that overcomes Γf leads to steady un-
+damped oscillations. Because the biases 
+will not completely cancel the frictional 
+torques in individual units, if G is not 
+large enough, then deformation will ex-
+hibit substantial hysteresis
+As shown in the tensile test data pre-
+sented in Fig. 5A, the overall aggregate 
+will then also respond to load with 
+some hysteresis, implying plasticity.
+If we choose biases ∣ ui∣ > u*, the response of the aggregate to a 
+quasi- static tensile test no longer is hysteretic but becomes revers-
+ible, as shown in Fig. 5B. This is the signature of an elastic solid. 
+However, unlike an ordinary elastic solid, in this state (colored yel-
+low in Fig. 3), the internal dynamics of the aggregate are more com-
+plex: Each rotor’s unit is driven away from its equilibrium angle, 
+and oscillations arise spontaneously, even without applied load. The 
+units are driven by the bias to “self- oscillate” such that, when isolated, 
+they exhibit well- defined limit cycles with amplitude and fre-
+quency fixed by ∣ u∣, G, and α  (Fig. 6A). Because individual units’ 
+rotors are now subject to inertia (see Material and Methods for 
+modeling), which manifests itself through spring- like oscillation, 
+they can transfer momentum to each other when magnetically coupled 
+in an aggregate and thus perturb their neighbor’s dynamical state. 
+In a chain of units, after an initial transient, such purely mechanical 
+coupling can lead to the self- organization of collective oscillatory 
+u∗
+0 > u∗ =Γ f ∕ k (15)
+(16)
+τ=(1 +α )η0 ∕ G (17)
+Δθ = k(u∗ −∣ u ∣ ) ∕ G (18)
+12 16 20
+/uni0336  8
+0
+4
+8
+/uni0336  4
+0 1/uni0336 1 0 1/uni0336 1
+0 11
+0
+1
+0 4 8
+10.5 1.5 210.5 1.5 210 3
+10 2
+10
+10 0
+10 1
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+i
+100 2 46 8
+0
+2
+01 2
+0
+0.4
+0.8
+1.2
+8
+0
+4
+8
+0.9
+ 0.7
+0.8
+0.9
+0.7
+0.7
+0.9
+0.9
+0.6
+-0.9
+A
+B
+CD
+E
+FG H
+Fig. 6. Self- oscillating solid- like state in a closed- chain aggregate. Granulobots were laid horizontally onto a slip-
+pery surface (see movie S3). all data are for torsion spring constant G = 1.0 n m/rad and voltage bias threshold u* = 
+0.11 V. (A) Phase space (θ, ̇θ) of a single isolated unit for different biases ∣u∣ and damping parameters α: ∣u∣ = 2 V, 
+α = −0.9 (brown); ∣u∣ = 1 V, α = −0.9 (red); ∣u∣ = 1 V, α = −0.5 (orange); ∣u∣ = 1 V, α = 0 (yellow). (B to H) Data for 
+N = 10 units. (b) angle as a function of time for two coupled neighboring units in a chain aggregate with bias ∣u∣ = 2.0 V, after 
+turning all units on at time t = 0. (c) limit cycles in phase space (θ, ̇θ) for all N coupled units in the steady regime of the 
+experiments corresponding to (b). (D) Maximum of power spectra averaged over N = 10 units 〈Smax〉 as a function of 
+bias ∣u∣. Units are in the same aggregate configuration as in (b) and (c), with damping parameters αi = −0.9, while ∣u∣ 
+is gradually increased from 0 to 2 V and decreased back to 0 V. (e) limit cycles observed in an aggregate with α ∈ [ − 
+0.9, − 0.6], ∣u∣ = 1.0 V. (F and G) Power spectra for each of the units from (e) when coupled into a ring aggregate (F) 
+and when isolated (G). (h) Shape deformation γ over time for an aggregate with αi = α as in (b) and (c) (black) and with 
+a range of α as in (e) and (F) (brown).
+Downloaded from https://www.science.org at University of Chicago on February 04, 2024
+
+
+Saintyves et al., Sci. Robot. 9, eadh4130 (2024)     24 January 2024
+Science RoboticS  |  ReSeaR ch aR ticle
+7 of 14
+states with well- defined global limit cycles that remain unchanged 
+over time. Specifically, in a closed loop of an even number of units 
+that all have the same parameters and that remain unperturbed, we 
+observe a synchronization process (see movie S3). Figure 6B dis-
+plays such a situation for an aggregate of N = 10 units and, by focus-
+ing on two neighboring units, highlights how their angles evolve as 
+a function of time. After turning the units on and a subsequent ini-
+tial transient, all units lock in their phase and amplitude. Once the 
+steady state is reached (to the right of the vertical dashed line in 
+Fig. 6B), all units exhibit essentially identical limit cycles (Fig. 6C), 
+and the frequency and amplitude observed in the aggregate are the 
+same as for an isolated unit.
+To characterize the degree of self- organization of an aggregate 
+state, we use the frequency power spectra associated with data such 
+as in Fig. 6B. We apply a fast Fourier transform to each θ(t) i to ob-
+tain the single- sided amplitude spectrum Si. Pronounced and sharply 
+peaked maxima at overlapping frequencies are expected between units of 
+an aggregate in a highly synchronized state (fig. S2A), whereas no 
+peaks are observed when no self- organization occurs. Averaging the 
+power spectrum maximum value S max
+i  over N units gives
+Measuring 〈Smax〉 in an aggregate of coupled units as the bias voltage 
+is first ramped up and then down again, we found that the transition 
+between disordered dynamics to a synchronized behavior is strong-
+ly hysteretic (Fig. 6F), with long transient regimes at biases close to 
+u* and almost instantaneous transitions at larger biases. This hyster-
+esis implies that, for a certain range of bias values ∣u∣, the Granulobot 
+aggregate can be in two states, with and without a limit cycle. With 
+a sensitivity that can be tuned with the voltage bias within this range, 
+this means that switching between these behaviors can be triggered 
+by mechanical perturbations from the environment the robot inter-
+acts with, without electronic feedback.
+When the system synchronizes, neighboring units’ phases alter-
+nate between 0 and π, which corresponds to ̇θi =− ̇θi+1 , and 
+∑N
+i
+̇θi ≈ 0 (Fig. 6B and fig. S2B). In this situation, the contour of the 
+chain remains static in time with no deformation. We label this col-
+lective steady state a self- oscillating solid (a similar phenomenology 
+is observed when choosing u i across all units with the same sign, 
+regardless of Γf; see Materials and Methods). In this state, perturba-
+tions that are too small to switch the aggregate to disordered dy-
+namics can still affect its behavior. For example, placing a previously 
+synchronized closed- chain loop upright in a gravity field when per-
+forming a tensile test leads to small global periodic deformations of 
+the structure that can be seen by the oscillations in the force signal 
+in Fig. 5B. However, on average the response to loading remains that 
+of a purely elastic solid, with collective self- organized properties 
+that ensure continuous deformation across all of the aggregate (see 
+movie S3).
+Such global shape oscillation can also be triggered internally 
+when units are assigned different parameters and thus exhibit differ-
+ent self- oscillation properties. In such a setting, we still observe col-
+lective limit cycles characterized by self- organization, but without 
+synchronization. Figure 6E shows such collective limit cycles for an 
+assembly with a distribution of damping parameters αi in the range 
+[−0.9, −0.6]. Changing the damping parameter changes the oscilla-
+tion frequency of the individual units. Nevertheless, we see that 
+mechanical coupling selects a single collective frequency (Fig. 6F) 
+with phases that are locked in time, despite the spread in frequencies 
+of isolated units (Fig. 6G). However, there remains a spread in oscilla-
+tion amplitudes that is accompanied by a shift of the phases between 
+consecutive units in a chain (see fig. S2) and the propagation of a wave 
+that deforms the aggregate’s contour globally and periodically (see movie 
+S3). Figure 6H shows the evolution of the deformation γ as a function 
+of time for an assembly with the same range of α  as in Fig. 6E and 
+Fig. 6F and compares it with the case where α has the same value for 
+all units, as in Fig. 6B and Fig. 6C. Here, the amount of deformation over 
+time is parameterized by
+where A is the total area contained within the perimeter of the assembly.
+From collective states to decentralized locomotion tasks
+The behaviors summed up in Fig. 3 show a wide range of responses 
+to external loads and constraints. Such mechanical feedback from 
+the environment can be seen as an emergent and decentralized col-
+lective mechanical sensing ability that can be harnessed for control. 
+These collective states can be driven out of their effective equilibri-
+um to produce dynamical shape- shifting simply by preventing an 
+individual unit’s behavioral state, thereby enabling decentralized 
+deformation- based tasks. Furthermore, the use of voltage control 
+via a single functional form (Eq. 2) allows for continuous transition 
+between states of different response type and autonomous switching 
+between strategies depending on environmental or computation 
+constraints. We demonstrate this ability by implementing three dif-
+ferent locomotion gaits. Using the liquid- like, self- oscillating, and 
+viscoplastic mechanical responses, a robot can move over an obsta-
+cle without sensors; self- organize into a steadily translating aggre-
+gate, either on frictional or slippery surfaces, solely via mechanical 
+coupling; or move quickly and efficiently using its own inertia when 
+it maintains overall rigidity.
+Morphing liquid for sensorless obstacle management
+We leverage the aggregate’s ability to change its rigidity and behave 
+as a liquid to locomote over an obstacle, using only mechanical feed-
+back from the environment. For an aggregate to deform liquid- like 
+while translating its center of mass without sensor readout, we must 
+find a form of u i that implements a gait while satisfying ∑N
+i
+̇θ≈ 0 . 
+Here, we show that this can be achieved with α = G = 0 by using the 
+functional form for the individual ui displayed in Fig. 7A, which we 
+have inferred from a reverse kinetic approach. This gait relies on 
+synchronous periodic deformation that we can implement with 
+both closed or open chain configurations by allowing neighboring 
+units to wirelessly sync their clocks and correct phase drift over time 
+(see Materials and Methods). Figure 7B shows a snapshot of an ag-
+gregate “flowing” over an obstacle to pass it (see movie S1).
+Undulator: Emergent aggregate gait with coupled oscillators
+Figure 6H shows that a spread in the units’ oscillation properties in an 
+aggregate leads to limit cycles that generate periodic collective shape 
+deformations. Even when there is no spread, similar collective shape 
+deformations can be triggered by mechanical interaction with the en-
+vironment. Specifically, when an aggregate of synchronized units, all 
+with equal control parameters, is placed vertically onto a nonslip sur-
+face, limit cycles remain, but small regular left- right periodic defor-
+mations emerge because of frictional constraints: Units that are in 
+⟨Smax ⟩ = 1
+N
+�
+Smax
+i (19)
+γ= A − A(t = 0)
+A(t = 0)
+(20)
+Downloaded from https://www.science.org at University of Chicago on February 04, 2024
+
+
+Saintyves et al., Sci. Robot. 9, eadh4130 (2024)     24 January 2024
+Science RoboticS  |  ReSeaR ch aR ticle
+8 of 14
+contact with the nonslip surface cannot rotate as much as the others. 
+In such a setting, perturbing this state further by turning off one unit 
+modifies the limit cycle (Fig. 7C), breaks the left- right symmetry of 
+the collective periodic deformation, and amplifies it. This can lead to 
+sustained locomotion of the aggregate (Fig.  7D) without the use of 
+wireless communication, solely relying on unit- unit mechanical inter-
+actions and hence minimal computation (see movie S3). To locomote 
+with a closed chain, the left- right symmetry of the periodic deforma-
+tion can also be broken by using an odd number of units with iden-
+tical oscillation parameters (see movie S1). In an open chain 
+configuration, periodic deformation can be used to locomote on a 
+slippery surface. In that case, perturbing the properties of an oscillator 
+in one portion of the chain can trigger an undulating deformation 
+that alternates contact with the ground periodically between different 
+sections of the chain (Fig. 7, E and F , and movie S1).
+Inertial shape- shifter
+Here, we demonstrate the implementation of a local displacement 
+control approach to generating fast and efficient rolling gaits in rigid 
+solid aggregates. This is achieved via fast and overdamped local 
+feedback loops in the viscoplastic region of Fig. 3, with large G, ∣u∣ = 
+0, and an optimal α. Small, appropriately 
+timed shape perturbations are propagat-
+ed through a ring- like chain of coupled 
+units to generate coordinated locomo-
+tion that leverages the assembly’s overall 
+inertia. The shape perturbations are en-
+forced by controlling the rotors’ absolute 
+angles as a function of time (see Materials 
+and Methods for details). The aggregate’s 
+locomotion is triggered in a decentral-
+ized way by sending the same message 
+once to all units. Neighbor- neighbor 
+communication and a leader- follower al-
+gorithm then implement a predefined 
+angle perturbation that propagates 
+through the chain. Depending on the al-
+gorithm parameters, the aggregate can 
+either crawl or roll, the latter demon-
+strating the faster and most energy- 
+efficient locomotion strategy because 
+only small rotor displacements are re-
+quired (Fig. 7, G and H, and movie S1).
+CONCLUSIONS
+The Granulobot represents a robotic sys-
+tem inspired by granular material where 
+motorized units can flexibly and reversibly 
+couple with each other and self- assemble 
+into larger aggregates. A minimal design 
+with a single activated degree of freedom 
+per unit enables aggregates to reconfig-
+ure dynamically and to transition be-
+tween solid-  and liquid- like responses 
+under gravity. In contrast with modular 
+robotic systems that require successive 
+steps of detachment and reattachment of 
+individual units to change their shape, a 
+Granulobot aggregate can deform by continuous local displace-
+ment, similar to a deforming soft material. Because such deformation is 
+a function of the Granulobots’ dynamical states, this results in the wide 
+range of collective mechanical behaviors shown in Fig. 3. Further -
+more, because these different response properties are all encoded 
+in the functional form of the control voltage Ui, this allows continu-
+ous transition between liquid- like behavior associated with open- 
+loop control and solid- like behavior where an onboard feedback 
+loop monitors the local rotor displacement sensor.
+The properties associated with several of the Granulobot aggregate 
+states make it possible to use mechanical interaction with the environ-
+ment to implement decentralized locomotion strategies without elec-
+tronic environmental sensing and at minimal computation cost. In 
+the liquid- like state, this enables an aggregate to pass over an obstacle 
+by “flowing” over it. In the self- oscillating solid state, Granulobots 
+self- organize strictly via mechanical coupling into well- defined limit 
+cycles. In this setting, changes in the control parameters, as well as in 
+the mechanical environment where robots operate, can trigger peri-
+odic deformations. Using this feature, aggregates can self- coordinate 
+periodic shape changes to slide on a slippery surface and roll on a 
+2
+0
+4
+2
+4 0 0.4
+4
+0
+8
+4
+8 0 22
+1
+2
+3
+4
+5
+6
+1 2 3 4
+5678
+0
+4
+10 15 2005
+U (V)
+3–7
+2  6 4  8
+10
+5
+0
+5
+10
+0 22
+7 8
+A
+C
+E
+G
+B
+D
+F
+H
+0.4
+Fig. 7. Exemplary Granulobot locomotion strategies. (A) liquid- like gait using a set of voltage biases with shifted 
+phases in an aggregate of N = 8 units (initial voltage u0 = 0.7 V and amplitude A = 2.4 V). (B) Snapshots of a Granulobot 
+aggregate using the gait ( a) to move over an obstacle. (C) limit cycle reached by a closed-  chain aggregate in the 
+self- oscillating solid state with N = 6 units, after turning unit i = 1 off (voltage bias ∣u∣ = 2 V, rotor damping α = −0.9, 
+and torsion spring constant G = 1.0 n m/rad). (D) Snapshots of a steadily moving self-  organized aggregate corre -
+sponding to the gait in (c). (E) limit cycle of an open chain aggregate in the self- oscillating solid state with N = 8 units, 
+after turning unit i = 7 off (∣u∣ = 1 V, α = −0.9, and G = 0.5 n m/rad). (F) Snapshots of a steadily moving self- organized 
+aggregate corresponding to the gait in (e). (G) limit cycle from a leader- follower scheme to implement a propagating 
+perturbation (inertial shape- shifter). choosing ∣u∣ = 0, G = 10.0 n m/rad, and α  = 1.0, units can be controlled in dis-
+placement (large G with ∣u∣ < u*), enabling fast collective motion with small deformation by turning into a “pumping” 
+wheel. (H) Snapshots corresponding to gait (G). the blue dot corresponds to unit i = 1. in (c), (e), and (G), the units of 
+θ and ̇θ are rad and rad/s, respectively.
+Downloaded from https://www.science.org at University of Chicago on February 04, 2024
+
+
+Saintyves et al., Sci. Robot. 9, eadh4130 (2024)     24 January 2024
+Science RoboticS  |  ReSeaR ch aR ticle
+9 of 14
+no- slip surface, thus leveraging physical interactions with their envi-
+ronment to generate locomotion (46). Furthermore, the bistability we 
+observe in Granulobot aggregates for a range of bias voltages enables 
+a minimal, purely mechanical “decision- making”: Sufficiently large 
+external perturbations can switch the behavior of the system between 
+disordered and self- organized states without requiring electronic 
+sensing. Reminiscent of mechanisms found in living systems (47), 
+this opens up a promising perspective in distributed robotics to de-
+velop scalable and collective behavioral capabilities.
+The viscoplastic state makes it possible to maintain an aggregate 
+shape and exhibits less sensitivity to perturbation compared with the 
+self- oscillating solid. This state is more amenable to the implementa-
+tion of traditional displacement control, where parameters can be 
+tuned for a rigid response that is insensitive to external environmental 
+loading, similar to controlling a robotic arm. In our experiments with 
+closed- chain aggregates, this is advantageous when implementing fast 
+locomotion using inertia. It also demonstrates the ability of the design 
+to combine in a decentralized way our physical approach with more 
+widely used kinematic planned strategies. This is also the regime in 
+which controlled neighbor reconfiguration can be implemented in 
+usage more similar to existing modular robotic systems. However, 
+such reconfiguration can happen spontaneously in any of the acces-
+sible states through collective mechanisms.
+We view the different locomotion strategies explored here as initial 
+examples that demonstrate the versatility of the Granulobot platform. 
+Hence, we anticipate that many additional locomotion strategies 
+could be found as well as possible new tasks. A promising way to ex-
+plore them could be to implement machine learning approaches such 
+as in (48, 49). A more ambitious but crucial step would be to imple-
+ment learning in a fully decentralized way, which could enable ag-
+gregates to autonomously select strategies that are relevant to the 
+environment and the constraints they encounter. In this context, con-
+ventional machine learning approaches are conceptually challenging 
+to apply because error functions are ultimately estimated centrally. 
+We believe that the Granulobot platform offers a promising perspec-
+tive for tackling this problem by combining the collective behavior 
+emerging from mechanical interactions among the units with local 
+error optimization executed in the units’ microcontrollers.
+Furthermore, more complex packing and coupling structures 
+could be created. This could be achieved by increasing each unit’s 
+connectivity with additional freely rotating magnets and, in dense 
+packing configurations, exploiting the metastability associated with 
+granular jamming (25). For instance, it should be possible to main-
+tain structural rigidity at no energy cost and to switch configura-
+tions by actuating only a few units where resistance to reconfiguration 
+is weaker. In such a setting, larger connectivities would increase the 
+effect of couplings and could allow for more collective mechanical 
+adaptability (50). In addition, although the Granulobot aggregates 
+discussed in this work are effectively two- dimensional (2D), arrang-
+ing different aggregates next to each other with elements that con-
+nect them suggests a straightforward extension to a 3D version. 
+Last, the simple contact and actuation principle that we propose 
+could be integrated into larger- scale programmable matter (5).
+MATERIALS AND METHODS
+Robotic prototype
+The Granulobot prototype discussed in this work consisted of 3D- 
+printed parts assembled with ball bearings, permanent magnets, a 
+custom battery- powered electronic circuit, and a geared DC motor 
+(Fig. 8A). Each individual Granulobot unit was composed of three 
+coaxial components that could rotate independently from each oth-
+er: The first was a wheel, which contained the DC motor (N20 from 
+Pololu) that drove a rotor with a magnet at its end (referred as actu-
+ated magnet in the main text); the second was another rotor, also 
+with a magnet at its end, that could move freely around the central 
+motor axis (referred to as free magnet in the main text); and the 
+third was a freely rotating second wheel (shown at the top of the 
+exploded view in Fig. 6A) that helped to align the Granulobot units 
+when making contact and stabilized an assembled aggregate against 
+tipping over. Both rotors held hollow cylindrical neodymium mag-
+nets (N54 from SuperMagnetMan; size of 3 mm by 12 mm by 15.5 mm) 
+via a shaft with ball bearings on each end, which let the magnets 
+rotate freely. The active rotor was attached to the motor shaft with 
+two screws to adjust parallelism. The motor’s gear train could be 
+changed to different ratios β depending on the application, with val-
+ues ranging commercially from 5:1 to 1000:1. Additional freely 
+rotating magnets can be added to increase the connectivity of a 
+single unit and build more complex aggregate structures if desired 
+(see fig. S1).
+Individual Granulobot units had an overall width of l  = 62 mm 
+and an outer wheel diameter of 2r  = 48 mm. The 3D- printed parts 
+were made with an ultraviolet curing PolyJet printer (Stratasys J850) 
+using an acrylonitrile butadiene styrene–type resin (RGD511 and 
+535) and with a Phrozen Mini 4k printer using Loctite Onyx 410 
+engineering resin. The total weight of a single Granulobot unit with 
+a geared motor, printed circuit board (PCB), ball bearings, magnets, 
+and two 220- mAh batteries was 98 g.
+The electronic circuitry consisted of a Wi- Fi–enabled microcon-
+troller (Espressif ESP- 32), an H- bridge to control the motor, a power 
+management circuit with 3.3-  and 6- V regulation from two single- 
+cell lithium- ion polymer batteries, a six- axis linear and gyroscopic 
+accelerometer, a magnetic sensor with sensitivity in the range of the 
+field produced by the rotor magnets, and a continuous magnetic en-
+coder to measure the motor rotation. All electronic components 
+were assembled on a printed circuit board designed to fit within the 
+circular Granulobot body (see Fig.  8B). The motor voltage U was 
+produced by two microcontroller digital outputs using pulse- width 
+modulation (PWM), averaged out by the low- frequency response of 
+the motor system (see the Supplementary Materials for PWM cali-
+bration). The entire circuit was controlled and monitored by firm-
+ware coded in C++ with Arduino and Esp32 libraries. Data could 
+be sent and received by Wi- Fi between individual units as well as 
+with an external computer. For the latter, we developed Python soft-
+ware that gathers data for post- analysis and visualization, at a rate of 
+approximately 200 Hz, and that could execute scripts with a se-
+quence of instructions.
+Steady- state load response of individual Granulobot units
+In a dc motor, the current I through the winding generates a torque 
+Γ = KtI, where the constant Kt depends on the mechanical and elec-
+tromagnetic properties of the motor (44). Our sign convention is 
+that positive current I produces positive torque drive and positive 
+gearbox output rotor speed ̇θ in the absence of any load. In Fig. 8C, 
+positive torques correspond to clockwise rotation. The torque bal-
+ance in the steady state of a loaded motor can then be expressed as
+βK tI +Γ l −Γ fsgn( ̇θ) = 0 (21)
+Downloaded from https://www.science.org at University of Chicago on February 04, 2024
+
+
+Saintyves et al., Sci. Robot. 9, eadh4130 (2024)     24 January 2024
+Science RoboticS  |  ReSeaR ch aR ticle
+10 of 14
+where β is the gearbox ratio, Γ l is the external load (which can be 
+positive or negative) on the motor’s gearbox output, and Γf > 0 is the 
+magnitude of the friction torque that arises from the mechanical 
+parts contacting each other inside the gearbox and the rotor system. 
+The sign function sgn( ̇θ) = ̇θ∕ ∣ ̇θ∣ appears because the friction 
+torque always opposes any rotation. Using Kirchhoff ’ s law, the mo-
+tor current I during steady rotation obeys
+where R is the motor resistance, U is the voltage applied to the 
+motor, and E is the back EMF . The latter opposes the motion of the 
+inner rotor, which spins at speed ω=β ̇θ , and can be expressed via 
+Faraday’ s law as E = –Keω, with Ke being the motor’s EMF constant. 
+Equation 22 combined with Eq. 21 can be rewritten as
+Theoretically, Kt  =  Ke, but, in practice, 
+these two values can be slightly different, 
+and we therefore distinguish them in what 
+follows. Furthermore, Kt tends to decrease 
+with an increasing gear ratio; thus, it is 
+important to estimate it whenever β  is 
+changed (see the Supplementary Materi-
+als for estimates of Ke and Kt). Defining
+and
+we arrive at Eq. 1 in the main text for the 
+case of steady- state rotation, when the 
+frictional torque has been exceeded 
+∣Γl + kU∣ > Γf.
+From Eq.  23 or, equivalently, Eq.  1, 
+we expect the speed- torque curves to be 
+linear with slope η0 once the load Γ l ex-
+ceeds the yield threshold torque. When 
+kU becomes larger than Γfsgn( ̇θ) , the 
+yield threshold vanishes, and the units 
+will exhibit rotation already without ap-
+plied torque, at zero- load rotation speed
+Figure 8D shows that this is consistent 
+with data from experiments where we sys-
+tematically varied Γl and measured ̇θ for 
+different voltages U. Only very close to 
+zero bias voltage, where the rotor remains 
+at rest until a certain torque load threshold 
+Γl
+* is exceeded, are there deviations.
+The parameters R and Ke can be deter-
+mined for each motor from measure-
+ments of the motor current performed 
+during the experiments presented in 
+Fig. 8D (see the Supplementary Materials 
+and fig. S4). To determine Kt and Γf, we 
+averaged parameters obtained by fitting 
+Eq. 23 to the data in Fig. 8D. We observe 
+that a single Γf obtained with such methods allows us to describe well 
+all the behaviors for ̇θ > 0 . However, when ̇θ approaches zero, we ob-
+serve a threshold that is larger than that estimated by the model. This 
+is consistent with the existence of a static friction torque that is larger 
+than the kinetic one Γf, as commonly observed in dry friction.
+Dynamical load response of individual Granulobot units
+To model the self- oscillating solid regime in Fig.  3, we can re-
+write Eq. 16 as
+In this form, Eq. 16 shows how in the self- oscillating regime, where 
+∣ui∣ − u* > 0, the right- hand side (RHS) provides a constant force that 
+always pushes the rotor in the direction it is moving. The RHS thus 
+RI= U + E (22)
+β Kt
+R U +Γ l −Γ fsgn( ̇θ) = KtKe
+R β2 ̇θ (23)
+η0 =β 2 KtKe ∕ R (24)
+k =β Kt ∕ R (25)
+̇θ0 =η −1
+0 (kU −Γ fsgn( ̇θ)) (26)
+(1+α )η0 ̇θ+ G/u1D703=Γ l+ k(∣ u ∣− u∗)sgn( ̇θ) (27)
+0
+4
+02 40.8
+0
+0.4
+0.8
+0
+1
+6 00 .4 0.8 1.2 1.6 01 23
+0
+0.2
+0.2
+4 8 12
+F <0 F >0
+I>0
+r
+l l
+0
+0
+0.50
+0 
+0.1 
+0.5 
+1.0 
+1.5 
+2 
+2.5 
+3.0 
+1 23 4
+0.25
+0.75
+1.00
+AB
+D
+C
+EF G
+Wi-Fi
+Fig. 8. Granulobot design, rotor response to load, and actuation. (A) exploded view of Granulobot three- 
+dimensional model. (B) assembled electronic circuitry, custom- designed for driving and real- time measurements. (C) 
+Sketch to indicate sign convention. (D) torque load as a function of rotation speed for different voltages. the dotted 
+lines are fits of eq. 23 with gear ratio β = 379, resistance R = 9.6 ohms, eMF constant Ke = 2.65 × 10−3 V s/rad. Motor 
+constant Kt = 5.8 × 10−3 n m/a and frictional torque Γf = 0.024 n m were determined by averaging fit values obtained 
+for each voltage tested. (E to G) a ngle θ (blue), voltage bias u (black), and total voltage U produced by the circuitry 
+(orange) as a function of time in a self- oscillating Granulobot with torque load Γl = 0 n m. the inertia of the rotor with 
+magnet was Iθ = 0.036 kg × (0.020 m)2, k = 0.229 n m/V. Motor internal damping was η0 = 0.231 n m s/rad. (e) over-
+damped self- oscillation (damping parameter ζ > 1). Rotor damping α  = 0, ∣u∣ = 1 V, G = 0.5 n m/rad, corresponding 
+to ζ = 1.37, and undamped oscillation frequency ω 0 = 5.88 rad/s. the red curves are eq. 32 for Γf = 0.024 n m (solid) 
+and Γf = 0.034 n m (dashed). (F) Self- oscillation in the crossover regime (0 < ζ < 1). α = −0.5, ∣u∣ = 1 V, G = 1 n m/rad, 
+corresponding to ζ = 0.48 and ω0 = 8.31 rad/s. the red curve is the prediction from e q. 34, leading to ω = 7.29 rad/s 
+and steady- state amplitude θn = 0.30 rad. (G) Underdamped self- oscillations (ζ = 0). α = −1, ∣u∣ = 1 V, G = 1 n m/rad, 
+corresponding to ω0 = 8.31 rad/s.
+Downloaded from https://www.science.org at University of Chicago on February 04, 2024
+
+
+Saintyves et al., Sci. Robot. 9, eadh4130 (2024)     24 January 2024
+Science RoboticS  |  ReSeaR ch aR ticle
+11 of 14
+effectively acts as negative Coulomb friction, which injects energy 
+rather than taking it out. With this energy input, for large α, the angle 
+θ will approach its maximum excursion while experiencing large vis-
+cous, velocity- dependent dissipation, such that it will exhibit an expo-
+nential time dependence similar to charging a capacitor. Near that 
+maximum, where the viscous dissipation will vanish, inherent noise 
+in the system can then trigger a switch of sign in the highly nonlinear 
+sgn function on the RHS of Eq. 27, so that the forcing changes direc-
+tion and the process reverses, similar to discharging the capacitor. 
+Figure 8E shows this behavior (blue) along with the alternating volt-
+age forcing ∣ u ∣ sgn( ̇θi) (black). Because the precise moment of switch-
+ing the direction of forcing depends on noise, there is chatter in the 
+rise and fall of the forcing, which in turn leads to a small degree of 
+randomness in the successive timing and thus also in the amplitudes 
+of the oscillations (see inset to Fig. 8E).
+As α approaches −1 from above, damping is no longer dominat-
+ing, and dynamic behavior will be reached. We must then take into 
+account the moment of inertia of the rotor Iθ = mr 2
+0 , with m the 
+mass of the rotor including the attached magnet and r0 its radius of 
+revolution. Adding an inertial term to Eq. 16 or Eq. 27 leads to
+where
+is the damping parameter,
+is the oscillation frequency of the undamped oscillator, and
+is the characteristic angular displacement under the combined ac-
+tion of the load, the Coulomb friction, and the driving torques. This 
+equation describes a harmonic oscillator with (positive) viscous 
+damping but negative Coulomb friction. It has been used to model- 
+driven dissipative systems in different contexts and is known to lead 
+to spontaneous limit cycles (51).
+For ζ > 1, the rotor is in an overdamped regime, resulting in al-
+ternating exponential decay (also described by Eq. 27). When the 
+system is turned on, the rotor is initially at rest with θ = 0 and ̇θ=0  . 
+It then starts to oscillate with increasing amplitudes until reaching a 
+steady state. In this regime, Eq. 28 can be solved analytically for a 
+half oscillation, remarking that, because we expect exponential be-
+haviors, we can take as the initial condition θn(t – tn = 0) = θn–1(∞) 
+at each half oscillation n. Until the angular speed flips sign, the solu-
+tion of Eq. 28 then takes the form
+Figure 8E shows very good agreement between this solution and the 
+experimental data, with no fit parameters. We observe a slight un-
+derestimation of the angle when ̇θ approaches zero, which can be 
+explained by static friction for vanishing speeds that is larger than Γf 
+(see Fig. 8D and fig. S5A for data with larger ζ).
+In the intermediate regime, 0 < ζ < 1, inertia starts to be important, 
+and we expect the solution giving the half oscillation to overshoot. As 
+ζ decreases from 1, the mechanism that triggers the speed sign flip be-
+comes dominated by the dynamics of the system, hence exhibiting 
+more regular oscillations. The initial conditions for a half oscillation n, 
+which corresponds to the first overshoot of the solution at n – 1, can be 
+determined following the method used in (51) to predict that for large 
+n the oscillations approach a steady- state amplitude
+Combined with the general form of the solution of Eq. 28 in this 
+regime, this leads to the steady state (see details in the Supplemen-
+tary Materials):
+where
+and
+Figure 8F shows good agreement between the analytical prediction 
+and the experimental values for ζ = 0.47. The amplitudes are under-
+estimated by the model but consistent numerically with the ob-
+servations.
+For ζ  =  0, which implies α  =  −1 (Fig.  8G), there is no longer 
+viscous damping in the system, while energy is constantly added via 
+negative Coulomb friction. If no other balancing mechanism is 
+present, we expect the amplitude θn to grow linearly over time with 
+frequency ω0 given by Eq. 30 independent of the driving force (51). 
+In any physical system, the total voltage produced by the motor con-
+troller cannot exceed a maximum value such that U  ≤ Umax. As a 
+consequence, we observed a saturation of the total voltage U pro -
+duced by the circuitry (orange curve in Fig. 8G), and finite ampli-
+tudes at large n, θn = f(∣u∣, Umax) that increase with ∣u∣, while ω < ω0 
+decreases with ∣u∣ (fig. S5B).
+Tensile test experiments
+Tensile test experiments were performed with an Instron 5640 ma-
+terials tester equipped with a 50- kN load cell. To apply strain to 
+Granulobot aggregates, we used two ferromagnetic parallel plates as 
+text fixtures. We then added a third, freely rotating magnet, as in 
+fig. S1, to two of the Granulobot units placed in opposite locations 
+within a closed- chain aggregate. To prevent direct contact of these 
+two units’ gear surfaces with the Instron plates, we placed slender 
+neodymium magnets between the third rotors and the plates. This 
+firmly attached these two units to the plates while allowing for free 
+rotation of all Granulobot units during testing. All experiments 
+were performed at a constant tensile speed of 1 mm/s.
+Effect of parameter variability on Granulobot 
+aggregate states
+In Fig. 3, the parameters G and ∣u∣ determine the different states of 
+a Granulobot aggregate for a given load. The values for G, which 
+̈θ+ 2/u1D701ω0 ̇θ+ω 2
+0θ= θω2
+0 (28)
+ζ= (1 +α )η0
+2
+√
+(GIθ) (29)
+ω0 =
+/uni221A.s2
+G
+Iθ
+(30)
+θ= Γl + k(∣ u ∣− u ∗)sgn( ̇θ)
+Iθ
+(31)
+θ(t) = θ
+�
+1 − 2e
+ω0 t
+�√
+ζ2 −1−ζ
+� �
+(32)
+θn → θ
+/parenleft.s2
+1 + /parenleft.s12e/u1D701ω 0π∕ω − 1/parenright.s1−1 /parenright.s2
+(33)
+θ(t) ≃ θ
+/parenleft.s4
+1 − e
+−/u1D701/u1D7140 π
+ω
+2cosϕ e−/u1D701/u1D7140 tcos(/u1D714t+ϕ )
+/parenright.s4
+(34)
+ω=ω 0
+/uni221A.s1
+1 −ζ 2 (35)
+tanϕ = − ζ∕
+/uni221A.s1
+1 −ζ 2 (36)
+Downloaded from https://www.science.org at University of Chicago on February 04, 2024
+
+
+Saintyves et al., Sci. Robot. 9, eadh4130 (2024)     24 January 2024
+Science RoboticS  |  ReSeaR ch aR ticle
+12 of 14
+determines the stiffness of the effective torsion spring in each unit, 
+can be programmed into all Granulobot units. In the fluid- like state, 
+G is simply set to zero. In the solid- like states, variability in this pa-
+rameter will affect the effective stiffness of the aggregate but will not 
+affect how the aggregate switches between passive, viscoplastic, and 
+self- oscillating solid- like states. On the other hand, the threshold u* 
+for the voltage bias magnitude ∣u∣, which determines the onset of 
+either the active liquid or the active solid, depends on the internal 
+static friction within individual Granulobot units. Variability in this 
+friction, which can come from mechanical components inside the 
+motors and from the frictional motion of all rotors, therefore, can 
+have an effect. Going from passive to active flow as ∣ u∣ is increased, 
+we can anticipate that some units will initiate motion earlier than 
+others and therefore simply broaden the crossover. The one situa-
+tion where one could expect a notable effect from variability in the 
+dynamical parameters is the transition to the self- organized self-  
+oscillating solid. However, Fig. 6D shows that the onset of a syn-
+chronized state can be observed robustly within a wide range of 
+bias voltages, despite residual hardware variability (we note the 
+slightly differing amplitudes in Fig. 6, B and C, and fig. S2E), and 
+without any prior calibration procedures. Furthermore, there is a 
+key benefit from deliberately introducing much larger variability 
+within the self- oscillating regime, for example, by choosing differ -
+ent damping parameters among units. In this case, we find that ag-
+gregates are still self organizing (Fig. 6, E to G). Although they are 
+losing synchronization (see fig. S2, B and D, and movie S3), they 
+exhibit periodic deformations that are global shape changes 
+(Fig. 6H) and that form the basis for different self- coordinated lo-
+comotion gaits.
+Solid- like regime with bias voltages of the same sign ui = ∣u∣
+When the u i across all units have the same sign regardless of Γ f, 
+hysteresis is still observed in the regime colored red in Fig. 3, but 
+it will be either negative (plasticity) or positive depending on the 
+sign of the load. As a consequence, the transition toward the self-  
+oscillating regime (orange in Fig.  3) can be shifted slightly. We 
+still observe self- organized oscillating states, but units oscillate 
+sinusoidally regardless of α , with a shift of the equilibrium angle 
+θo = k(u – u *)/G. This is due to alternating within an oscillation 
+between a friction in the direction of the bias and a friction in the 
+opposite one.
+Morphing liquid passing an obstacle
+The onboard monitoring of the rotor angle in each unit makes it 
+possible to develop suitable locomotion strategies by reverse engi -
+neering. This proceeds by manually “teaching” the Granulobot ag-
+gregate how to overcome a type of obstacle, recording the potentially 
+complex sequence of local angle changes and from it extracting the 
+essential features required for successful obstacle management.
+To achieve this, we go through the following four stages. We first 
+put the system in the liquid state, with a low typical damping 
+η0
+eﬀ < 0.01 N s/rad, which corresponds to ∣ui∣ = u0 > 1.5 V , such that 
+it behaves as a passive liquid aggregate. Second, we deform the ag-
+gregate by hand to pass it over an obstacle. Once a continuous se-
+quence of deformations has been successful in overcoming the 
+obstacle, we reproduce by hand the same sequence without obstacle 
+and record via the Wi- Fi data acquisition platform the associated 
+time- dependent angle changes for each Granulobot unit. Third, we 
+“play back” these angle variations from a central computer to each 
+Granulobot, which they follow via local feedback using the rotor 
+encoder. The voltage signals generated by the feedback loops are re-
+corded. We then use these voltages to infer a general, time- dependent 
+voltage bias ui(t) appropriate to overcome the type of obstacle just 
+trained on. During play back of an aggregate of N = 8 units, we ob-
+serve that all eight ui(t) exhibit oscillations of similar frequency and 
+amplitude, with phases shifted between neighbors such that Granulobots 
+placed at opposite positions (i and i + 4) along the chain recover the 
+same phase. We generalize this behavior by using a simple periodic 
+function for the bias voltage that shifts each unit’s phase by π/2 
+such that
+and A is the amplitude of the oscillation. To ensure the right phase 
+shift between units when forcing this behavior in the aggregate, we 
+send to each Granulobot the sequence of addresses in which they 
+are ordered in the chain such that each unit knows its location and 
+its direct neighbor. Figure 7A shows the bias voltages in an aggregate 
+of eight Granulobot units trained to “flow” over an obstacle.
+When using such a control strategy, only the pair of parameters 
+(u0, A) must be sent. As the peak voltage A is increased, the aggre-
+gate becomes more compliant and follows the contour of the obsta-
+cle more closely. This is consistent with a smaller effective viscosity.
+Inertial shape- shifter
+The inertial shape- shifter moves by configuring the Granulobot 
+units into a ring- shaped chain and then applies a suitably chosen 
+shape perturbation that propagates around the ring to drive an over-
+all rolling motion, as shown in Fig. 7H and movie S1. In a closed 
+chain geometry, the sum of angles must satisfy an overall geometric 
+constraint (52), namely,
+All angle perturbations [dθ 1…dθi…dθN] of units [1…i…N] must 
+then satisfy
+To achieve this kinematic control in a decentralized way, with the 
+same instructions sent to all the Granulobot units, we used a local 
+communication strategy whereby one unit temporarily becomes the 
+leader and the trailing neighbors become followers. The control 
+strategy involves a sequence of four sets of instructions that are sent 
+simultaneously to all units at the initial stage.
+In the first instruction, the units receive the sequence of all units’ 
+addresses in the order they are in the ring- like chain, so each knows 
+its location and the address of its direct neighbor connected to the 
+active rotor. An initial leader and a specific number of trailing fol-
+lowers are chosen. The leader communicates its real- time angle 
+value θi to its actuated neighbor. This angle information is com -
+municated through all followers via neighbor- neighbor communi-
+cation. Each follower applies a rotation that is a linear combination 
+of the leader’s angle variation, denoted as
+ui = (− 1)iu0 + Asin(/u1D714t+ϕ i), withϕi+1 =ϕ i + π
+2 (37)
+N/uni2211.s1
+i=1
+θi(t) =π (N − 2) (38)
+d θi =
+N −1/uni2211.s1
+i≠j
+d θj (39)
+d θi+1 =α i+1d θi (40)
+Downloaded from https://www.science.org at University of Chicago on February 04, 2024
+
+
+Saintyves et al., Sci. Robot. 9, eadh4130 (2024)     24 January 2024
+Science RoboticS  |  ReSeaR ch aR ticle
+13 of 14
+where the full sequence of coefficients {α1, …, αN}, which must sat-
+isfy the angle conservation relationship Eq. 39, constitutes the sec-
+ond instruction.
+The third instruction sets the angle perturbation 
+where the parameters T and dθ 0 are chosen to control the shape of 
+the perturbation.
+The last instruction sets a timer that is initiated when the leader 
+begins the shape perturbation. Once this timer reaches tcom, the 
+leader stops moving and sends a message to its first follower, in-
+structing it to become the new leader. This process triggers a repeat 
+of the perturbation procedure, which then propagates through the 
+entire chain. The result of this propagating shape perturbation is a 
+shift in the center of gravity of the aggregate that triggers a rolling or 
+crawling motion sustained by the aggregate’s inertia.
+Supplementary Materials
+This PDF file includes:
+Figs. S1 to S5
+Other Supplementary Material for this manuscript includes the following:
+Movies S1 to S3
+REFERENCES AND NOTES
+ 1. Y. Gao, S. chien, Review on space robotics: toward top- level science through space 
+exploration. Sci. Robot. 2, eaan5074 (2017).
+ 2. M. a. Mcevoy, n. correll, Materials that couple sensing, actuation, computation, and 
+communication. Science 347, 1261689 (2015).
+ 3. J. W. Romanishin, K. Gilpin, D. Rus, M- blocks: Momentum- driven, magnetic modular 
+robots, in IEEE/RSJ International Conference on Intelligent Robots and Systems (ieee, 2013).
+ 4. J. W. Romanishin, K. Gilpin, S. claici, D. Rus, 3D M- blocks: Self- reconfiguring robots 
+capable of locomotion via pivoting in three dimensions, in IEEE International Conference 
+on Robotics and Automation (ICRA) (ieee, 2015).
+ 5. b . Piranda, J. bourgeois, Designing a quasi- spherical module for a huge modular robot to 
+create programmable matter. Auton. Robots 42, 1619–1633 (2018).
+ 6. G. liang, h. luo, M. li, h. Qian, t. l. lam, Freebot: a freeform modular self- reconfigurable 
+robot with arbitrary connection point -  design and implementation, in IEEE/RSJ 
+International Conference on Intelligent Robots and Systems (IROS) (ieee, 2020).
+ 7. e . brown, n. Rodenberg, J. amend, a. Mozeika, e. Steltz, M. R. Zakin, h. lipson,  
+h. M. Jaeger, Universal robotic gripper based on the jamming of granular material. Proc. 
+Natl. Acad. Sci. U.S.A. 107, 44, 18809–18814 (2010).
+ 8. P . Polygerinos, Z. Wang, K. c. Galloway, R. J. Wood, c. J. Walsh, Soft robotic glove for 
+combined assistance and at- home rehabilitation. Rob. Auton. Syst. 73, 135–143 (2015).
+ 9. t . Proietti, c. oŃeill, c. J. hohimer, K. nuckols, M. e. clarke, Y. M. Zhou, D. J. lin, c. J. Walsh, 
+Sensing and control of a multi- joint soft wearable robot for upper- limb assistance and 
+rehabilitation. IEEE Robot. Autom. Lett. 6, 2381–2388 (2021).
+ 10. M. Gazzola, l. h. Dudte, a. G. Mccormick, l. Mahadevan, Forward and inverse problems 
+in the mechanics of soft filaments. R. Soc. Open Sci. 5, 171628 (2018).
+ 11. S. li, D. M. Vogt, D. Rus, R. J. Wood, Fluid- driven origami- inspired artificial muscles. Proc. 
+Natl. Acad. Sci. U.S.A. 114, 13132–13137 (2017).
+ 12. J. Paik, b. an, D. Rus, and R. J. Wood. Robotic origamis: Self- morphing modular robots, 
+paper presented at the 2nd international conference on Morphological computation, 
+Venice, italy, 12 to 14 September 2011.
+ 13. M. t. tolley, R. F. Shepherd, b. Mosadegh, K. c. Galloway, M. Wehner, M. Karpelson,  
+R. J. Wood, G. M. Whitesides, a resilient, untethered soft robot. Soft Robot. 1, 213–223 (2014).
+ 14. l. l. howell, S. P . Magleby, b. o. olsen, Handbook of Compliant Mechanisms (John Wiley & Sons, 
+2013).
+ 15. S. Felton, M. tolley, e. Demaine, D. Rusand, R. Wood, a method for building self- folding 
+machines. Science 345, 644–646 (2014).
+ 16. e . t. Roche, M. a. horvath, i. Wamala, a. alazmani, S. e. Song, W. Whyte, Z. Machaidze,  
+c. J. Payne, J. c. Weaver, c. J. Walsh, Soft robotic sleeve supports heart function. Sci. Transl. 
+Med. 9, eaaf3925 (2017).
+ 17. t . Vicsek, a. Zafeiris, collective motion. Phys. Rep. 517, 71–140 (2012).
+ 18. a. a ttanasi, a. cavagna, l. Del castello, i. Giardina, t. S. Grigera, a. Jelic, S. Melillo, l. Parisi, 
+o. Pohl, e. Shen, M. Viale, information transfer and behavioural inertia in starling flocks. 
+Nat. Phys. 10, 691–696 (2014).
+ 19. M. Dorigo, G. theraulaz, V. trianni, Reflections on the future of swarm robotics. Sci. Robot. 
+5, eabe4385 (2020).
+ 20. G. caprari, t. estier, R. Siegwart, Fascination of down scaling -  alice the sugar cube robot. 
+J. of Micromechatronics 1, 177–189 (2001).
+ 21. l. Giomi, n. hawley-  Weld, l. Mahadevan, Swarming, swirling and stasis in sequestered 
+bristle- bots. Proc. R. Soc. A. 469, 20120637 (2013).
+ 22. M. Y. ben Zion, n. bredeche, o. Dauchot, Morphological computation and decentralized 
+learning in a swarm of sterically interacting robots. Sci. Robot. 8, abo6140 (2023).
+ 23. M. Rubenstein, a. cornejo, R. nagpal, Programmable self- assembly in a thousand- robot 
+swarm. Science 345, 795–799 (2014).
+ 24. J. Werfel, K. Petersen, R. nagpal, Designing collective behavior in a termite- inspired robot 
+construction team. Science 343, 754–758 (2014).
+ 25. h. M. Jaeger, c elebrating Soft Matter’s 10th anniversary: toward jamming by design. Soft 
+Matter 11, 12–27 (2015).
+ 26. e . Steltz, a. Mozeika, J. Rembisz, n. corson, h. M. Jaeger, Jamming as an enabling 
+technology for soft robotics. Proc. Spie. 7642, 764225 (2010).
+ 27. n. cheng, M. b . lobovsky, S. J. Keating, a. M. Setapen, K. i. Gero, a. e. hosoi, K. D. 
+iagnemma. Design and analysis of a robust, low- cost, highly articulated manipulator 
+enabled by jamming of granular media, in IEEE International Conference on Robotics and 
+Automation (ICRA) (ieee, 2012).
+ 28. M. cianchetti, t. Ranzani, G. Gerbon, t. nanayakkara, K. althoefer, P . Dasgupta,  
+a. Menciassi et al., Soft Robot. 1, 122–131 (2014).
+ 29. h. t. tramsen, a. e. Filippov, S. n. Gorb, l. heepe, Maximizing friction by passive jamming. 
+Adv. Mater. Interfaces 7, 1901930 (2020).
+ 30. b . akta, Y. S. narang, n. Vasios, K. bertoldi, R. D. howe, a modeling framework for jamming 
+structures. Adv. Funct. Mater. 31, 2007554 (2021).
+ 31. Y. Wang, l. li, D. hofmann, J. e. andrade, c. Daraio, Structured fabrics with tunable 
+mechanical properties. Nature 596, 238–243 (2021).
+ 32. a. S. Meeussen, J. Paulose, V. Vitelli, Geared topological metamaterials with tunable 
+mechanical stability. Phys. Rev. X 6, 041029 (2016).
+ 33. l. a. Shaw, S. chizari, M. Dotson, Y. Song, J. b . hopkins, compliant rolling- contact 
+architected materials for shape reconfigurability. Nat. Commun. 9, 4594 (2018).
+ 34. X. Fang, J. Wen, l. cheng, D. Yu, h. Zhang, P . Gumbsch, Programmable gear- based 
+mechanical metamaterials. Nat. Matter 21, 869–876 (2022).
+ 35. W. Savoie, t. a. berrueta, Z. Jackson, a. Pervan, R. Warkentin, S. li, t. D. Murphey,  
+K. Wiesenfeld, D. i. Goldman, a robot made of robots: emergent transport and control of 
+a smarticle ensemble. Sci. Robot. 4, eaax4316 (2019).
+ 36. S. li, R. batra, D. brown, h. D. chang, n. Ranganathan, c. hoberman, D. Rus, h. lipson, 
+Particle robotics based on statistical mechanics of loosely coupled components. Nature 
+567, 361–365 (2019).
+ 37. M. agrawala, S. c. Glotzer, Scale- free, programmable design of morphable chain 
+loops of kilobots and colloidal motors. Proc. Natl. Acad. Sci. U.S.A. 117, 8700–8710 
+(2020).
+ 38. S. li, b. Dutta, S. cannon, J. J. Daymude, R. avinery, e. aydin, a. W. Richa, D. i. Goldman,  
+D. Randall, Programming active cohesive granular matter with mechanically induced 
+phase changes. Sci. Adv. 7, eabe8494 (2021).
+ 39. M. a. Karimi, V. alizadehyazdi, h. M. Jaeger, M. Spenko, a self- reconfigurable variable- 
+stiffness soft robot based on boundary- constrained modular units. IEEE Trans. Robot. 38, 
+810–821 (2022).
+ 40. a. J. i jspeert, a. c respi, D. Ryczko, J. M. c abelguen, From swimming to walking  
+with a Salamander robot driven by a spinal cord model. Science 315, 1416–1420 
+(2007).
+ 41. W. Zhou, Z. hao, n. Gravish, collective synchronization of undulatory movement through 
+contact. Phys. Rev. X 11, 031051 (2021).
+ 42. M. brandenbourger, c. Scheibner, J. Veenstra, V. Vitelli, c. coulais, limit cycles turn active 
+matter into robots. arXiv: 2108.08837 (2022). https://arxiv.org/pdf/2108.08837.pdf.
+ 43. W. Wen, X. huang, S. Yang, K. lu, P . Sheng, the giant electrorheological effect in 
+suspensions of nanoparticles. Nat. Mater. 2, 727–730 (2003).
+ 44. a. hughes, b . Drury, Electric Motors and Drives, Fundamentals, Types and Application 
+(newnes -  elsevier, ed. 4, 2013).
+ 45. P . oswald, Rheophysics: The Deformation and Flow of Matter (cambridge Univ. Press, 
+2009).
+ 46. R. thandiackal, K. Melo, l. Paez, J. herault, t. Kano, K. a kiyama, F. b oyer, D. Ryczko,  
+a. ishiguro, a. J. i jspeert, emergence of robust self-  organized undulatory  
+swimming based on local hydrodynamic force sensing. Sci. Robot. 6, eabf6354 (2021).
+ 47. V. h. Sridhar, l. li, D. Gorbonos, M. nagy, b. R. Schell, t. Sorochkin, n. S. Gov, i. D. couzin, 
+the geometry of decision- making in individuals and collectives. Proc. Natl. Acad. Sci. 
+U.S.A. 118, e2102157118 (2021).
+ 48. J. bongard, V. Zykov, h. lipson, Resilient machines through continuous self- modeling. 
+Science 314, 1118–1121 (2006).
+ 49. n. cheney, R. Macc urdy, J. clune, h. lipson, Unshackling evolution. ACM SIGEVOlution 
+7, 11–23 (2014).
+d θi(t) = d θ0 sin(/u1D70Bt∕ T ) (41)
+Downloaded from https://www.science.org at University of Chicago on February 04, 2024
+
+
+Saintyves et al., Sci. Robot. 9, eadh4130 (2024)     24 January 2024
+Science RoboticS  |  ReSeaR ch aR ticle
+14 of 14
+ 50. o . Peleg, J. M. Peters, M. K. Salcedo, l. Mahadevan, collective mechanical adaptation of 
+honeybee swarms. Nat. Phys. 14, 1193–1198 (2018).
+ 51. l. P . Fulcher, R. c. Scherer, a. Melnykov, V. Gateva, M. e. limes, negative coulomb damping, 
+limit cycles, and self- oscillation of the vocal folds. Am. J. Phys. 74, 386–393 (2006).
+ 52. h. c. h. chiu, M. Rubenstein, W. M. Shen, “Deformable wheel” -  a self- recovering modular 
+rolling track, in Distributed Autonomous Robotic Systems 8, h. asama, h. Kurokawa, J. ota, 
+K. Sekiyama, eds. (Springer, 2009), pp. 429–440.
+Acknowledgments: We thank M. berthoud for help with software development. Funding: 
+this project was funded by grants nSF eFMa- 1830939 and aRo W911nF- 22-2-0109. the work 
+used shared experimental facilities at University of chicago MRSec, which is funded by nSF 
+DMR- 2011854. Author contributions: b.S. and h.M.J. designed the research. b.S. designed 
+and built the Granulobot prototype, performed experiments, and analyzed data. b.S. and 
+h.M.J. wrote the paper. b.S., h.M.J., and M.S. edited the paper. h.M.J. and M.S. acquired the 
+funding. Competing interests: the authors are listed as inventors on the U.S. patent 
+application no. 63/434,167 titled “Self- assembling shape morphing robotic platform. ” Data 
+and materials availability: all data are available in the main text, the Supplementary 
+Materials, or at the following link: https://doi.org/10.5281/zenodo.10363602.
+Submitted 24 March 2023 
+accepted 19 December 2023 
+Published 24 January 2024 
+10.1126/scirobotics.adh4130
+Downloaded from https://www.science.org at University of Chicago on February 04, 2024

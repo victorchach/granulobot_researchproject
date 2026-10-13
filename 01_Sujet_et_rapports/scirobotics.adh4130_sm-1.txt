@@ -1,0 +1,340 @@
+ 
+Supplementary Materials for
+A self-organizing robotic aggregate using solid and liquid-like collective states
+Baudouin Saintyves et al.
+Corresponding author: Baudouin Saintyves, saintyves@uchicago.edu
+Sci. Robot. 9, eadh4130 (2024)
+DOI: 10.1126/scirobotics.adh4130
+The PDF file includes:
+Figs. S1 to S5
+Legend for movies S1 to S3
+Other Supplementary Material for this manuscript includes the following:
+Movies S1 to S3
+
+Supplementary Materials
+Free
+magnets 
+Actuated
+magnet
+Figure S1: Granulobots with three-fold coordination. Each unit has one active rotor with 
+a magnet of positive polarity and two passive rotors with magnets of negative polarity. This 
+makes it possible for each unit to couple magnetically to three neighbors (instead of two as 
+for the units described in the main text) and enables the formation of Granulobot aggregates 
+with different connectivity. Two of these 3-fold coordinated units were used in a closed chain 
+aggregate to connect it to a materials tester for mechanical load response measurements. In 
+principle, the Granulobot design allows to add an arbitrary number of passive rotors, as long as 
+they can fit within the circumference of the rotor track.
+Motor operation and parameters
+Systematic experiments were performed on isolated N20 motors to describe their behaviors and
+measure the system constants R, Ke, Kt and Γf , as well as to determine the adequate pulse
+width modulation (PWM) frequency fPWM. We use the Granulobot’s battery-powered motor-
+driver circuit to ensure the same experimental conditions as when the robot is functioning. We
+use an external current sensor that can be plugged into its electronic circuitry, and the same
+
+10.5 1.5 2
+ 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+10
+-3
+10
+-2
+10
+-1
+10
+0
+10
+1
+0.9
+ 0.7
+ 0.8
+ 0.9
+ 0.7
+ 0.7
+ 0.9
+ 0.9
+ 0.6
+0.9
+i
+0
+0.2
+0.4
+0.6
+0.8
+1
+1.2
+      [-0.6,-0.9], /gid00054/gid00077/gid00066/gid00078/gid00084/gid00079/gid00075/gid00068/gid00067
+      [-0.6,-0.9], /gid00036/gid00078/gid00084/gid00079/gid00075/gid00068/gid00067
+  = -0.9, /gid00036/gid00078/gid00084/gid00079/gid00075/gid00068/gid00067
+2 4 6 8 10
+200 40 60 80
+0
+1
+2
+3
+4
+5
+1
+2
+3
+4
+5
+i
+/gid00035/gid00034
+/gid00036 /gid00037
+/gid00038
+10
+-3
+10
+-2
+10
+-1
+10
+0
+10
+1
+0
+/gid00052/gid00088/gid00077/gid00066/gid00071/gid00081/gid00078/gid00077/gid00072/gid00089/gid00068/gid00067
+/gid00049/gid00068/gid00081/gid00072/gid00078/gid00067/gid00072/gid00066/gid00001/gid00067/gid00068/gid00069/gid00078/gid00081/gid00076/gid00064/gid00083/gid00072/gid00078/gid00077
+Figure S2: Self-oscillating solid regime: From synchronization to wave propagation. N = 
+10 units, |u| = 2 V> u∗, G = 1.0 Nm/rad. (A) Power spectrum Si(f) for each of the units 
+when coupled into a ring aggregate with α = −0.9. (B) Phase shift ∆ϕi = ϕi − ϕi−1 between 
+consecutive units when they are all coupled into a ring aggregate with α = −0.9. (C) Power 
+spectrum Si(f) for each of the units when coupled into a ring aggregate with a spread of α ∈ 
+[−0.6, −0.9]. (D) Phase shift ∆ϕi = ϕi − ϕi−1 between consecutive units when they are all 
+coupled into a ring aggregate with a spread of α ∈ [−0.6, −0.9]. (E) Comparison of oscillation 
+amplitude of each unit when coupled in a ring with α = −0.9 (green dots), when coupled 
+in a ring with a spread of α ∈ [−0.6, −0.9] (blue dots), when isolated with a spread of α ∈ 
+[−0.6, −0.9] (red dots).
+encoder as in the Granulobot.
+Pulse width modulation motor drive (PWM)
+To simplify electronics and minimize heat in the motor, control is achieved digitally with pulse
+width modulation (PWM). PWM switches the motor on and off at a certain frequency. By ad-
+
+-1
+0
+1
+2
+3
+4
+5
+15
+20
+25
+40
+80
+300
+500
+800
+1000
+5000
+0
+1
+2
+3
+4
+5
+/gid00052/gid00075/gid00078/gid00086/gid00001/gid00067/gid00068/gid00066/gid00064/gid00088/gid00001
+/gid00039/gid00064/gid00082/gid00083/gid00001/gid00067/gid00068/gid00066/gid00064/gid00088/gid00001
+0
+1
+2
+3
+4
+5
+6
+0.041
+-0.0410
+/gid00034 /gid00036/gid00035
+0 2 4 6 0 2 4 6 0 2 4 6
+/gid00036/gid00078/gid00077/gid00083/gid00072/gid00077/gid00084/gid00078/gid00084/gid00082
+/gid00049/gid00056/gid00046
+Figure S3: Motor driving methods. β = 379. (A) Angular speed θ˙ as a function of applied 
+PWM voltage UPWM for slow and fast decay mode. Γl = 0.05 Nm, and PWM frequency 
+fPWM = 25 Hz. (B) Angular speed θ˙ as a function of applied PWM voltage UPWM for different 
+PWM frequencies fPWM. Γl = 0.08 Nm. (C) Angular speed θ˙ as a function of applied PWM 
+voltage UPWM with fPWM = 25 Hz (circles), and with a continuous voltage source (dots) for 
+Γl = −0.04, 0 and 0.04 Nm.
+justing the duty cycle - the fraction of time in each switching cycle where the motor driver is
+delivering a fixed maximum voltage U max - we can adjust the time-averaged voltage seen by the
+motor, UPWM. The frequency must be chosen sufficiently high such  that individual on and off 
+switching events are not felt by the motor, which behaves as a low-pass filter. During the off-
+portion of the cycle, instead of completely turning off the motor (fast decay mode), such motor 
+response can be implemented by short-circuiting the motor, such that it behaves transiently as a
+generator. This is the slow decay mode and can be implemented with the particular motor driver 
+circuit used in the Granulobot. Figure S3A shows a comparison between the fast (not shorted) 
+and the slow (shorted) decay mode. We see that only the latter produces a linear dependence
+of rotation speed versus time-averaged voltage UPWM. We therefore use the slow decay mode 
+throughout. Figure S3B shows curves of the rotation speed as a function of UPWM for different 
+PWM frequencies. Choosing a high frequency leads to the appearance of sharp, torque-load-
+dependant voltage thresholds for motion. Such nonlinear threshold behaviours must be consid-
+ered when developing control applications. In the current Granulobot prototypes we choose a 
+frequency low enough that it minimizes the threshold, and behave as closely as possible as a
+
+/gid00034 /gid00035
+0
+0.2
+0.4
+/gid00052/gid00083/gid00064/gid00075/gid00075/gid00001/gid00036/gid00084/gid00081/gid00085/gid00068/gid00001
+/gid00045/gid00072/gid00077/gid00068/gid00064/gid00081/gid00001/gid00195/gid00083
+-0.2
+0
+0.2
+0.4
+0.6
+I (A)
+0
+3
+6
+U (V)
+0 2 4 6 0 2 4 6
+I (A)
+0.6
+Figure S4: Current curves. β = 379 and fPWM = 25 Hz. (A) Measured current I as a
+function of measured angular velocity for a range of applied PWM voltage UPWM∈ [0, 6] V
+and a range of Γl∈ [−0.08, 0.08] Nm (circles and squares correspond to negative and positive
+loads, respectively). (B) Measured currentI as a function of applied PWM voltageUPWM when
+the rotor is stalled.
+continuous voltage control, but still sufficiently high that it can be filtered out by the motor’s
+low-pass response. From Figure S3B, we choosefPWM = 25 Hz. Figure S3C compare the mea-
+sured rotor angular speed with PWM control at fPWM = 25 Hz and continuous voltage control.
+We observe that PWM control reproduces well the behavior of a continuous voltage drive. In
+the following parts, we use PWM with frequency fPWM = 25 Hz in slow decay mode, and we
+use a N20 MP motor with gear ratioβ = 379 from Pololu.
+ResistanceR and EMF constant Ke
+From Kirchhoff’s law,R andKe must obey:
+I = U
+R− Keβ
+R
+˙θ (1)
+We perform systematic experiments controlling the voltage U and the torque load Γl while 
+measuring current I and angular speed θ˙. Figure S4A shows measurement of current I as a 
+function of angular speed. From these curves, a linear fit give us directly 1/R and the slope
+
+Keβ, from which we determineR andKe by taking the average of all fit parameters. We finally
+findR = 9.61 Ω andKe = 0.0027 V .s.rad−1. Dotted lines in Fig. S4A represent Eq. 1 with
+these parameters for different voltage and for both positive and negative torque loads.
+The motor resistance R can also be determined by measuring current when the motor is
+stalled (ω = 0 ). We then have R = U/I from simple linear regression. Figure S4B shows
+the stall curve for the same motor as in Fig. S4A. We obtain R = 10.6 Ω, consistent with the
+value obtain with the previous method. In this study we will keep R = 9.6 Ω as stalling create
+overheating that can increase the resistance value from the one at normal usage temperature.
+Torque constantKt and static friction threshold Γf
+The torque constantKt is defined by:
+βKtI = Γf sgn( ˙θ)− Γl. (2)
+The current-torque curve that we obtain is noisy, giving wide error bars. For this reason we
+determineKt and Γf by fitting Eq. 1 of the main manuscript in the torque-speed curves instead
+(Fig. 8D of the main manuscript), with R and Ke values determined from the current-speed
+curves (Fig. S4A) as constrained parameters.
+Self-oscillation of a Granulobot unit for 0<ζ < 1
+When 0 < ζ <1, the general solution of Eq. 10 in the main text for a half oscillation, before
+the speed sign flips, takes the form:
+θ(t) =θ
+
+1−Ce−ζω0t
+cosϕ cos(ωt +ϕ)
+
+. (3)
+
+/gid00034 /gid00035
+-4
+0
+4
+|u| (V)
+0
+2
+4
+6
+8
+0
+0.5
+1
+1.5
+2
+Amplitude (rad)
+-4
+0
+4
+0 10 20 30 0 1 2
+Figure S5: Supplementary data for isolated individual units in the self-Oscillating regime.
+(A) θ (blue), voltage bias u (black) and total voltage U produced by the circuitry (orange)
+measured simultaneously as a function of time for |u| = 2 V> u∗,G = 0.1 Nm/rad and
+α = 0 . The red curves represent Eq. 11 of the main text. Inertia of rotor with magnet Iθ =
+0.036 kg× (0.020 m)2, Γf = 0.024 Nm, k = 0.229 Nm.V−1, and η0 = 0.231 Nm.s.rad−1.
+(B) Oscillation frequency ω (blue) and steady-state amplitude of the oscillations (orange) as a
+function of the bias|u| forα =−1,G = 1 Nm/rad, and Γl = 0. An oscillation frequency ω0
+would be expected if no saturating mechanism were at play and if the amplitude could grow
+indefinitely (black dotted line).
+Hereω =ω0
+p
+1−ζ 2, tanϕ =−ζ/
+p
+1−ζ 2, andC = 1−θ0/θ, withθ0 the rotor’s initial
+angle. As the behavior of Eq. (3) is no longer monotonic in this intermediate regime0<ζ < 1,
+the simple form of the initial conditions θn(t−tn = 0) = θn−1(∞) for each of the half cycles
+n no longer is applicable. Therefore, it becomes more complicated to find the value of C for
+subsequent oscillation cycles. Here we outline a procedure to resolve this.
+Following the method employed in (53), we decompose Eq. 10 in the main text into two
+equations of opposite right hand sign depending on ˙θ. Assuming the oscillator is at rest att = 0
+so thatθ(t = 0) = θ0 = 0, we then have from Eq. 3, above, that the solution of Eq. 10 in the
+main text for ˙θ >0 (θ >0) is:
+θ(t) =θ
+
+1− e−ζω0t
+cosϕ cos(ωt +ϕ)
+
+. (4)
+This solution should be valid until reaching the first turning point of the angle trajectory at
+
+t = t1, when ˙θ(t1) = 0 . Such condition is reached for t1 = π/ω, which corresponds to an
+amplitudeθ1 = θ(t1) = θ
+ 
+1 +e−ζω0π/ω
+. The second turning point is determined by solving
+Eq. 10 in the main text with a right hand term of opposite sign (θ <0), and by considering the
+initial conditions ˙θ(t1) = 0 andθ(t1) =θ1, leading to:
+θ(t) =−θ
+
+1 + (2eζω0π/ω + 1)e−ζω0t
+cosϕ cos(ωt +ϕ)
+
+. (5)
+Similarly, by considering ˙θ(t2) = 0, we can determine the amplitude of the second turning
+point. Doing this for successive maxima leads to a recursive expression of the amplitude θn,
+which in the limit of largen can be expressed as:
+θn→θ
+ 
+1 + (2eζω0π/ω− 1)−1
+. (6)
+For largen, we thus expectθ(t−tn = 0) =θn =θ(1−C) so thatC = 1− θn
+θ . Replacing
+C in Eq. (3), this leads to:
+θ(t)≃θ
+ 
+1− e
+−ζω0π
+ω
+2 cosϕe−ζω0t cos(ωt +ϕ)
+!
+, (7)
+which is Eq. 12 in the main text.
+
+Movies Description
+S1 A short video summarizing the  research.
+S2 Active liquid state. Part 1: Self-organizing liquid (see Fig. 4A). G = 0, α = 0, |u| = 1.0 V. 
+Part 2: Collapse experiment corresponding to a transition from a rigid to a liquid state (see Fig. 
+4(B,C)). G = 0, α = 0, |u| = 0.47 V.
+S3 Self-oscillating solid state with G = 1.0 Nm/rad and |u| = 1.0 V. Part 1: Synchronization 
+of an aggregate consisting of 10 units with α = −0.9 (see Fig. 6(B-D, H)). Part 2: A  self-
+organized aggregate of 8 units deforms continuously and reversibly when subject to a  tensile 
+test in an Instron. α = −0.9. Part 3: Self-or ganization and periodic deformation of an aggregate 
+consisting of 10 units with α ∈ [−0.9, −0.6] (see Fig. 6(E-H)). Part 4: A  synchronized, closed-
+chain aggregate of 6 units is placed on a no-slip surface. Turning one unit off triggers larger 
+periodic deformation and locomotion (see Fig. 7(C,D)).
