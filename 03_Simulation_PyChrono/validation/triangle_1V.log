@@ -1,0 +1,103 @@
+Mode=tension, dt=1e-05 s, durée=0.6 s
+Masse totale/unité=0.098 kg ; moment estimé/aimant=0.580 A.m²
+t=0.50 s  contacts(sol compris)=12  vitesses corps=[-0.794, -0.793, -0.793] rad/s
+{
+  "recouvrement_max_m": {
+    "AB": 3.8007344048823777e-06,
+    "AC": 3.7995099793491915e-06,
+    "BC": 3.7998130015953757e-06
+  },
+  "omega_corps_max_rad_s": 0.8296509212858162,
+  "force_aimant_max_N": 12.313905783543966,
+  "energie_electrique_signee_J": 0.016396326899944923,
+  "deplacement_final_m": {
+    "A": 3.823123551941562e-05,
+    "B": 3.832071590336792e-05,
+    "C": 3.723969513337886e-05
+  },
+  "vitesse_actif_final_rad_s": {
+    "A": 0.8307078434362718,
+    "B": 0.8302904082587063,
+    "C": 0.830225696614413
+  },
+  "duree_simulee_s": 0.5999999999999042,
+  "accrochage": {
+    "resolution_temporelle_s": 0.0050000000000050004,
+    "liaison_ideale": false,
+    "criteres": {
+      "marge_eloignement_m": 0.003,
+      "ratio_rotor_absolu_sur_relatif_pour_retenue": 0.1
+    },
+    "unites": {
+      "A": {
+        "rotation_corps_nette_tours": -0.040428282053161436,
+        "rotation_corps_parcourue_tours": 0.040428282053161436,
+        "rotation_rotor_absolue_nette_tours": 0.0024889477848573606,
+        "rotation_libre_absolue_nette_tours": -0.0016883393153688969,
+        "deplacement_centre_max_m": 3.823123551941562e-05,
+        "omega_actif_relative_moyenne_abs_rad_s": 0.8310648814383744,
+        "omega_actif_absolue_moyenne_abs_rad_s": 0.00831156287042761,
+        "omega_libre_absolue_moyenne_abs_rad_s": 0.005629726878976872,
+        "ratio_rotor_absolu_sur_relatif": 0.010001099861231393
+      },
+      "B": {
+        "rotation_corps_nette_tours": -0.04040351586863834,
+        "rotation_corps_parcourue_tours": 0.04040351586863834,
+        "rotation_rotor_absolue_nette_tours": 0.0025022667921180343,
+        "rotation_libre_absolue_nette_tours": -0.001660301991754543,
+        "deplacement_centre_max_m": 3.832071590336792e-05,
+        "omega_actif_relative_moyenne_abs_rad_s": 0.8306481850418014,
+        "omega_actif_absolue_moyenne_abs_rad_s": 0.008362028580644361,
+        "omega_libre_absolue_moyenne_abs_rad_s": 0.006696854846510492,
+        "ratio_rotor_absolu_sur_relatif": 0.010066871548300022
+      },
+      "C": {
+        "rotation_corps_nette_tours": -0.04030153266722775,
+        "rotation_corps_parcourue_tours": 0.04030153266722775,
+        "rotation_rotor_absolue_nette_tours": 0.0025242047448000744,
+        "rotation_libre_absolue_nette_tours": -0.0016712100517274177,
+        "deplacement_centre_max_m": 3.723969513337886e-05,
+        "omega_actif_relative_moyenne_abs_rad_s": 0.8305864580017203,
+        "omega_actif_absolue_moyenne_abs_rad_s": 0.008416960894448797,
+        "omega_libre_absolue_moyenne_abs_rad_s": 0.006119850801590811,
+        "ratio_rotor_absolu_sur_relatif": 0.01013375647214244
+      }
+    },
+    "paires": {
+      "A_actif/B_libre": {
+        "distance_initiale_m": 0.008049999999999995,
+        "distance_min_m": 0.007999780364924242,
+        "distance_max_m": 0.008049999999999995,
+        "distance_finale_m": 0.00800396816433994,
+        "jeu_lateral_max_m": 4.999999999999449e-05,
+        "fraction_echantillons_en_contact": 0.9917355371900827,
+        "seuil_eloignement_m": 0.011049999999999994,
+        "premier_eloignement_detecte_s": null,
+        "reste_proche_sur_essai": true
+      },
+      "B_actif/C_libre": {
+        "distance_initiale_m": 0.008049999999999998,
+        "distance_min_m": 0.007999780525009836,
+        "distance_max_m": 0.008049999999999998,
+        "distance_finale_m": 0.00800407149442937,
+        "jeu_lateral_max_m": 4.999999999999796e-05,
+        "fraction_echantillons_en_contact": 0.9917355371900827,
+        "seuil_eloignement_m": 0.011049999999999997,
+        "premier_eloignement_detecte_s": null,
+        "reste_proche_sur_essai": true
+      },
+      "C_actif/A_libre": {
+        "distance_initiale_m": 0.008050000000000002,
+        "distance_min_m": 0.007999780379472448,
+        "distance_max_m": 0.008050000000000002,
+        "distance_finale_m": 0.008004174307912327,
+        "jeu_lateral_max_m": 5.000000000000143e-05,
+        "fraction_echantillons_en_contact": 0.9917355371900827,
+        "seuil_eloignement_m": 0.01105,
+        "premier_eloignement_detecte_s": null,
+        "reste_proche_sur_essai": true
+      }
+    }
+  }
+}
+Résultats : validation\triangle_deux_roues_1V (.csv, .json, .gif)

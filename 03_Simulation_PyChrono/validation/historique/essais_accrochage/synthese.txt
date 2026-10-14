@@ -1,0 +1,20 @@
+Campagne d'accrochage — résultats du modèle, sans calibration expérimentale
+Durée de chaque essai : 0.6 s ; pas de référence : 1e-05 s
+Attache idéale = référence indéformable, sans seuil de rupture physique.
+Distance de décrochage = indicateur géométrique échantillonné, pas force mesurée.
+
+passif: paires proches=True; A corps=0.0000 tour; A centre max=0.025 mm; ratio rotor absolu/relatif=4.783223092181292
+passif_perturbe: paires proches=True; A corps=-0.0010 tour; A centre max=0.037 mm; ratio rotor absolu/relatif=2.4700128154113705
+deux_dipoles_03V: paires proches=True; A corps=0.0000 tour; A centre max=0.024 mm; ratio rotor absolu/relatif=0.9893025373526179
+deux_dipoles_10V: paires proches=True; A corps=-0.0012 tour; A centre max=0.040 mm; ratio rotor absolu/relatif=0.9082050559337099
+deux_ideal: paires proches=True; A corps=-0.0001 tour; A centre max=0.007 mm; ratio rotor absolu/relatif=0.9999903781010668
+deux_ideal_sans_friction_voisins: paires proches=True; A corps=-0.0070 tour; A centre max=0.170 mm; ratio rotor absolu/relatif=0.22150175642864495
+deux_ideal_support_glissant: paires proches=True; A corps=-0.0059 tour; A centre max=0.278 mm; ratio rotor absolu/relatif=0.3440860487732713
+triangle_un_moteur: paires proches=True; A corps=-0.0000 tour; A centre max=0.029 mm; ratio rotor absolu/relatif=0.9987216927321603
+triangle_deux_moteurs: paires proches=True; A corps=-0.0000 tour; A centre max=0.029 mm; ratio rotor absolu/relatif=1.0006853982157007
+triangle_trois_moteurs: paires proches=True; A corps=-0.0000 tour; A centre max=0.029 mm; ratio rotor absolu/relatif=0.9962194016705325
+triangle_ideal_glissant: paires proches=True; A corps=-0.0079 tour; A centre max=0.296 mm; ratio rotor absolu/relatif=0.08230667962579528
+deux_ideal_dt_divise_2: paires proches=True; A corps=-0.0055 tour; A centre max=0.040 mm; ratio rotor absolu/relatif=0.30886444964313353
+deux_ideal_iterations_doublees: paires proches=True; A corps=-0.0057 tour; A centre max=0.141 mm; ratio rotor absolu/relatif=0.3032127226769706
+Convergence deux_ideal_dt_divise_2: écart rotation A=0.00532775 tour; écart déplacement max A=0.033206 mm
+Convergence deux_ideal_iterations_doublees: écart rotation A=0.00553481 tour; écart déplacement max A=0.134521 mm

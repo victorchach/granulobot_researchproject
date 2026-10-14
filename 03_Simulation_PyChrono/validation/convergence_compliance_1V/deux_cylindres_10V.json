@@ -1,0 +1,169 @@
+{
+  "parametres": {
+    "nombre_robots": 2,
+    "liaison_ideale": false,
+    "perturbation_rotor_rad": 0.0,
+    "marge_detection_decrochage": 0.003,
+    "R": 0.035,
+    "H": 0.05,
+    "M": 0.098,
+    "masse_actif": 0.036,
+    "masse_libre": 0.01,
+    "inertie_actif_pivot": 1.44e-05,
+    "inertie_libre_pivot": 4.000000000000001e-06,
+    "excentricite_actif": 0.008,
+    "excentricite_libre": 0.004,
+    "facteur_inertie_corps": 0.65,
+    "mu_robots": 0.6,
+    "compliance_coques": 1e-07,
+    "compliance_aimants": 1e-08,
+    "restitution": 0.0,
+    "roulement_contact": 0.0,
+    "pivotement_contact": 0.0,
+    "enveloppe_collision": 1e-05,
+    "marge_collision": 1e-05,
+    "sol_actif": true,
+    "modele_sol": "disque_equivalent",
+    "facteur_rayon_frottement_sol": 0.6666666666666666,
+    "gravite": 9.81,
+    "mu_sol": 0.1,
+    "largeur_sol": 2.0,
+    "epaisseur_sol": 0.05,
+    "resistance_translation": 0.0,
+    "resistance_rotation": 0.0,
+    "moteur_actif": true,
+    "mode_moteur": "tension",
+    "rapport_reduction": 379.0,
+    "kt": 0.0058,
+    "ke": 0.00265,
+    "resistance_moteur": 9.6,
+    "rendement_reducteur": 1.0,
+    "tension_max": 6.0,
+    "courant_max": 0.4,
+    "couple_max": 0.1,
+    "vitesses_cibles": [
+      3.141592653589793,
+      3.141592653589793,
+      3.141592653589793
+    ],
+    "tensions_cibles": [
+      1,
+      0,
+      0
+    ],
+    "couples_cibles": [
+      5e-05,
+      5e-05,
+      5e-05
+    ],
+    "gain_p_vitesse": 1.0,
+    "gain_i_vitesse": 0.5,
+    "rampe_demarrage": 0.5,
+    "frottement_interne_actif": true,
+    "couple_frottement_actif": 0.024,
+    "couple_frottement_libre": 0.0002,
+    "viscosite_libre": 0.0001,
+    "vitesse_regularisation": 0.05,
+    "magnetisme_actif": true,
+    "contact_aimants": true,
+    "orientation_aimant": "axiale",
+    "modele_magnetique": "cylindres",
+    "quadrature_radiale": 4,
+    "quadrature_angulaire": 16,
+    "mu_aimants": 0.05,
+    "diametre_aimant_ext": 0.008,
+    "diametre_aimant_int": 0.0,
+    "epaisseur_aimant": 0.01,
+    "remanence": 1.45,
+    "facteur_moment": 1.0,
+    "retrait_aimant": 0.0,
+    "adoucissement_magnetique": 0.0002,
+    "interactions_internes": false,
+    "jeu_initial": 5e-05,
+    "dt": 1e-05,
+    "duree": 0.6,
+    "fps": 25,
+    "frequence_mesures": 200,
+    "iterations_solveur": 1000,
+    "tolerance_solveur": 1e-09,
+    "vitesse_correction_contact": 0.05,
+    "roue_libre_exterieure": false
+  },
+  "hypotheses": {
+    "geometrie": "R=35 mm et H=50 mm fournis par Hugo ; axe vertical imposé pour la vue de dessus",
+    "prototype": "La masse totale et les paramètres moteur de l'article ne sont pas encore mesurés sur ce prototype",
+    "moteur": "Électricité quasi stationnaire, inductance et inertie réfléchie du moteur omises",
+    "contact": "NSC latéral avec faible compliance estimée plastique/métal pour régulariser les contacts affleurants ; zéro = référence rigide. Support disque équivalent (normal, Coulomb translation, torsion mu*N*2R/3) ou Bullet ; limites translation/torsion séparées, à calibrer en mouvement combiné",
+    "aimants": "Diamètre 8 mm, hauteur 10 mm, tranche affleurante et pôles axiaux estimés/confirmés par Hugo ; remanence et trou à confirmer ; cylindres uniformément aimantés par quadrature des faces ou dipôles de comparaison ; centres magnétiques coplanaires dans le modèle fini",
+    "frottement": "Frottement interne lissé ; pas de seuil statique exact ; support réel à préciser",
+    "liaison_ideale": false,
+    "validation": "Comparer plusieurs dt et calibrer les forces avant une comparaison quantitative",
+    "sources": [
+      "01_Sujet_et_rapports/scirobotics.adh4130.txt, prototype et fig. 8",
+      "https://api.projectchrono.org/motors.html",
+      "https://api.projectchrono.org/10.0.0/tutorial_demo_friction.html"
+    ]
+  },
+  "bilan": {
+    "recouvrement_max_m": {
+      "AB": 0.0024027514113101472
+    },
+    "omega_corps_max_rad_s": 0.0007348299268862262,
+    "force_aimant_max_N": 12.360915009629768,
+    "energie_electrique_signee_J": 0.003963438298541748,
+    "deplacement_final_m": {
+      "A": 0.0013723541368039886,
+      "B": 0.0011533801245399626
+    },
+    "vitesse_actif_final_rad_s": {
+      "A": 0.8832464521000561,
+      "B": 0.00015704723751270888
+    },
+    "duree_simulee_s": 0.5999999999999042,
+    "accrochage": {
+      "resolution_temporelle_s": 0.0050000000000050004,
+      "liaison_ideale": false,
+      "criteres": {
+        "marge_eloignement_m": 0.003,
+        "ratio_rotor_absolu_sur_relatif_pour_retenue": 0.1
+      },
+      "unites": {
+        "A": {
+          "rotation_corps_nette_tours": -1.781020972667664e-05,
+          "rotation_corps_parcourue_tours": 1.781020972667664e-05,
+          "rotation_rotor_absolue_nette_tours": 0.045879971432861544,
+          "rotation_libre_absolue_nette_tours": 0.0001009621089598246,
+          "deplacement_centre_max_m": 0.0013723541368039886,
+          "omega_actif_relative_moyenne_abs_rad_s": 0.8841634665303063,
+          "omega_actif_absolue_moyenne_abs_rad_s": 0.8835109473206393,
+          "omega_libre_absolue_moyenne_abs_rad_s": 0.0028024178669171272,
+          "ratio_rotor_absolu_sur_relatif": 0.9992619925677005
+        },
+        "B": {
+          "rotation_corps_nette_tours": -6.897542437912657e-06,
+          "rotation_corps_parcourue_tours": 6.897542437912657e-06,
+          "rotation_rotor_absolue_nette_tours": -7.718387043938935e-06,
+          "rotation_libre_absolue_nette_tours": -0.04302184059321964,
+          "deplacement_centre_max_m": 0.0011533801245399626,
+          "omega_actif_relative_moyenne_abs_rad_s": 0.00016571668209254084,
+          "omega_actif_absolue_moyenne_abs_rad_s": 5.985684216044544e-05,
+          "omega_libre_absolue_moyenne_abs_rad_s": 0.7744870390755236,
+          "ratio_rotor_absolu_sur_relatif": 0.3611998587264721
+        }
+      },
+      "paires": {
+        "A_actif/B_libre": {
+          "distance_initiale_m": 0.008049999999999995,
+          "distance_min_m": 0.007999755690575216,
+          "distance_max_m": 0.008049999999999995,
+          "distance_finale_m": 0.007999759659883188,
+          "jeu_lateral_max_m": 4.999999999999449e-05,
+          "fraction_echantillons_en_contact": 0.9917355371900827,
+          "seuil_eloignement_m": 0.011049999999999994,
+          "premier_eloignement_detecte_s": null,
+          "reste_proche_sur_essai": true
+        }
+      }
+    }
+  }
+}

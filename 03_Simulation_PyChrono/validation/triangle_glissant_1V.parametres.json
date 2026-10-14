@@ -1,0 +1,15 @@
+{
+  "parametres": {
+    "tensions_cibles": [
+      1,
+      1,
+      1
+    ],
+    "mu_robots": 0.05,
+    "compliance_coques": 0.0,
+    "compliance_aimants": 0.0,
+    "iterations_solveur": 500,
+    "roue_libre_exterieure": false
+  },
+  "statut": "Essai de sensibilité, pas paramètres calibrés du prototype"
+}

@@ -1,0 +1,103 @@
+Mode=tension, dt=1e-05 s, durée=0.6 s
+Masse totale/unité=0.098 kg ; moment estimé/aimant=0.580 A.m²
+t=0.50 s  contacts(sol compris)=9  vitesses corps=[-0.792, -0.76, -0.579] rad/s
+{
+  "recouvrement_max_m": {
+    "AB": 4.6819953975762996e-06,
+    "AC": 4.1281739173448795e-06,
+    "BC": 5.268702786678792e-06
+  },
+  "omega_corps_max_rad_s": 2.055876875157118,
+  "force_aimant_max_N": 12.313904073677111,
+  "energie_electrique_signee_J": 0.11948812824001045,
+  "deplacement_final_m": {
+    "A": 0.0010063113957922067,
+    "B": 0.0012776064814631718,
+    "C": 0.001229917109386194
+  },
+  "vitesse_actif_final_rad_s": {
+    "A": 0.8648624272077603,
+    "B": 0.3553990804437005,
+    "C": 0.5034488139283031
+  },
+  "duree_simulee_s": 0.5999999999999042,
+  "accrochage": {
+    "resolution_temporelle_s": 0.0050000000000050004,
+    "liaison_ideale": false,
+    "criteres": {
+      "marge_eloignement_m": 0.003,
+      "ratio_rotor_absolu_sur_relatif_pour_retenue": 0.1
+    },
+    "unites": {
+      "A": {
+        "rotation_corps_nette_tours": -0.0901225815492948,
+        "rotation_corps_parcourue_tours": 0.0901225815492948,
+        "rotation_rotor_absolue_nette_tours": 0.025035043814858556,
+        "rotation_libre_absolue_nette_tours": -0.010508216247410997,
+        "deplacement_centre_max_m": 0.0010063113957922067,
+        "omega_actif_relative_moyenne_abs_rad_s": 1.1003967274220565,
+        "omega_actif_absolue_moyenne_abs_rad_s": 0.28268097682132826,
+        "omega_libre_absolue_moyenne_abs_rad_s": 0.25325654142661386,
+        "ratio_rotor_absolu_sur_relatif": 0.25689005590154407
+      },
+      "B": {
+        "rotation_corps_nette_tours": -0.08231547471889858,
+        "rotation_corps_parcourue_tours": 0.08231547471889858,
+        "rotation_rotor_absolue_nette_tours": 0.024421821201643712,
+        "rotation_libre_absolue_nette_tours": -0.011134573937052961,
+        "deplacement_centre_max_m": 0.0012776064814631718,
+        "omega_actif_relative_moyenne_abs_rad_s": 0.8767652022161888,
+        "omega_actif_absolue_moyenne_abs_rad_s": 0.30066497859545294,
+        "omega_libre_absolue_moyenne_abs_rad_s": 0.21725441873051027,
+        "ratio_rotor_absolu_sur_relatif": 0.3429253098041137
+      },
+      "C": {
+        "rotation_corps_nette_tours": -0.07220630216584477,
+        "rotation_corps_parcourue_tours": 0.07220630216584477,
+        "rotation_rotor_absolue_nette_tours": 0.024257036561650767,
+        "rotation_libre_absolue_nette_tours": -0.010649117119925734,
+        "deplacement_centre_max_m": 0.001229917109386194,
+        "omega_actif_relative_moyenne_abs_rad_s": 0.8687102774882143,
+        "omega_actif_absolue_moyenne_abs_rad_s": 0.26874020954164013,
+        "omega_libre_absolue_moyenne_abs_rad_s": 0.27830336260508637,
+        "ratio_rotor_absolu_sur_relatif": 0.3093553932833333
+      }
+    },
+    "paires": {
+      "A_actif/B_libre": {
+        "distance_initiale_m": 0.008049999999999995,
+        "distance_min_m": 0.007999780335113449,
+        "distance_max_m": 0.008487370772384251,
+        "distance_finale_m": 0.008454200523035102,
+        "jeu_lateral_max_m": 0.00048737077238425117,
+        "fraction_echantillons_en_contact": 0.5371900826446281,
+        "seuil_eloignement_m": 0.011049999999999994,
+        "premier_eloignement_detecte_s": null,
+        "reste_proche_sur_essai": true
+      },
+      "B_actif/C_libre": {
+        "distance_initiale_m": 0.008049999999999998,
+        "distance_min_m": 0.007999779854041638,
+        "distance_max_m": 0.008474577856888965,
+        "distance_finale_m": 0.00842757113988708,
+        "jeu_lateral_max_m": 0.00047457785688896463,
+        "fraction_echantillons_en_contact": 0.371900826446281,
+        "seuil_eloignement_m": 0.011049999999999997,
+        "premier_eloignement_detecte_s": null,
+        "reste_proche_sur_essai": true
+      },
+      "C_actif/A_libre": {
+        "distance_initiale_m": 0.008050000000000002,
+        "distance_min_m": 0.00799977963044931,
+        "distance_max_m": 0.008496648133113002,
+        "distance_finale_m": 0.008420291412850674,
+        "jeu_lateral_max_m": 0.0004966481331130021,
+        "fraction_echantillons_en_contact": 0.5041322314049587,
+        "seuil_eloignement_m": 0.01105,
+        "premier_eloignement_detecte_s": null,
+        "reste_proche_sur_essai": true
+      }
+    }
+  }
+}
+Résultats : C:\Users\Hugo\Documents\INSA\4A\Projet Recherche\03_Simulation_PyChrono\test_3_granulobots (.csv, .json, .gif)

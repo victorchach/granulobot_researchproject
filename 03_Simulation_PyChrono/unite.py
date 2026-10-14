@@ -1,4 +1,4 @@
-import pychrono as chrono
+from chrono_headless import chrono
 
 # --- Paramètres (valeurs provisoires, à remplacer par celles de l'article) ---
 R      = 0.03    # rayon de l'unité (m)

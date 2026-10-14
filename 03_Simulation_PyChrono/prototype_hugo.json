@@ -1,0 +1,32 @@
+{
+  "parametres": {
+    "R": 0.035,
+    "H": 0.05,
+    "diametre_aimant_ext": 0.008,
+    "epaisseur_aimant": 0.01,
+    "retrait_aimant": 0.0,
+    "orientation_aimant": "axiale",
+    "modele_magnetique": "cylindres",
+    "roue_libre_exterieure": true
+  },
+  "origine": "Dimensions approximatives et pôles axiaux précisés par Hugo dans la conversation.",
+  "a_confirmer": [
+    "Diamètre et hauteur par mesure",
+    "Trou éventuel dans les aimants",
+    "Disposition axiale des rotors",
+    "Épaisseur et masse des deux roues extérieures",
+    "Roue motorisée en bas ou en haut",
+    "Position axiale des aimants et interactions entre les deux étages"
+  ],
+  "a_calibrer": [
+    "Rémanence/force réelle au contact",
+    "Masse/inerties du prototype",
+    "Moteur courant/couple/vitesse",
+    "Frottements coques et support"
+  ],
+  "comparaisons_a_effectuer": [
+    "Support équivalent vs Bullet",
+    "Répartition des efforts de contact coques/aimants",
+    "Mesure du couple moteur maximal et frottement entre coques"
+  ]
+}

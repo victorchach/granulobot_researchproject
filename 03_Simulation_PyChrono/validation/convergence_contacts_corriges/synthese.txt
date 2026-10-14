@@ -1,0 +1,13 @@
+Contrôle numérique : triangle à 3.25 V, démarrage immédiat, durée 0.02 s.
+Toutes les masses, contacts et forces physiques sont identiques entre les variantes.
+Les contrôles courts ne valident ni les paramètres du prototype ni la convergence à long terme.
+
+reference (PSOR) : recouvrement max 4.546 µm ; rotation A -1.20824° ; déplacement centre A max 32.485 µm.
+dt_divise_2 (PSOR) : recouvrement max 90.317 µm ; rotation A -0.32442° ; déplacement centre A max 98.471 µm.
+iterations_doublees (PSOR) : recouvrement max 3.726 µm ; rotation A -0.86989° ; déplacement centre A max 31.879 µm.
+APGD (APGD) : recouvrement max 8.884 µm ; rotation A -0.04403° ; déplacement centre A max 30.296 µm.
+APGD_dt_divise_2 (APGD) : recouvrement max 6.353 µm ; rotation A -0.06814° ; déplacement centre A max 29.963 µm.
+
+PSOR : perte de stabilité des résultats à dt/2 ; ne pas considérer le modèle comme convergé.
+APGD : meilleure stabilité des centres sur ce cas court ; rotation encore sensible au pas.
+À prolonger : comparaison PSOR/APGD à faible friction, rampes et tensions réelles, puis validation expérimentale.

@@ -1,1 +1,3 @@
 granulobot_researchproject/
+__pycache__/
+*.pyc

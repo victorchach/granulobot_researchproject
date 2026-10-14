@@ -1,0 +1,12 @@
+{
+  "parametres": {
+    "tensions_cibles": [
+      1,
+      1,
+      1
+    ],
+    "mu_robots": 0.05,
+    "roue_libre_exterieure": true
+  },
+  "statut": "Essai de sensibilité aux frottements, sans calibration du prototype"
+}

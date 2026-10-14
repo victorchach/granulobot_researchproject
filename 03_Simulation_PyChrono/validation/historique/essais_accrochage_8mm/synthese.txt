@@ -1,0 +1,23 @@
+Campagne d'accrochage — résultats du modèle, sans calibration expérimentale
+Durée de chaque essai : 0.6 s ; pas de référence : 1e-05 s
+Attache idéale = référence indéformable, sans seuil de rupture physique.
+Distance de décrochage = indicateur géométrique échantillonné, pas force mesurée.
+
+passif: paires proches=True; A corps=0.0031 tour; A centre max=0.558 mm; ratio rotor absolu/relatif=110.35930400448001
+passif_perturbe: paires proches=True; A corps=-0.0057 tour; A centre max=0.192 mm; ratio rotor absolu/relatif=1.0479156231622238
+deux_dipoles_03V: paires proches=True; A corps=-0.0094 tour; A centre max=0.603 mm; ratio rotor absolu/relatif=0.7882836567650694
+deux_dipoles_10V: paires proches=True; A corps=-0.0322 tour; A centre max=2.301 mm; ratio rotor absolu/relatif=0.3333751014894013
+deux_dipoles_axiaux: paires proches=True; A corps=-0.0080 tour; A centre max=0.543 mm; ratio rotor absolu/relatif=0.707660938095908
+deux_dipoles_friction_voisins_faible: paires proches=True; A corps=-0.0092 tour; A centre max=0.254 mm; ratio rotor absolu/relatif=0.23633484446416883
+deux_ideal: paires proches=True; A corps=-0.0001 tour; A centre max=0.007 mm; ratio rotor absolu/relatif=0.9999903781431263
+deux_ideal_sans_friction_voisins: paires proches=True; A corps=-0.0070 tour; A centre max=0.170 mm; ratio rotor absolu/relatif=0.2215017564347045
+deux_ideal_support_glissant: paires proches=True; A corps=-0.0061 tour; A centre max=0.360 mm; ratio rotor absolu/relatif=0.3375920703719803
+triangle_un_moteur: paires proches=True; A corps=-0.0000 tour; A centre max=0.029 mm; ratio rotor absolu/relatif=0.9999969711208141
+triangle_deux_moteurs: paires proches=True; A corps=-0.0000 tour; A centre max=0.029 mm; ratio rotor absolu/relatif=1.0000167478177928
+triangle_trois_moteurs: paires proches=True; A corps=-0.0000 tour; A centre max=0.029 mm; ratio rotor absolu/relatif=1.000008796861223
+triangle_dipoles_axiaux_glissant: paires proches=True; A corps=-0.0000 tour; A centre max=0.029 mm; ratio rotor absolu/relatif=0.9900414248756387
+triangle_ideal_glissant: paires proches=True; A corps=-0.0080 tour; A centre max=0.195 mm; ratio rotor absolu/relatif=0.07316323258639601
+deux_ideal_dt_divise_2: paires proches=True; A corps=-0.0055 tour; A centre max=0.040 mm; ratio rotor absolu/relatif=0.2566606674918002
+deux_ideal_iterations_doublees: paires proches=True; A corps=-0.0057 tour; A centre max=0.141 mm; ratio rotor absolu/relatif=0.303212722656307
+Convergence deux_ideal_dt_divise_2: écart rotation A=0.00532832 tour; écart déplacement max A=0.033206 mm
+Convergence deux_ideal_iterations_doublees: écart rotation A=0.00553481 tour; écart déplacement max A=0.134521 mm

@@ -1,0 +1,96 @@
+{
+  "parametres": {
+    "R": 0.035,
+    "H": 0.05,
+    "M": 0.098,
+    "masse_actif": 0.036,
+    "masse_libre": 0.01,
+    "inertie_actif_pivot": 1.44e-05,
+    "inertie_libre_pivot": 4.000000000000001e-06,
+    "excentricite_actif": 0.008,
+    "excentricite_libre": 0.004,
+    "facteur_inertie_corps": 0.65,
+    "mu_robots": 0.6,
+    "restitution": 0.0,
+    "enveloppe_collision": 1e-05,
+    "marge_collision": 1e-05,
+    "sol_actif": true,
+    "gravite": 9.81,
+    "mu_sol": 0.1,
+    "largeur_sol": 2.0,
+    "epaisseur_sol": 0.05,
+    "resistance_translation": 0.0,
+    "resistance_rotation": 0.0,
+    "moteur_actif": true,
+    "mode_moteur": "tension",
+    "rapport_reduction": 379.0,
+    "kt": 0.0058,
+    "ke": 0.00265,
+    "resistance_moteur": 9.6,
+    "rendement_reducteur": 1.0,
+    "tension_max": 6.0,
+    "courant_max": 0.4,
+    "couple_max": 0.1,
+    "vitesses_cibles": [
+      3.141592653589793,
+      3.141592653589793,
+      3.141592653589793
+    ],
+    "tensions_cibles": [
+      3.25,
+      3.25,
+      3.25
+    ],
+    "couples_cibles": [
+      5e-05,
+      5e-05,
+      5e-05
+    ],
+    "gain_p_vitesse": 1.0,
+    "gain_i_vitesse": 0.5,
+    "rampe_demarrage": 0.5,
+    "frottement_interne_actif": true,
+    "couple_frottement_actif": 0.024,
+    "couple_frottement_libre": 0.0002,
+    "viscosite_libre": 0.0001,
+    "vitesse_regularisation": 0.05,
+    "magnetisme_actif": true,
+    "diametre_aimant_ext": 0.0155,
+    "diametre_aimant_int": 0.012,
+    "epaisseur_aimant": 0.003,
+    "remanence": 1.45,
+    "facteur_moment": 1.0,
+    "retrait_aimant": 0.001,
+    "adoucissement_magnetique": 0.008,
+    "interactions_internes": false,
+    "jeu_initial": 5e-05,
+    "dt": 1e-05,
+    "duree": 0.2,
+    "fps": 40,
+    "iterations_solveur": 500,
+    "tolerance_solveur": 1e-09,
+    "vitesse_correction_contact": 0.05,
+    "roue_libre_exterieure": false
+  },
+  "bilan": {
+    "recouvrement_max_m": {
+      "AB": 0,
+      "AC": 1.779381582715789e-05,
+      "BC": 0.001669254103683973
+    },
+    "omega_corps_max_rad_s": 1.0585552969204488,
+    "force_aimant_max_N": 0.1813199901816663,
+    "energie_electrique_signee_J": 0.004306685029226006,
+    "deplacement_final_m": {
+      "A": 0.00035393660272693933,
+      "B": 0.0010637133809350344,
+      "C": 0.0004960640622828775
+    },
+    "vitesse_actif_final_rad_s": {
+      "A": 1.1797481229972262,
+      "B": 1.1859737432881061,
+      "C": 1.1591217631474844
+    },
+    "duree_simulee_s": 0.20000000000005924
+  }
+}

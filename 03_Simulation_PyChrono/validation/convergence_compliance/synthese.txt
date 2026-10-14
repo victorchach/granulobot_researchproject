@@ -1,0 +1,10 @@
+Campagne d'accrochage — résultats du modèle, sans calibration expérimentale
+Durée de chaque essai : 0.2 s ; pas de référence : 1e-05 s
+Attache idéale = référence indéformable, sans seuil de rupture physique.
+Distance de décrochage = indicateur géométrique échantillonné, pas force mesurée.
+
+deux_cylindres_03V: paires proches=True; A corps=-0.0000 tour; A centre max=0.025 mm; ratio rotor absolu/relatif=0.9999880295278043
+deux_cylindres_dt_divise_2: paires proches=True; A corps=-0.0000 tour; A centre max=0.040 mm; ratio rotor absolu/relatif=0.9999997935973776
+deux_cylindres_iterations_doublees: paires proches=True; A corps=-0.0000 tour; A centre max=0.029 mm; ratio rotor absolu/relatif=0.9999848028362436
+Convergence deux_cylindres_dt_divise_2: écart rotation A=6.93822e-09 tour; écart déplacement max A=0.0149281 mm
+Convergence deux_cylindres_iterations_doublees: écart rotation A=2.47224e-09 tour; écart déplacement max A=0.00336682 mm
