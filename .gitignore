@@ -1,3 +1,20 @@
-granulobot_researchproject/
+# Python
 __pycache__/
 *.pyc
+
+# OS / editors
+.DS_Store
+
+# Simulation outputs are derived: regenerate them with the scripts (see AGENTS.md).
+# Runs worth keeping go into results/, which is versioned.
+runs/
+03_Simulation_PyChrono/**/*.csv
+03_Simulation_PyChrono/**/*.gif
+03_Simulation_PyChrono/**/*.log
+# JSON and text files can be sources (parameter files, requirements), so only
+# the default run summaries and the campaign folders are ignored.
+03_Simulation_PyChrono/test_*_granulobots*.json
+03_Simulation_PyChrono/essais_*/
+03_Simulation_PyChrono/validation/
+/*.gif
+/*.mp4
