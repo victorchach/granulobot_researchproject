@@ -1,0 +1,19 @@
+#!/bin/sh
+# Refuse derived outputs outside results/ and run the fast unit tests.
+# Install with: make hooks. Bypass only on purpose: git commit --no-verify
+bad=$(git diff --cached --name-only --diff-filter=ACMR |
+      grep -E '\.(csv|gif|mp4|log)$' | grep -v '^results/')
+if [ -n "$bad" ]; then
+    echo "pre-commit: derived outputs staged outside results/:" >&2
+    echo "$bad" >&2
+    exit 1
+fi
+if git diff --cached --name-only --diff-filter=ACMR | grep -qE '\.py$|^Makefile$'; then
+    if ! command -v make >/dev/null 2>&1; then
+        echo "pre-commit: make not found, unit tests skipped (sudo apt install make)" >&2
+    elif ! make -s test >/dev/null 2>&1; then
+        echo "pre-commit: make test failed (needs the conda env 'chrono'; see make check-env)" >&2
+        exit 1
+    fi
+fi
+exit 0

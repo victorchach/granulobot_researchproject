@@ -1,0 +1,12 @@
+#!/bin/sh
+# Reject AI attribution in commit messages. Install with: make hooks
+msg="$1"
+if grep -v '^#' "$msg" | grep -qiE '^[[:space:]]*co-authored-by:'; then
+    echo "commit-msg: Co-Authored-By trailers are not allowed in this repo." >&2
+    exit 1
+fi
+if grep -v '^#' "$msg" | grep -qiE 'generated (with|by) .*(claude|codex|chatgpt|openai|anthropic)'; then
+    echo "commit-msg: 'Generated with ...' attribution lines are not allowed in this repo." >&2
+    exit 1
+fi
+exit 0
