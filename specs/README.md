@@ -1,8 +1,13 @@
 # Specs
 
 One folder per code change: `specs/NNN-<name>/spec.md`, worked on in branch
-`feature/NNN-<name>`. The procedure is in `.claude/skills/feature/SKILL.md`.
+`feature/NNN-<name>`. The procedure is in `.agents/skills/feature/SKILL.md`.
 Ideas not yet scheduled go to `IDEES.md`.
+
+Two people write specs in parallel. Pick NNN as the next free number here
+right after pulling `main`. If both pick the same number, the one who merges
+second renumbers their spec (folder, title, row below and branch). On a merge
+conflict in this table, keep both rows.
 
 Status values: `draft` (waiting for approval), `approved` (being implemented),
 `review`, `merged`, `dropped`.

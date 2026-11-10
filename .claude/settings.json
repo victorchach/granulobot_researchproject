@@ -48,7 +48,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"$CLAUDE_PROJECT_DIR\"/.claude/hooks/guard-code-edits.sh"
+            "command": "sh \"$CLAUDE_PROJECT_DIR\"/tools/agent-hooks/guard-code-edits.sh"
           }
         ]
       }

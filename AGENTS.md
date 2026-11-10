@@ -29,6 +29,41 @@ Pr. Baudouin Saintyves (Inria / INSA, CITI lab).
 | `results/` | Runs worth keeping, versioned on purpose (see `results/README.md`). |
 | `runs/` | Scratch simulation outputs. Ignored by git. |
 | `tools/git-hooks/` | Versioned sources of the local git hooks. |
+| `tools/agent-hooks/` | The edit guard shared by the Claude Code and Codex hooks. |
+| `.agents/skills/` | Shared agent skills (`feature`, `run-sim`, `sync`, `humanizer`). Codex reads them here. |
+| `.claude/` | Claude Code settings; `.claude/skills/<name>` are symlinks to `.agents/skills/<name>`. |
+| `.codex/` | Codex project hooks (`hooks.json`). |
+
+## Workflow (both developers, both agents)
+
+Victor (Claude Code) and Hugo (Codex) follow the same workflow, through the
+skills in `.agents/skills/`:
+
+| Skill | Use it for |
+| --- | --- |
+| `feature` | Any code change (`*.py`, `*.ipynb`, `Makefile`), however small, from spec to merge |
+| `run-sim` | Running a scenario and analysing its outputs, without changing code |
+| `sync` | Pulling the teammate's work and checking that docs still match the code |
+| `humanizer` | Any prose meant for people (reports, README, docs, messages) |
+
+- **No code change outside the `feature` workflow.** In short: investigate;
+  write `specs/NNN-name/spec.md` on branch `feature/NNN-name`; wait for the
+  developer's approval of the spec; implement and run `make test`; get an
+  independent review by a separate agent; merge into `main` locally only
+  after the developer's approval. A hook blocks code edits outside such a
+  branch in both tools (see Agent hooks).
+- Docs, specs, skills and config can be edited directly, but must stay
+  consistent with this file.
+- Pull before starting a spec, and run `sync` after every pull of the
+  teammate's work. Push merged work soon, so the other side sees it.
+- Spec numbers with two people: pick NNN as the next free number in
+  `specs/README.md` right after pulling `main`. If both pick the same number,
+  the one who merges second renumbers their spec (folder, title, index row
+  and branch). On a `specs/README.md` conflict, keep both rows.
+- Never commit, merge or push unless the developer asks. Suggest a commit
+  when a coherent step is done.
+- Talk to the developer in their language (French for both); everything
+  written into the repo is in English.
 
 ## Environment and commands
 
@@ -139,3 +174,25 @@ executable. Re-run it whenever `tools/git-hooks/` changes.
   `results/`. When code is staged, it also runs `make test`, which needs
   `make` and the conda env `chrono`; if `make` is missing, the tests are
   skipped with a warning.
+
+## Agent hooks
+
+`tools/agent-hooks/guard-code-edits.sh` is a PreToolUse hook used by both
+agents. It blocks any edit of `*.py`, `*.ipynb` or `Makefile` unless the
+current branch is `feature/NNN-name` and `specs/NNN-name/spec.md` exists. It
+needs `python3` on the PATH. Two exceptions:
+- files outside this repo (scratch scripts in a temp dir) are not guarded,
+  and each git worktree is checked on its own branch;
+- during a merge, files still in conflict can be edited on any branch, so a
+  conflict from `sync` can be resolved on `main`.
+
+- Claude Code runs it from `.claude/settings.json` (Edit, Write,
+  NotebookEdit).
+- Codex runs it from `.codex/hooks.json` (`apply_patch`). Project hooks run
+  only once the project `.codex/` layer is trusted, and again after each
+  change to the hooks: review and trust them with `/hooks` in Codex.
+- It does not see edits made through shell commands (`sed`, `cat > file`).
+  Agents must not use the shell to get around it.
+- The guard and its configuration (`tools/agent-hooks/`, `.claude/settings.json`,
+  `.codex/hooks.json`) change only with the developer's explicit approval,
+  even though they are config files.

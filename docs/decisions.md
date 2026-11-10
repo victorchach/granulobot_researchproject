@@ -2,6 +2,30 @@
 
 Newest first. Each entry gives the decision and the reason for it.
 
+## 2026-11-10: one workflow for both developers
+
+Decided by Victor and Hugo on 2026-11-03, set up on 2026-11-10.
+
+- **Hugo and Codex follow the same `feature` workflow as Victor and Claude
+  Code**: spec, branch, approval, tests, independent review, local merge.
+  Until now Hugo pushed straight to `main` and Victor documented his changes
+  after each pull. That worked while one person wrote most of the simulator.
+  The next phase (N-unit simulator, eq. 7 and eq. 2 controllers) has both of
+  them editing the same files. Without a shared workflow, docs drift between
+  syncs, physics changes lose their written reason, and conflicts show up
+  late. Accepted costs: Hugo goes a little slower, and Codex compliance is not
+  guaranteed (an edit through the shell gets past the hook).
+- **The skills moved to `.agents/skills/`**, the path Codex reads. Claude
+  Code sees them through one symlink per skill in `.claude/skills/`; both
+  tools document symlinked skill folders. The skills no longer name a person
+  or a tool: they address "the developer", in their language.
+- **`sync-hugo` became `sync`** and works in both directions.
+- **One edit guard for both agents** (`tools/agent-hooks/`), called by
+  `.claude/settings.json` and `.codex/hooks.json`. It reads Claude's
+  `file_path` and the file names inside a Codex `apply_patch`.
+- **Spec numbers**: pick after pulling; on a collision, the one who merges
+  second renumbers.
+
 ## 2026-11-03: repository organisation
 
 - **Repo language is English**, and the README and docs were translated.
@@ -19,7 +43,7 @@ Newest first. Each entry gives the decision and the reason for it.
   Code (Victor). `CLAUDE.md` imports it, so the two agents never read
   contradictory rules.
 - **Code changes follow the spec workflow** (`specs/`). Hugo does not follow
-  it for now.
+  it for now (superseded on 2026-11-10, see above).
 
 ## Late October 2026: simulation direction (team meeting)
 

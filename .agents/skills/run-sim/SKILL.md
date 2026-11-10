@@ -31,13 +31,13 @@ description: Use to run a simulation scenario and analyse its outputs without ch
   `<X>_omega_actif_relative_rad_s` per unit from the CSV. For the ring, check
   that the directions alternate and that the sum of rotor speeds stays close
   to 0.
-- Look at 3 to 5 frames of the GIF (extract them with PIL into the
-  scratchpad) to spot anything the numbers miss.
+- Look at 3 to 5 frames of the GIF (extract them with PIL into a temporary
+  directory outside the repo) to spot anything the numbers miss.
 - Check plausibility: overlaps must stay at the µm level, with no NaN. If a
   result depends on numerics, rerun with `--dt` halved before concluding
   (convergence is not established, see `docs/model.md`).
 
-## 4. Report (in French)
+## 4. Report (to the developer, in their language)
 
 - Give the exact command, the simulated duration and the wall-clock time.
 - Give the key numbers and what they mean physically.
