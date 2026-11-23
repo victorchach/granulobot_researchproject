@@ -1,12 +1,60 @@
 """Vérifications physiques des lois, sans installation de PyChrono."""
 import math
 import unittest
-from granulobot_physics import Parametres, cross, dipoles, frottement, moteur_cc
-from diagnostic_accrochage import analyser
-from magnet_cylinders import pour_parametres, CylindresAxiaux
+from dataclasses import replace
+from granulobot_physics import Parametres, cross, dipoles, frottement, moteur_cc, frottement_jantes
+from analyse_simulation import analyser
+from magnetic_cylinders import pour_parametres, CylindresAxiaux
 
 
 class LoisPhysiques(unittest.TestCase):
+    def test_rim_engagement_requires_local_attractive_contact(self):
+        p = Parametres()
+        a, b = (0, 0, 0), (2*p.R, 0, 0)
+        ma = [((p.rayon_aimant, 0, 0), (0, 0, 1))]
+        mb = [((2*p.R-p.rayon_aimant, 0, 0), (0, 0, -1))]
+        mu, poids = frottement_jantes(a, b, ma, mb, p)
+        self.assertAlmostEqual(mu, p.mu_magnetique)
+        self.assertAlmostEqual(poids, 1)
+        self.assertEqual(frottement_jantes(b, a, mb, ma, p), (mu, poids))
+        cases = [
+            (a, b, ma, [(mb[0][0], (0, 0, 1))], p),  # Repulsive polarities.
+            (a, b, ma, mb, replace(p, magnetisme_actif=False)),
+            (a, b, ma, mb, replace(p, facteur_moment=0)),
+            (a, b, ma, mb, replace(p, liaison_ideale=True)),
+            (a, (2*p.R+0.01, 0, 0), ma, mb, p),  # Rims separated.
+            (a, b, [((-p.rayon_aimant, 0, 0), (0, 0, 1))], mb, p),
+            (a, b, ma, [((mb[0][0][0], 0, p.epaisseur_aimant), (0, 0, -1))], p),
+        ]
+        for args in cases:
+            self.assertEqual(frottement_jantes(*args), (p.mu_sterique, 0))
+        legacy = replace(p, frottements_differencies=False, mu_robots=0.37)
+        self.assertEqual(frottement_jantes(a, b, ma, mb, legacy), (0.37, 0))
+        radial = replace(p, modele_magnetique='dipoles', orientation_aimant='radiale')
+        self.assertAlmostEqual(frottement_jantes(a, b, [(ma[0][0], (1, 0, 0))],
+                              [(mb[0][0], (1, 0, 0))], radial)[0], p.mu_magnetique)
+
+    def test_rim_engagement_fades_with_gap_and_misalignment(self):
+        p = Parametres()
+        a, b = (0, 0, 0), (2*p.R, 0, 0)
+        def result(gap=0, lateral=0):
+            ma = [((p.rayon_aimant-gap/2, lateral, 0), (0, 0, 1))]
+            mb = [((2*p.R-p.rayon_aimant+gap/2, lateral, 0), (0, 0, -1))]
+            return frottement_jantes(a, b, ma, mb, p)
+        values = [result(gap=p.portee_engagement_magnetique*i/10)[0] for i in range(11)]
+        self.assertTrue(all(x >= y for x, y in zip(values, values[1:])))
+        self.assertAlmostEqual(values[5], (p.mu_sterique+p.mu_magnetique)/2)
+        self.assertAlmostEqual(values[-1], p.mu_sterique)
+        self.assertGreater(result(lateral=p.diametre_aimant_ext/4)[0], p.mu_sterique)
+        self.assertEqual(result(lateral=p.diametre_aimant_ext/2), (p.mu_sterique, 0))
+
+    def test_rim_parameters_reject_invalid_values(self):
+        for changes in ({'mu_sterique': -1}, {'mu_magnetique': float('nan')},
+                        {'mu_magnetique': 0.01}, {'portee_engagement_magnetique': 0},
+                        {'portee_engagement_magnetique': float('inf')}):
+            with self.assertRaises(ValueError):
+                replace(Parametres(), **changes).verifier()
+
     def test_cylindres_force_gradient_et_limite_dipolaire(self):
         p = Parametres()
         modele = pour_parametres(p)

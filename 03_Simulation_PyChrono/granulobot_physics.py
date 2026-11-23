@@ -10,7 +10,7 @@ import math
 
 @dataclass
 class Parametres:
-    nombre_robots: int = 3                       # 2 : banc d'essai ; 3 : triangle
+    nombre_robots: int = 6                       # 2: pair; 3: triangle; 6: hexagonal ring
     liaison_ideale: bool = False                 # référence cinématique, PAS modèle réel
     perturbation_rotor_rad: float = 0.0          # rotor actif A, test de rappel passif
     marge_detection_decrochage: float = 0.003     # critère diagnostic, pas loi physique
@@ -34,6 +34,11 @@ class Parametres:
     facteur_inertie_corps: float = 0.65           # Izz = facteur * M_corps * R²
     # Contact NSC avec compliance paramétrable ; pas de force de ressort ajoutée.
     mu_robots: float = 0.6                       # à mesurer
+    # Effective rim contact model requested by Hugo (2026-11-10), not calibrated.
+    frottements_differencies: bool = True
+    mu_sterique: float = 0.05                    # exploratory weak sliding contact
+    mu_magnetique: float = 1.0                   # exploratory tooth engagement, 20x above
+    portee_engagement_magnetique: float = 0.001  # m of magnet surface gap; estimate
     compliance_coques: float = 1e-7             # m/N par matériau, plastique estimé
     compliance_aimants: float = 1e-8             # m/N par matériau, métal estimé
     # Faible déformation NSC : partage de charge entre contacts affleurants.
@@ -65,9 +70,9 @@ class Parametres:
     tension_max: float = 6.0
     courant_max: float = 0.4                     # limite estimée, à mesurer
     couple_max: float = 0.10                     # protection mécanique estimée
-    vitesses_cibles: tuple = (math.pi, math.pi, math.pi)  # 1 tour/2 s, mode vitesse
-    tensions_cibles: tuple = (3.25, 3.25, 3.25)  # estimation ~30 tr/min à vide
-    couples_cibles: tuple = (5e-5, 5e-5, 5e-5)  # N.m, mode couple seulement
+    vitesses_cibles: tuple = (math.pi,) * 6     # 1 tour/2 s, mode vitesse
+    tensions_cibles: tuple = (3.25,) * 6        # estimation ~30 tr/min à vide
+    couples_cibles: tuple = (5e-5,) * 6         # N.m, mode couple seulement
     gain_p_vitesse: float = 1.0                  # V / (rad/s), estimation
     gain_i_vitesse: float = 0.5                  # V / rad, estimation
     rampe_demarrage: float = 0.5                 # s
@@ -125,8 +130,8 @@ class Parametres:
         return self.facteur_moment * self.remanence * volume / (4 * math.pi * 1e-7)
 
     def verifier(self):
-        if self.nombre_robots not in (2, 3):
-            raise ValueError("Le banc accepte deux ou trois granulobots")
+        if self.nombre_robots not in (2, 3, 6):
+            raise ValueError("Supported robot counts: 2, 3 or 6")
         if self.solveur not in ('PSOR', 'APGD'):
             raise ValueError('solveur : PSOR ou APGD')
         if self.modele_sol not in ('disque_equivalent', 'bullet'):
@@ -160,17 +165,24 @@ class Parametres:
         if self.mode_moteur not in ("vitesse", "tension", "couple"):
             raise ValueError("mode_moteur : vitesse, tension ou couple")
         for cibles in (self.vitesses_cibles, self.tensions_cibles, self.couples_cibles):
-            if len(cibles) != 3 or not all(math.isfinite(v) for v in cibles):
-                raise ValueError("Il faut trois consignes finies, pour A, B et C")
+            # Extra targets preserve old two-unit inputs with an unused C value.
+            if len(cibles) < self.nombre_robots or not all(math.isfinite(v) for v in cibles):
+                raise ValueError("Provide at least one finite target per robot")
         for nom in ("mu_robots", "mu_sol", "gravite", "resistance_translation",
                     "resistance_rotation", "couple_frottement_actif",
                     "couple_frottement_libre", "viscosite_libre", "jeu_initial",
                     "rampe_demarrage", "facteur_moment", "roulement_contact",
                     "pivotement_contact", "mu_aimants", "retrait_aimant",
                     "marge_detection_decrochage", "compliance_coques", "compliance_aimants",
-                    "couple_frottement_roue", "viscosite_roue"):
+                    "couple_frottement_roue", "viscosite_roue",
+                    "mu_sterique", "mu_magnetique"):
             if not math.isfinite(getattr(self, nom)) or getattr(self, nom) < 0:
                 raise ValueError(f"{nom} doit être positif ou nul")
+        if (not math.isfinite(self.portee_engagement_magnetique)
+                or self.portee_engagement_magnetique <= 0):
+            raise ValueError("Magnetic engagement range must be finite and positive")
+        if self.mu_magnetique < self.mu_sterique:
+            raise ValueError("Magnetic rim friction must be at least steric friction")
         if not 0 <= self.restitution <= 1 or not 0 < self.rendement_reducteur <= 1:
             raise ValueError("Restitution ou rendement hors limites")
         if not 0 <= self.diametre_aimant_int < self.diametre_aimant_ext:
@@ -189,6 +201,58 @@ def dot(a, b):
 def cross(a, b):
     return (a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2],
             a[0] * b[1] - a[1] * b[0])
+
+def frottement_jantes(centre_a, centre_b, aimants_a, aimants_b, p):
+    """Return (effective rim friction, engagement weight in [0, 1]).
+
+    Magnets are (world position, world dipole moment) pairs. Engagement needs
+    attraction, proximity and alignment with the facing rim contact on BOTH
+    units. It is recomputed geometrically, never tied to initial neighbours.
+    This changes the Coulomb limit only: no extra force, gear constraint or
+    rolling resistance. See docs/decisions.md for assumptions and estimates.
+    """
+    if not p.frottements_differencies:
+        return p.mu_robots, 0.0
+    if (not p.magnetisme_actif or p.liaison_ideale or p.facteur_moment == 0
+            or p.remanence == 0):
+        return p.mu_sterique, 0.0
+    dx, dy = centre_b[0] - centre_a[0], centre_b[1] - centre_a[1]
+    d = math.hypot(dx, dy)
+    if d < 1e-12 or d - 2 * p.R > 2 * p.enveloppe_collision:
+        return p.mu_sterique, 0.0
+    nx, ny = dx / d, dy / d
+    largeur = p.diametre_aimant_ext / 2
+
+    def proximite(ecart, portee):
+        x = max(0.0, min(1.0, ecart / portee))
+        return 1 - x*x*(3 - 2*x)  # Smooth transition with zero slope at both ends.
+
+    poids = 0.0
+    for pa, ma in aimants_a:
+        ra = (pa[0] - centre_a[0], pa[1] - centre_a[1])
+        if ra[0]*nx + ra[1]*ny <= 0:
+            continue
+        wa = proximite(abs(ra[0]*ny - ra[1]*nx), largeur)
+        if wa == 0:
+            continue
+        for pb, mb in aimants_b:
+            rb = (pb[0] - centre_b[0], pb[1] - centre_b[1])
+            if rb[0]*nx + rb[1]*ny >= 0 or abs(pb[2] - pa[2]) >= p.epaisseur_aimant:
+                continue
+            wb = proximite(abs(rb[0]*ny - rb[1]*nx), largeur)
+            if wb == 0:
+                continue
+            r = tuple(b - a for a, b in zip(pa, pb))
+            if p.modele_magnetique == 'cylindres':
+                attractif = ma[2] * mb[2] < 0
+            else:
+                force = dipoles(r, ma, mb, p.adoucissement_magnetique)[0]
+                attractif = force[0]*nx + force[1]*ny < 0
+            if not attractif:
+                continue
+            gap = math.dist(pa, pb) - p.diametre_aimant_ext
+            poids = max(poids, wa * wb * proximite(gap, p.portee_engagement_magnetique))
+    return p.mu_sterique + poids * (p.mu_magnetique - p.mu_sterique), poids
 
 
 def dipoles(r, mi, mj, epsilon):

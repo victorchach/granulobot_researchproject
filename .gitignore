@@ -1,3 +1,10 @@
 granulobot_researchproject/
 __pycache__/
 *.pyc
+
+# Generated simulation results; parameter inputs remain versioned.
+runs/
+03_Simulation_PyChrono/*.csv
+03_Simulation_PyChrono/*.gif
+03_Simulation_PyChrono/*.log
+03_Simulation_PyChrono/test_*_granulobots*.json
