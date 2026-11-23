@@ -8,11 +8,23 @@ __pycache__/
 # Simulation outputs are derived: regenerate them with the scripts (see AGENTS.md).
 # Runs worth keeping go into results/, which is versioned.
 runs/
+# Every default output path points into runs/. These patterns catch outputs
+# written into the code folders by hand (--sortie). JSON files are not
+# ignored there: they can be sources (configs/ holds parameter files).
+src/**/*.csv
+src/**/*.gif
+src/**/*.log
+scripts/**/*.csv
+scripts/**/*.gif
+scripts/**/*.log
+tests/**/*.csv
+tests/**/*.gif
+tests/**/*.log
+# Old layout (before spec 002): outputs left on disk there after a pull stay
+# ignored, so they cannot be committed by mistake.
 03_Simulation_PyChrono/**/*.csv
 03_Simulation_PyChrono/**/*.gif
 03_Simulation_PyChrono/**/*.log
-# JSON and text files can be sources (parameter files, requirements), so only
-# the default run summaries and the campaign folders are ignored.
 03_Simulation_PyChrono/test_*_granulobots*.json
 03_Simulation_PyChrono/essais_*/
 03_Simulation_PyChrono/validation/

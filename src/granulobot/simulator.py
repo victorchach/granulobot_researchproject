@@ -1,6 +1,6 @@
 """Trois granulobots : roue motorisée, deux rotors et roue libre, vue de dessus.
 
-Les paramètres SI et leurs origines sont dans granulobot_physics.py.
+Les paramètres SI et leurs origines sont dans parameters.py.
 Commande en tension par défaut ; pas de vitesse ni de déplacement imposé.
 Le sol fournit la réaction au poids et les frottements NSC. Un guide ne
 bloque que le basculement (Rx/Ry), jamais X, Y, Z ou la rotation autour de Z.
@@ -12,14 +12,15 @@ Les aimants restent mécaniquement solidaires du rotor : leur roulement propre
 (et son effet sur le frottement de contact), les dents et les collisions
 internes entre aimants restent omis.
 
-Exemples (environnement conda chrono) :
-    python test_3_granulobots.py
-    python test_3_granulobots.py --tensions 1 2 3
-    python test_3_granulobots.py --mode vitesse --vitesses 0.3 0.3 0.3
-    python test_3_granulobots.py --sans-sol --sans-magnetisme
-    python test_3_granulobots.py --duree 0.2 --sans-gif --sortie /chemin/essai
+Exemples (environnement conda chrono, depuis la racine du dépôt) :
+    PYTHONPATH=src python -m granulobot
+    PYTHONPATH=src python -m granulobot --tensions 1 2 3
+    PYTHONPATH=src python -m granulobot --mode vitesse --vitesses 0.3 0.3 0.3
+    PYTHONPATH=src python -m granulobot --sans-sol --sans-magnetisme
+    PYTHONPATH=src python -m granulobot --duree 0.2 --sans-gif --sortie /chemin/essai
 
 Sorties : GIF à vitesse réelle, CSV de mesures, JSON de paramètres/bilan.
+Sans --sortie, elles vont dans runs/sim à la racine du dépôt.
 """
 import argparse
 from bisect import bisect_left
@@ -30,8 +31,11 @@ import json
 import math
 from pathlib import Path
 
-from chrono_headless import chrono
-from granulobot_physics import Parametres, dipoles, frottement, moteur_cc
+from granulobot.chrono_env import chrono
+from granulobot.parameters import Parametres, dipoles, frottement, moteur_cc
+
+# Racine du dépôt (src/granulobot/simulator.py -> racine) : sorties par défaut dans runs/.
+RACINE = Path(__file__).resolve().parents[2]
 
 # Modifier ces paramètres pour les essais. Les détails sont dans le module physique.
 PARAMETRES = Parametres()
@@ -408,7 +412,7 @@ def appliquer_magnetisme(robots, p):
     aimants = [(i, *u.aimant(actif, p)) for i, u in enumerate(robots) for actif in (True, False)]
     cylindres = None
     if p.modele_magnetique == 'cylindres':
-        from magnet_cylinders import pour_parametres
+        from granulobot.magnets import pour_parametres
         cylindres = pour_parametres(p)
     energie, force_max = 0.0, 0.0
     for ai, aj in combinations(aimants, 2):
@@ -582,7 +586,7 @@ def simuler(p, sortie, gif=True, verbose=True):
         "vitesse_actif_final_rad_s": {n: omega(u.actif) - omega(u.corps) for n, u in zip(noms(robots), robots)},
         "duree_simulee_s": sys.GetChTime(),
     }
-    from diagnostic_accrochage import analyser
+    from granulobot.analysis import analyser
     bilan["accrochage"] = analyser(rows, p)
     sortie.parent.mkdir(parents=True, exist_ok=True)
     with sortie.with_suffix(".csv").open("w", newline="", encoding="utf-8") as f:
@@ -605,7 +609,7 @@ def simuler(p, sortie, gif=True, verbose=True):
         "frottement": "Frottement interne lissé ; pas de seuil statique exact ; support réel à préciser",
         "liaison_ideale": p.liaison_ideale,
         "validation": "Comparer plusieurs dt et calibrer les forces avant une comparaison quantitative",
-        "sources": ["01_Sujet_et_rapports/scirobotics.adh4130.txt, prototype et fig. 8",
+        "sources": ["references/scirobotics.adh4130.txt, prototype et fig. 8",
                     "https://api.projectchrono.org/motors.html",
                     "https://api.projectchrono.org/10.0.0/tutorial_demo_friction.html"],
     }
@@ -662,7 +666,7 @@ def main():
     p.moteur_actif = not args.sans_moteurs and p.moteur_actif
     p.magnetisme_actif = not args.sans_magnetisme and p.magnetisme_actif
     p.sol_actif = not args.sans_sol and p.sol_actif
-    simuler(p, args.sortie or Path(__file__).with_suffix(''), not args.sans_gif)
+    simuler(p, args.sortie or RACINE / 'runs' / 'sim', not args.sans_gif)
 
 
 if __name__ == "__main__":

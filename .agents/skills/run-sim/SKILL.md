@@ -1,6 +1,6 @@
 ---
 name: run-sim
-description: Use to run a simulation scenario and analyse its outputs without changing code. Examples of requests: "run the triangle at 1 V", "what happens without magnetism?", "run test_3 for 10 s", "check whether the ring holds", "compare dt 1e-5 and 5e-6", "regenerate the GIF of this run", "keep this result". If the scenario needs code changes (new geometry, new controller, new default), use the feature skill instead.
+description: Use to run a simulation scenario and analyse its outputs without changing code. Examples of requests: "run the triangle at 1 V", "what happens without magnetism?", "run the simulator for 10 s", "check whether the ring holds", "compare dt 1e-5 and 5e-6", "regenerate the GIF of this run", "keep this result". If the scenario needs code changes (new geometry, new controller, new default), use the feature skill instead.
 ---
 
 # Run and analyse a simulation
@@ -10,9 +10,10 @@ description: Use to run a simulation scenario and analyse its outputs without ch
 - `make check-env` if the environment has not been used in this session.
 - Translate the request into simulator flags (list in `AGENTS.md`). Use
   `--parametres file.json` for several overrides; keep that file in `runs/`
-  unless the result will be kept.
+  for a one-off run, and move it to `configs/` (or into the result folder)
+  if the result will be kept.
 - Pick a short, descriptive `NAME`. Outputs go to `runs/NAME.{csv,json,gif}`.
-  Never write into `03_Simulation_PyChrono/` or overwrite an existing result.
+  Never write into `src/`, `scripts/` or `tests/`, or overwrite an existing result.
 
 ## 2. Probe, then run
 

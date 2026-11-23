@@ -1,7 +1,7 @@
 """Plan d'essais reproductible : accrochage, frottements, triangle, convergence.
 
-python campagne_accrochage.py --duree 0.6 --animation
-Résultats isolés dans essais_accrochage/ : CSV/JSON, synthèse JSON et texte.
+PYTHONPATH=src python scripts/campaign.py --duree 0.6 --animation
+Résultats isolés dans runs/campaign/ : CSV/JSON, synthèse JSON et texte.
 Une campagne courte vérifie les mécanismes, pas la fidélité au prototype.
 Les seuils trouvés sont ceux DU MODELE, pas des mesures du robot réel.
 """
@@ -9,8 +9,8 @@ import argparse
 from dataclasses import replace
 import json
 from pathlib import Path
-from granulobot_physics import Parametres
-from test_3_granulobots import simuler
+from granulobot.parameters import Parametres
+from granulobot.simulator import RACINE, simuler
 
 
 def scenarios(base):
@@ -93,7 +93,7 @@ if __name__ == '__main__':
     parser.add_argument('--duree', type=float, default=0.6)
     parser.add_argument('--animation', action='store_true')
     parser.add_argument('--essais', nargs='+', help='Noms à sélectionner parmi scenarios()')
-    parser.add_argument('--sortie', type=Path, default=Path(__file__).with_name('essais_plan'))
+    parser.add_argument('--sortie', type=Path, default=RACINE / 'runs' / 'campaign')
     args = parser.parse_args()
     if args.essais:
         inconnus = set(args.essais) - {n for n, _ in scenarios(Parametres())}

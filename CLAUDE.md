@@ -18,8 +18,8 @@ specific to Claude Code.
 ## Guardrails
 
 - `.claude/settings.json` (versioned): safe commands are pre-allowed; commit,
-  merge, push, rebase and reset always ask; edits to `01_*` and `04_*` are
-  denied; AI attribution is disabled; the PreToolUse hook runs
+  merge, push, rebase and reset always ask; edits to `references/` and `cad/`
+  are denied; AI attribution is disabled; the PreToolUse hook runs
   `tools/agent-hooks/guard-code-edits.sh` on Edit, Write and NotebookEdit.
 - Personal preferences (conversation language, ...) go in `CLAUDE.local.md`,
   which is not versioned.

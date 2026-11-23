@@ -49,8 +49,8 @@ written into the repo is in English.
   new written into the repo is in English.
 - Never change a physical default without a source. Record such a change in
   `docs/decisions.md`.
-- Add unit tests to `03_Simulation_PyChrono/test_granulobot_physics.py` for
-  pure laws, or to `validation_modele.py` for PyChrono dynamics.
+- Add unit tests to `tests/test_physics.py` for pure laws, or to
+  `tests/test_dynamics.py` for PyChrono dynamics.
 - `make test` must pass. Also run `make validate` if the simulator or the
   contacts changed. Run a short `make sim` when behaviour changes.
 - Update `AGENTS.md` (commands, layout, architecture) and `docs/` in the same

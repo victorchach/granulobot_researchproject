@@ -1,9 +1,9 @@
 """Vérifications physiques des lois, sans installation de PyChrono."""
 import math
 import unittest
-from granulobot_physics import Parametres, cross, dipoles, frottement, moteur_cc
-from diagnostic_accrochage import analyser
-from magnet_cylinders import pour_parametres, CylindresAxiaux
+from granulobot.parameters import Parametres, cross, dipoles, frottement, moteur_cc
+from granulobot.analysis import analyser
+from granulobot.magnets import pour_parametres, CylindresAxiaux
 
 
 class LoisPhysiques(unittest.TestCase):

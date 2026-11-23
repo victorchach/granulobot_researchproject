@@ -1,10 +1,10 @@
 # Model notes
 
 The modelling assumptions, where the parameters come from, and the known
-limitations of the current simulator (`03_Simulation_PyChrono/`). All values
-are SI. The parameters live in `Parametres` (`granulobot_physics.py`); for a
-one-off run, override them in `PARAMETRES = Parametres(...)` or with
-`--parametres file.json`.
+limitations of the current simulator (`src/granulobot/`). All values
+are SI. The parameters live in `Parametres` (`src/granulobot/parameters.py`);
+for a one-off run, override them in `PARAMETRES = Parametres(...)`
+(`simulator.py`) or with `--parametres file.json`.
 
 ## Mechanics of one unit
 
@@ -102,7 +102,7 @@ one-off run, override them in `PARAMETRES = Parametres(...)` or with
 | Remanence, possible hole | 1.45 T and solid magnets assumed; to confirm |
 | Magnetic softening, dt, collision tolerances | Numerical; to check by convergence |
 
-`prototype_hugo.json` keeps the dimensions Hugo provided, separate from the
+`configs/prototype_hugo.json` keeps the dimensions Hugo provided, separate from the
 parameters that are still estimated.
 
 ## Validation status (before the 2026-11-03 cleanup)

@@ -8,7 +8,7 @@ removed from this list.
 - Generalize the simulator from 2 or 3 units to N units, with a regular
   hexagon ring for N = 6. The 2/3 assumption is hard-coded in
   `Parametres.verifier`, `appariements`, the 3-value tuples (`tensions_cibles`,
-  ...), the `--tensions A B C` CLI flags and `diagnostic_accrochage.analyser`.
+  ...), the `--tensions A B C` CLI flags and `analysis.analyser`.
 - Alternating open-loop biases u_i = (-1)^i |u| (paper eq. 8).
 - Long-run metrics for step 1: ring shape, alternation of rotor directions,
   sum of rotor speeds.
@@ -28,5 +28,3 @@ removed from this list.
 
 - Translate the French identifiers, comments and CSV column names to English.
   This breaks old CSV/JSON files; plan a compatibility note.
-- Rename `test_3_granulobots.py` (it is the simulator, not a test) and move
-  `validation_modele.py` under the test naming.
