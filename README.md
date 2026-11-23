@@ -26,8 +26,8 @@ make check-env        # or: PYTHONPATH=src python -m granulobot.chrono_env
 ```bash
 make test                                   # unit tests of the physics laws
 make validate                               # PyChrono dynamics checks
-make sim NAME=probe ARGS="--duree 0.2 --sans-gif"
-make sim NAME=v123 ARGS="--tensions 1 2 3"  # independent voltages for A, B, C
+make sim NAME=probe ARGS="--duration 0.2 --no-gif"
+make sim NAME=v123 ARGS="--voltages 1 2 3"  # independent voltages for A, B, C
 make diag CSV=runs/probe.csv                # attachment diagnostics of a run
 ```
 

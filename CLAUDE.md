@@ -32,5 +32,5 @@ see them too. Memory only keeps pointers and personal context.
 
 ## Long simulations
 
-Probe with `--duree 0.2 --sans-gif` to estimate the cost, then run long jobs
+Probe with `--duration 0.2 --no-gif` to estimate the cost, then run long jobs
 in the background with outputs in `runs/`.

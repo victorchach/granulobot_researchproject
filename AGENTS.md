@@ -24,7 +24,7 @@ Pr. Baudouin Saintyves (Inria / INSA, CITI lab).
 | `src/granulobot/` | The simulator, as a Python package (see Architecture). |
 | `tests/` | `test_physics.py` (fast, `make test`) and `test_dynamics.py` (PyChrono, `make validate`). |
 | `scripts/` | Entry points built on the package, such as scenario campaigns. |
-| `configs/` | Parameter files for `--parametres` (inputs, versioned). |
+| `configs/` | Parameter files for `--params` (inputs, versioned). |
 | `references/` | Reference material: the paper, its supplementary material, the assignment and last year's report (PDF, plus `.txt` extractions for search). Read only. |
 | `cad/` | CAD files (STL) of the real unit. Read only. |
 | `docs/` | Roadmap, decisions, architecture and model notes (Markdown, the source of truth). |
@@ -82,28 +82,28 @@ with `PYTHONPATH=src` (the Makefile sets it).
 | `make check-env` | `PYTHONPATH=src python -m granulobot.chrono_env` |
 | `make test` | `PYTHONPATH=src python -m unittest discover -s tests -p test_physics.py` (fast, under 1 s) |
 | `make validate` | `PYTHONPATH=src python tests/test_dynamics.py` (PyChrono dynamics, about 15 s) |
-| `make sim NAME=x ARGS="..."` | `PYTHONPATH=src python -m granulobot --sortie runs/x ...` |
+| `make sim NAME=x ARGS="..."` | `PYTHONPATH=src python -m granulobot --output runs/x ...` |
 | `make diag CSV=runs/x.csv` | `PYTHONPATH=src python -m granulobot.output.analysis runs/x.csv` |
-| `make replay CSV=runs/x.csv` | `PYTHONPATH=src python -m granulobot --rejouer runs/x.csv` |
+| `make replay CSV=runs/x.csv` | `PYTHONPATH=src python -m granulobot --replay runs/x.csv` |
 | `make hooks` | copy `tools/git-hooks/*` into `.git/hooks/` |
 
-Scenario campaigns: `PYTHONPATH=src python scripts/campaign.py --duree 0.6`
+Scenario campaigns: `PYTHONPATH=src python scripts/campaign.py --duration 0.6`
 (outputs in `runs/campaign/`).
 
-Useful simulator flags: `--robots {2,3}`, `--duree`, `--dt`,
-`--mode {tension,vitesse,couple}`, `--tensions A B C`, `--vitesses A B C`,
-`--sans-moteurs`, `--sans-magnetisme`, `--sans-sol`, `--sans-gif`,
-`--liaison-ideale`, `--parametres file.json`. Run a short probe first
-(`--duree 0.2 --sans-gif`): the default `dt = 1e-5 s` makes long runs slow.
+Useful simulator flags: `--units {2,3}`, `--duration`, `--dt`,
+`--mode {voltage,speed,torque}`, `--voltages A B C`, `--speeds A B C`,
+`--no-motors`, `--no-magnetism`, `--no-ground`, `--no-gif`,
+`--ideal-link`, `--params file.json`. Run a short probe first
+(`--duration 0.2 --no-gif`): the default `dt = 1e-5 s` makes long runs slow.
 
-Without `--sortie`, the simulator writes to `runs/sim` at the repo root.
+Without `--output`, the simulator writes to `runs/sim` at the repo root.
 Nothing writes into `src/`, `scripts/` or `tests/`.
 
 `make test` only covers `tests/test_physics.py`. The dynamics tests in
 `tests/test_dynamics.py` take about 15 s and run with `make validate`.
 
 The 2-unit bench (one facing pair, active A to free B):
-`make sim NAME=bench_2 ARGS="--robots 2 --tensions 0.3 0 0"`.
+`make sim NAME=bench_2 ARGS="--units 2 --voltages 0.3 0 0"`.
 
 ## Architecture (src/granulobot/)
 
@@ -115,7 +115,7 @@ limited to 2 or 3 units.
 - `__main__.py`: the CLI (`python -m granulobot`), with `PARAMETERS`, the
   defaults used by a run, and `main`.
 - `__init__.py`: `REPO_ROOT`, the repo root, for default outputs in `runs/`.
-- `parameters.py`: the `Parametres` dataclass, which holds every
+- `parameters.py`: the `Parameters` dataclass, which holds every
   physical and numerical parameter together with a comment on where it comes
   from.
 - `chrono_env.py`: imports the PyChrono core without the graphics
@@ -172,10 +172,11 @@ the known limitations.
   - a large `dt` causes tunneling;
   - names changed after version 8 (`ChVectorD` became `ChVector3d`).
 - Language: everything written to the repo (code, comments, docs, commit
-  messages) is in English. The code internals are translated (spec 004).
-  What still reaches files or the CLI is in French until spec 005: the
-  `Parametres` fields, the CLI flags, CSV columns, JSON keys and GIF text.
-  Use the glossary in `specs/004-translate-internals/spec.md` for new names.
+  messages, run outputs) is in English (specs 004 and 005). Name new things
+  with the glossary in `specs/004-translate-internals/spec.md`; the old
+  French names and their English equivalents are listed in
+  `specs/005-translate-interface/spec.md`. Run files written before spec 005
+  (French columns and keys) are not readable by `make diag` or `make replay`.
 
 ## Rules
 

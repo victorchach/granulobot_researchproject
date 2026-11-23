@@ -29,14 +29,14 @@ test:  ## Fast unit tests of the physics laws (no PyChrono dynamics, <1 s)
 validate:  ## PyChrono dynamics checks (~15 s)
 	$(PY) tests/test_dynamics.py
 
-sim:  ## Run the simulator: make sim NAME=run_name ARGS="--duree 0.2 --sans-gif"
-	$(PY) -m granulobot --sortie runs/$(or $(NAME),sim) $(ARGS)
+sim:  ## Run the simulator: make sim NAME=run_name ARGS="--duration 0.2 --no-gif"
+	$(PY) -m granulobot --output runs/$(or $(NAME),sim) $(ARGS)
 
 diag:  ## Analyse a run: make diag CSV=runs/sim.csv
 	$(PY) -m granulobot.output.analysis $(CSV)
 
 replay:  ## Rebuild a GIF from a CSV without rerunning: make replay CSV=runs/sim.csv
-	$(PY) -m granulobot --rejouer $(CSV)
+	$(PY) -m granulobot --replay $(CSV)
 
 hooks:  ## Install the git hooks from tools/git-hooks (redo after every fresh clone)
 	cp tools/git-hooks/commit-msg tools/git-hooks/pre-commit .git/hooks/

@@ -80,9 +80,9 @@ def cached_model(diameter, hole, height, remanence, factor, epsilon, radial, ang
 
 
 def for_parameters(p):
-    return cached_model(p.diametre_aimant_ext, p.diametre_aimant_int, p.epaisseur_aimant,
-                        p.remanence, p.facteur_moment, p.adoucissement_magnetique,
-                        p.quadrature_radiale, p.quadrature_angulaire)
+    return cached_model(p.magnet_outer_diameter, p.magnet_inner_diameter, p.magnet_thickness,
+                        p.remanence, p.moment_factor, p.magnetic_softening,
+                        p.radial_quadrature, p.angular_quadrature)
 
 
 def dot(a, b):
@@ -114,21 +114,21 @@ def dipoles(r, mi, mj, epsilon):
 
 
 def apply_magnetism(units, p):
-    if not p.magnetisme_actif or p.liaison_ideale:
+    if not p.magnetism_enabled or p.ideal_link:
         return 0.0, 0.0
     magnets = [(i, *u.magnet(active, p)) for i, u in enumerate(units) for active in (True, False)]
     cylinders = None
-    if p.modele_magnetique == 'cylindres':
+    if p.magnet_model == 'cylinders':
         cylinders = for_parameters(p)
     energy, max_force = 0.0, 0.0
     for ai, aj in combinations(magnets, 2):
         i, bi, idxi, pi, mi = ai
         j, bj, idxj, pj, mj = aj
-        if i == j and not p.interactions_internes:
+        if i == j and not p.internal_interactions:
             continue
         r = tuple(b - a for a, b in zip(pi, pj))
         if cylinders is None:
-            f, ti, tj, potential = dipoles(r, mi, mj, p.adoucissement_magnetique)
+            f, ti, tj, potential = dipoles(r, mi, mj, p.magnetic_softening)
         else:
             d = math.hypot(r[0], r[1])
             if d < 1e-12:

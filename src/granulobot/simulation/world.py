@@ -18,46 +18,46 @@ def create_system(p):
     sys = chrono.ChSystemNSC()
     sys.SetCollisionSystemType(chrono.ChCollisionSystem.Type_BULLET)
     sys.SetSolverType({'PSOR': chrono.ChSolver.Type_PSOR,
-                      'APGD': chrono.ChSolver.Type_APGD}[p.solveur])
+                      'APGD': chrono.ChSolver.Type_APGD}[p.solver])
     solver = sys.GetSolver().AsIterative()
-    solver.SetMaxIterations(p.iterations_solveur)
-    solver.SetTolerance(p.tolerance_solveur)
-    sys.SetMaxPenetrationRecoverySpeed(p.vitesse_correction_contact)
-    sys.SetGravitationalAcceleration(chrono.ChVector3d(0, 0, -p.gravite))
-    chrono.ChCollisionModel.SetDefaultSuggestedEnvelope(p.enveloppe_collision)
-    chrono.ChCollisionModel.SetDefaultSuggestedMargin(p.marge_collision)
+    solver.SetMaxIterations(p.solver_iterations)
+    solver.SetTolerance(p.solver_tolerance)
+    sys.SetMaxPenetrationRecoverySpeed(p.contact_recovery_speed)
+    sys.SetGravitationalAcceleration(chrono.ChVector3d(0, 0, -p.gravity))
+    chrono.ChCollisionModel.SetDefaultSuggestedEnvelope(p.collision_envelope)
+    chrono.ChCollisionModel.SetDefaultSuggestedMargin(p.collision_margin)
     mat = chrono.ChContactMaterialNSC()
-    mat.SetFriction(p.mu_robots)
+    mat.SetFriction(p.mu_shells)
     mat.SetRestitution(p.restitution)
-    mat.SetCompliance(p.compliance_coques)
-    mat.SetRollingFriction(p.roulement_contact)
-    mat.SetSpinningFriction(p.pivotement_contact)
+    mat.SetCompliance(p.compliance_shells)
+    mat.SetRollingFriction(p.rolling_resistance)
+    mat.SetSpinningFriction(p.spinning_resistance)
     frame = chrono.ChBody()
     frame.SetFixed(True)
     sys.AddBody(frame)
     ground = None
-    if p.sol_actif:
+    if p.ground_enabled:
         mat_ground = chrono.ChContactMaterialNSC()
-        mat_ground.SetFriction(p.mu_sol)
+        mat_ground.SetFriction(p.mu_ground)
         mat_ground.SetRestitution(p.restitution)
-        mat_ground.SetRollingFriction(p.roulement_contact)
-        mat_ground.SetSpinningFriction(p.pivotement_contact)
-        ground = chrono.ChBodyEasyBox(p.largeur_sol, p.largeur_sol, p.epaisseur_sol,
+        mat_ground.SetRollingFriction(p.rolling_resistance)
+        mat_ground.SetSpinningFriction(p.spinning_resistance)
+        ground = chrono.ChBodyEasyBox(p.ground_width, p.ground_width, p.ground_thickness,
                                       1000, False, True, mat_ground)
-        ground.SetPos(chrono.ChVector3d(0, 0, -p.epaisseur_sol / 2))
+        ground.SetPos(chrono.ChVector3d(0, 0, -p.ground_thickness / 2))
         ground.SetFixed(True)
-        if p.modele_sol == 'disque_equivalent':
+        if p.ground_model == 'equivalent_disc':
             ground.GetCollisionModel().SetFamilyMask(0)  # Support added by the callback.
         sys.AddBody(ground)
-    side = 2 * p.R + p.jeu_initial
+    side = 2 * p.R + p.initial_gap
     positions = ((-side / 2, -side / (2 * math.sqrt(3))),
                  (side / 2, -side / (2 * math.sqrt(3))),
                  (0, side / math.sqrt(3)))
-    if p.nombre_robots == 2:
+    if p.n_units == 2:
         positions = ((-side / 2, 0), (side / 2, 0))
     units = [create_unit(sys, p, mat, frame, i, positions) for i in range(len(positions))]
     links = []
-    if p.liaison_ideale:
+    if p.ideal_link:
         # Reference link, rigid and with no breaking threshold. It keeps the
         # relative pose of the two rotors, never their centres on the ground.
         for i, j in coupled_pairs(units):

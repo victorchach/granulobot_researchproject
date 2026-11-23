@@ -21,34 +21,34 @@ def dc_motor(voltage, relative_speed, p):
     The current can be negative: electrical braking / back-driven motor.
     No extra efficiency factor is hidden in the braking.
     """
-    u = max(-p.tension_max, min(p.tension_max, voltage))
-    current = (u - p.ke * p.rapport_reduction * relative_speed) / p.resistance_moteur
-    current = max(-p.courant_max, min(p.courant_max, current))
-    gain = p.rendement_reducteur * p.rapport_reduction * p.kt
-    torque = max(-p.couple_max, min(p.couple_max, gain * current))
+    u = max(-p.max_voltage, min(p.max_voltage, voltage))
+    current = (u - p.ke * p.gear_ratio * relative_speed) / p.motor_resistance
+    current = max(-p.max_current, min(p.max_current, current))
+    gain = p.gear_efficiency * p.gear_ratio * p.kt
+    torque = max(-p.max_torque, min(p.max_torque, gain * current))
     # Current matching the torque actually transmitted after saturation.
     return torque, torque / gain, u
 
 
 def apply_motor(u, i, t, p):
     w = omega(u.active) - omega(u.body)
-    ramp = min(1, t / p.rampe_demarrage) if p.rampe_demarrage else 1
-    if p.mode_moteur == "vitesse":
-        target = p.vitesses_cibles[i] * ramp
+    ramp = min(1, t / p.startup_ramp) if p.startup_ramp else 1
+    if p.motor_mode == "speed":
+        target = p.target_speeds[i] * ramp
         error = target - w
         # Feed-forward of the electrical braking and losses + PI with anti-windup.
-        gain = p.rendement_reducteur * p.rapport_reduction * p.kt / p.resistance_moteur
-        dry = p.couple_frottement_actif if p.frottement_interne_actif else 0
-        ff = p.ke * p.rapport_reduction * target + dry * math.tanh(target / p.vitesse_regularisation) / gain
-        raw = ff + p.gain_p_vitesse * error + p.gain_i_vitesse * u.integral
-        if abs(raw) < p.tension_max or raw * error < 0:
+        gain = p.gear_efficiency * p.gear_ratio * p.kt / p.motor_resistance
+        dry = p.active_friction_torque if p.internal_friction_enabled else 0
+        ff = p.ke * p.gear_ratio * target + dry * math.tanh(target / p.regularisation_speed) / gain
+        raw = ff + p.speed_gain_p * error + p.speed_gain_i * u.integral
+        if abs(raw) < p.max_voltage or raw * error < 0:
             u.integral += error * p.dt
         voltage = raw
     else:
-        voltage = p.tensions_cibles[i] * ramp
-    if p.moteur_actif:
-        if p.mode_moteur == "couple":
-            torque = max(-p.couple_max, min(p.couple_max, p.couples_cibles[i] * ramp))
+        voltage = p.target_voltages[i] * ramp
+    if p.motors_enabled:
+        if p.motor_mode == "torque":
+            torque = max(-p.max_torque, min(p.max_torque, p.target_torques[i] * ramp))
             u.voltage = u.current = 0.0  # No electrical model in this mode.
         else:
             torque, u.current, u.voltage = dc_motor(voltage, w, p)
@@ -56,25 +56,25 @@ def apply_motor(u, i, t, p):
         torque = 0.0  # Motor disconnected, open circuit; no electrical braking.
         u.voltage = u.current = 0.0
     u.motor_torque = torque
-    if p.frottement_interne_actif:
-        torque += friction(w, p.couple_frottement_actif, 0, p.vitesse_regularisation)
+    if p.internal_friction_enabled:
+        torque += friction(w, p.active_friction_torque, 0, p.regularisation_speed)
     u.transmitted_torque = torque
     u.torque_function.SetConstant(torque)  # Chrono applies the reaction to the body automatically.
     w_free = omega(u.free) - omega(u.body)
-    loss = friction(w_free, p.couple_frottement_libre, p.viscosite_libre,
-                    p.vitesse_regularisation) if p.frottement_interne_actif else 0
+    loss = friction(w_free, p.free_friction_torque, p.free_viscosity,
+                    p.regularisation_speed) if p.internal_friction_enabled else 0
     u.free.AccumulateTorque(u.idx_free, chrono.ChVector3d(0, 0, loss), False)
     u.body.AccumulateTorque(u.idx_body, chrono.ChVector3d(0, 0, -loss), False)
     if u.wheel is not None:
         w_wheel = omega(u.wheel) - omega(u.body)
-        wheel_torque = friction(w_wheel, p.couple_frottement_roue, p.viscosite_roue,
-                                p.vitesse_regularisation) if p.frottement_interne_actif else 0
+        wheel_torque = friction(w_wheel, p.wheel_friction_torque, p.wheel_viscosity,
+                                p.regularisation_speed) if p.internal_friction_enabled else 0
         u.wheel.AccumulateTorque(u.idx_wheel, chrono.ChVector3d(0, 0, wheel_torque), False)
         u.body.AccumulateTorque(u.idx_body, chrono.ChVector3d(0, 0, -wheel_torque), False)
     v = u.body.GetPosDt()
     u.body.AccumulateForce(u.idx_body,
-                           chrono.ChVector3d(-p.resistance_translation * v.x,
-                                             -p.resistance_translation * v.y, 0),
+                           chrono.ChVector3d(-p.translation_damping * v.x,
+                                             -p.translation_damping * v.y, 0),
                            u.body.GetPos(), False)
     u.body.AccumulateTorque(u.idx_body,
-                            chrono.ChVector3d(0, 0, -p.resistance_rotation * omega(u.body)), False)
+                            chrono.ChVector3d(0, 0, -p.rotation_damping * omega(u.body)), False)
