@@ -87,9 +87,12 @@ Useful simulator flags: `--robots {2,3}`, `--duree`, `--dt`,
 `--liaison-ideale`, `--parametres file.json`. Run a short probe first
 (`--duree 0.2 --sans-gif`): the default `dt = 1e-5 s` makes long runs slow.
 
-`make test` only covers `test_granulobot_physics.py`. Do not use
-`-p 'test_*.py'`: `test_3_granulobots_simple.py` runs a simulation when it is
-imported.
+`make test` only covers `test_granulobot_physics.py`. `test_3_granulobots.py`
+matches `test_*.py` but is the simulator, not a test file (a rename is
+planned).
+
+The 2-unit bench (one facing pair, active A to free B):
+`make sim NAME=bench_2 ARGS="--robots 2 --tensions 0.3 0 0"`.
 
 ## Architecture (03_Simulation_PyChrono/)
 
@@ -116,11 +119,8 @@ imported.
 - `diagnostic_accrochage.py`: post-analysis of a CSV (rotations, distances,
   detachment events). No PyChrono needed.
 - `campagne_accrochage.py`: scenario sweeps and convergence campaigns.
-- `test_2_granulobots.py`: a 2-unit wrapper around the simulator.
 - `prototype_hugo.json`: the prototype dimensions Hugo provided, plus what is
   still to measure.
-- Legacy: `test_3_granulobots_simple.py` (spring model) and `unite.py` (first
-  single-unit test).
 
 Outputs of a run: `<name>.csv` (200 Hz measurements, including contact
 forces), `<name>.json` (parameters, assumptions, summary) and `<name>.gif`

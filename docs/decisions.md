@@ -2,6 +2,25 @@
 
 Newest first. Each entry gives the decision and the reason for it.
 
+## 2026-11-23: reorganise the repo before the 6-unit ring
+
+- **The repo is reorganised now, in small specs, without waiting for Hugo.**
+  Hugo has a 6-unit version on his machine, built as copies of
+  `test_3_granulobots.py`, and cannot push it yet. When he can, he pushes it
+  as is to a branch of his own (for example `hugo/6-units-prototype`), never
+  to `main`. That branch is never merged: its diff against its base commit
+  shows what he changed, and the parts worth keeping (hexagon geometry,
+  initial state, voltages, tuned values) are ported by hand into the new
+  layout, through the N-unit spec.
+- **Dead scripts removed (spec 001)**: `unite.py` (first single-disc test with
+  placeholder values), `test_3_granulobots_simple.py` (old spring model) and
+  `test_2_granulobots.py` (a wrapper the CLI already covers with
+  `--robots 2 --tensions 0.3 0 0`). Nothing used them. They are still in
+  history: `git show 8233746:03_Simulation_PyChrono/<file>`.
+- **The 2026-10-14 triangle run is kept** in
+  `results/2026-10-14-triangle-3-units/`. It is the run behind the
+  "6 units instead of 3" decision below.
+
 ## 2026-11-10: one workflow for both developers
 
 Decided by Victor and Hugo on 2026-11-03, set up on 2026-11-10.
