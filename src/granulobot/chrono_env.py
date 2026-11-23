@@ -7,6 +7,7 @@ Il ne modifie ni l'installation conda ni les modules binaires. Un simple
 """
 import importlib
 import importlib.abc
+import math
 from pathlib import Path
 import sys
 
@@ -33,6 +34,25 @@ def charger_chrono():
 
 
 chrono = charger_chrono()
+
+
+# Small conversions between PyChrono objects and plain Python values.
+def vect(v):
+    return chrono.ChVector3d(*v)
+
+
+def xyz(v):
+    return (v.x, v.y, v.z)
+
+
+def angle(b):
+    q = b.GetRot()
+    return 2 * math.atan2(q.e3, q.e0)
+
+
+def omega(b):
+    return b.GetAngVelParent().z
+
 
 if __name__ == '__main__':
     interdits = [n for n in sys.modules if n.startswith(('pychrono.vsg', 'pychrono._vsg',

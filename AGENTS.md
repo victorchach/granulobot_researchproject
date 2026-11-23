@@ -83,7 +83,7 @@ with `PYTHONPATH=src` (the Makefile sets it).
 | `make test` | `PYTHONPATH=src python -m unittest discover -s tests -p test_physics.py` (fast, under 1 s) |
 | `make validate` | `PYTHONPATH=src python tests/test_dynamics.py` (PyChrono dynamics, about 15 s) |
 | `make sim NAME=x ARGS="..."` | `PYTHONPATH=src python -m granulobot --sortie runs/x ...` |
-| `make diag CSV=runs/x.csv` | `PYTHONPATH=src python -m granulobot.analysis runs/x.csv` |
+| `make diag CSV=runs/x.csv` | `PYTHONPATH=src python -m granulobot.output.analysis runs/x.csv` |
 | `make replay CSV=runs/x.csv` | `PYTHONPATH=src python -m granulobot --rejouer runs/x.csv` |
 | `make hooks` | copy `tools/git-hooks/*` into `.git/hooks/` |
 
@@ -107,33 +107,43 @@ The 2-unit bench (one facing pair, active A to free B):
 
 ## Architecture (src/granulobot/)
 
-`docs/architecture.md` shows the call flow of a run, from the CLI to the
-outputs. Imports are absolute (`from granulobot.parameters import ...`).
+`docs/architecture.md` has the file map and the call flow of a run, from the
+CLI to the outputs. Imports are absolute
+(`from granulobot.model.motor import moteur_cc`). The simulator is currently
+limited to 2 or 3 units.
 
-- `__main__.py`: `python -m granulobot` runs `simulator.main()`.
+- `__main__.py`: the CLI (`python -m granulobot`), with `PARAMETRES`, the
+  defaults used by a run, and `main`.
+- `__init__.py`: `RACINE`, the repo root, for default outputs in `runs/`.
 - `parameters.py`: the `Parametres` dataclass, which holds every
   physical and numerical parameter together with a comment on where it comes
-  from. It also has the pure laws, which don't need PyChrono: point dipoles
-  (`dipoles`), the smoothed dry friction (`frottement`) and the DC motor
-  (`moteur_cc`).
-- `magnets.py`: the field of axially magnetised finite cylinders,
-  computed by surface-charge quadrature. The energy is Hermite-interpolated so
-  that F = -dU/dd holds exactly.
-- `simulator.py`: the simulator (spec 003 will split it into modules).
-  - `creer_systeme` builds the bodies: per unit, a body, an active rotor, a
-    free rotor and an outer free wheel.
-  - `ContactsCirculaires` is a custom collision callback: analytic contacts
-    between the shells, between the magnets and with the ground, passed to the
-    NSC solver.
-  - `appliquer_moteur` and `appliquer_magnetisme` apply the forces at each step.
-  - `mesure` records the CSV row, `animation` makes the GIF, `simuler` and
-    `main` run the simulation and the CLI.
-  - It is currently limited to 2 or 3 units.
+  from.
 - `chrono_env.py`: imports the PyChrono core without the graphics
   extensions, which fail to load (vsg3d/SDL2). Always import chrono through it
-  (`from granulobot.chrono_env import chrono`).
-- `analysis.py`: post-analysis of a CSV (rotations, distances, detachment
-  events). No PyChrono needed.
+  (`from granulobot.chrono_env import chrono`). Also `vect`, `xyz`, `angle`,
+  `omega`.
+- `model/`, what a Granulobot is:
+  - `unit.py`: `Unite` and `creer_unite`, which builds one unit's four bodies
+    (shell, active rotor, free rotor, outer free wheel) and their links;
+    `noms` and `paires`.
+  - `motor.py`: the DC motor law (`moteur_cc`), the smoothed dry friction
+    (`frottement`) and `appliquer_moteur`, which applies them at each step.
+  - `magnets.py`: the field of axially magnetised finite cylinders, computed
+    by surface-charge quadrature (the energy is Hermite-interpolated so that
+    F = -dU/dd holds exactly), point dipoles (`dipoles`), and
+    `appliquer_magnetisme`, which applies them at each step.
+  - `contacts.py`: `ContactsCirculaires`, a custom collision callback with
+    analytic contacts between the shells, between the magnets and with the
+    ground, passed to the NSC solver.
+- `simulation/`, how a run works:
+  - `world.py`: `creer_systeme` (solver, ground, layout of the units, ideal
+    link, contact callback).
+  - `loop.py`: `simuler`, the time loop, the summary and the outputs.
+  - `recording.py`: `mesure` (one CSV row) and the CSV/JSON writing.
+- `output/`, what we get out of a run (no PyChrono needed):
+  - `analysis.py`: post-analysis of a CSV (rotations, distances, detachment
+    events).
+  - `animation.py`: the GIF.
 
 Outside the package:
 

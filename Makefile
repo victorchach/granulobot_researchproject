@@ -33,7 +33,7 @@ sim:  ## Run the simulator: make sim NAME=run_name ARGS="--duree 0.2 --sans-gif"
 	$(PY) -m granulobot --sortie runs/$(or $(NAME),sim) $(ARGS)
 
 diag:  ## Analyse a run: make diag CSV=runs/sim.csv
-	$(PY) -m granulobot.analysis $(CSV)
+	$(PY) -m granulobot.output.analysis $(CSV)
 
 replay:  ## Rebuild a GIF from a CSV without rerunning: make replay CSV=runs/sim.csv
 	$(PY) -m granulobot --rejouer $(CSV)
