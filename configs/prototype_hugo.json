@@ -1,32 +1,32 @@
 {
-  "parametres": {
+  "parameters": {
     "R": 0.035,
     "H": 0.05,
-    "diametre_aimant_ext": 0.008,
-    "epaisseur_aimant": 0.01,
-    "retrait_aimant": 0.0,
-    "orientation_aimant": "axiale",
-    "modele_magnetique": "cylindres",
-    "roue_libre_exterieure": true
+    "magnet_outer_diameter": 0.008,
+    "magnet_thickness": 0.01,
+    "magnet_recess": 0.0,
+    "magnet_orientation": "axial",
+    "magnet_model": "cylinders",
+    "outer_free_wheel": true
   },
-  "origine": "Dimensions approximatives et pôles axiaux précisés par Hugo dans la conversation.",
-  "a_confirmer": [
-    "Diamètre et hauteur par mesure",
-    "Trou éventuel dans les aimants",
-    "Disposition axiale des rotors",
-    "Épaisseur et masse des deux roues extérieures",
-    "Roue motorisée en bas ou en haut",
-    "Position axiale des aimants et interactions entre les deux étages"
+  "origin": "Approximate dimensions and axial poles given by Hugo in the conversation.",
+  "to_confirm": [
+    "Diameter and height, by measurement",
+    "Possible hole in the magnets",
+    "Axial layout of the rotors",
+    "Thickness and mass of the two outer wheels",
+    "Motorised wheel at the bottom or at the top",
+    "Axial position of the magnets and interactions between the two levels"
   ],
-  "a_calibrer": [
-    "Rémanence/force réelle au contact",
-    "Masse/inerties du prototype",
-    "Moteur courant/couple/vitesse",
-    "Frottements coques et support"
+  "to_calibrate": [
+    "Remanence/real force at contact",
+    "Mass/inertias of the prototype",
+    "Motor current/torque/speed",
+    "Shell and support friction"
   ],
-  "comparaisons_a_effectuer": [
-    "Support équivalent vs Bullet",
-    "Répartition des efforts de contact coques/aimants",
-    "Mesure du couple moteur maximal et frottement entre coques"
+  "comparisons_to_make": [
+    "Equivalent support vs Bullet",
+    "Split of the contact forces between shells and magnets",
+    "Measurement of the maximum motor torque and of the friction between shells"
   ]
 }

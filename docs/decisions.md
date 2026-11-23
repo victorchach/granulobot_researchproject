@@ -2,6 +2,20 @@
 
 Newest first. Each entry gives the decision and the reason for it.
 
+## 2026-11-24: English interface (spec 005)
+
+- **The run interface is in English**: `Parameters` and its fields, CLI
+  flags (`--duration`, `--no-gif`, `--params`, ...), CSV columns, JSON keys,
+  GIF text, campaign scenarios and `configs/prototype_hugo.json`. The full
+  old-to-new tables are in `specs/005-translate-interface/spec.md`; they are
+  also the dictionary for porting Hugo's prototype.
+- **Old run files are not converted.** The 2026-10-14 triangle in `results/`
+  stays in its original format with a note (Victor's choice): rerunning it
+  gives the same values under the new names.
+- **Campaign scenario names say the voltage plainly**: the old `10V` meant
+  1.0 V and `03V` meant 0.3 V (French decimal comma); they are now `1V` and
+  `0p3V`.
+
 ## 2026-11-23: translate the code to English (specs 004 and 005)
 
 - **Everything is translated, in two steps.** Spec 004 translates the

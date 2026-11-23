@@ -3,6 +3,14 @@
 The run reviewed at the late-October team meeting. It is the evidence behind
 the decision to move from 3 units to a 6-unit ring (`docs/decisions.md`).
 
+> **Old format.** These files were written before spec 005: the CSV columns,
+> the JSON keys and the GIF text are in French (`A_angle_corps_rad`, `bilan`,
+> `accrochage`, ...). `make diag` and `make replay` no longer read them. The
+> tables in `specs/005-translate-interface/spec.md` give the English name of
+> every column and key. On 2026-11-24, the same run with the current code gave
+> the same values under the new names, so `make sim NAME=triangle` regenerates
+> it in the current format as long as the defaults do not change.
+
 ## How it was made
 
 - Run on Victor's machine on 2026-10-14 at 21:38, after pulling commit
@@ -11,7 +19,8 @@ the decision to move from 3 units to a 6-unit ring (`docs/decisions.md`).
   of that commit, and they are still the defaults on `8233746`.
 - To rerun it: `make sim NAME=triangle` (3 s simulated, triangle, 3.25 V on
   A, B and C, all other values by default). It takes a while at
-  `dt = 1e-5 s`; probe first with `ARGS="--duree 0.2 --sans-gif"`.
+  `dt = 1e-5 s` (about 7 minutes); probe first with
+  `ARGS="--duration 0.2 --no-gif"`.
 - Files, as the simulator wrote them: `test_3_granulobots.csv` (200 Hz
   measurements), `.json` (parameters, assumptions, summary), `.gif` (25 fps).
 

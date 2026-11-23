@@ -18,3 +18,4 @@ Status values: `draft` (waiting for approval), `approved` (being implemented),
 | 002 | src-layout | merged | Move the code to `src/granulobot/`, `tests/`, `scripts/`, `configs/`; rename `01_`/`04_` to `references/`, `cad/` |
 | 003 | split-simulator | merged | Split `simulator.py` into `model/`, `simulation/`, `output/`; move the pure laws out of `parameters.py` |
 | 004 | translate-internals | merged | Translate identifiers, comments and messages to English; outputs unchanged |
+| 005 | translate-interface | merged | Translate parameters, CLI flags, CSV/JSON, GIF, campaign to English; old run files no longer readable |

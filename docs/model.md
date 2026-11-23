@@ -2,9 +2,9 @@
 
 The modelling assumptions, where the parameters come from, and the known
 limitations of the current simulator (`src/granulobot/`). All values
-are SI. The parameters live in `Parametres` (`src/granulobot/parameters.py`);
-for a one-off run, override them in `PARAMETERS = Parametres(...)`
-(`src/granulobot/__main__.py`) or with `--parametres file.json`.
+are SI. The parameters live in `Parameters` (`src/granulobot/parameters.py`);
+for a one-off run, override them in `PARAMETERS = Parameters(...)`
+(`src/granulobot/__main__.py`) or with `--params file.json`.
 
 ## Mechanics of one unit
 
@@ -25,7 +25,7 @@ for a one-off run, override them in `PARAMETERS = Parametres(...)`
   shapes keep both heights for the Bullet ground contact.
 - The view shows the motorised part only. The free wheel is 4 mm thick and
   weighs 8 g (included in the 98 g unit mass); both values and its pivot
-  friction are estimates. `roue_motorisee_en_bas` compares the two
+  friction are estimates. `motorised_wheel_at_bottom` compares the two
   orientations on the support.
 - Magnets are rigidly attached to their rotors. Their own rotation on
   bearings does not change an axial field, but it could change the contact
@@ -41,17 +41,17 @@ for a one-off run, override them in `PARAMETERS = Parametres(...)`
   and are passed to the NSC solver through a custom collision callback.
   Normal contacts are constraints, and friction is exact Coulomb friction.
   There are no permanent springs between units.
-- Ground support (`modele_sol="disque_equivalent"`, the default):
+- Ground support (`ground_model="equivalent_disc"`, the default):
   - a normal reaction plus Coulomb friction;
-  - a torsion resistance of `mu_sol * N * 2R/3`, which assumes a uniform
+  - a torsion resistance of `mu_ground * N * 2R/3`, which assumes a uniform
     pressure.
 
   The translation and torsion limits are treated separately, so they must be
   calibrated in combined motion. The Bullet ground contact can still be chosen
-  with `modele_sol="bullet"`.
+  with `ground_model="bullet"`.
 - A very small NSC compliance distinguishes the plastic shells
-  (`compliance_coques=1e-7` m/N) from the metal magnets
-  (`compliance_aimants=1e-8` m/N). Perfectly rigid flush contacts give an
+  (`compliance_shells=1e-7` m/N) from the metal magnets
+  (`compliance_magnets=1e-8` m/N). Perfectly rigid flush contacts give an
   ambiguous load sharing. Both values are assumptions to be measured, not a
   fit. Setting both to zero gives back the rigid reference.
 - The NSC penetration recovery speed cap is 10 m/s. It is a numerical limit
@@ -75,7 +75,7 @@ for a one-off run, override them in `PARAMETERS = Parametres(...)`
   interpolated so that F = -grad(U) holds.
 - The tests check the gradient of the potential, the dipole limit at large
   distance, and the sensitivity to refining the quadrature.
-- Point dipoles remain available for comparison (`modele_magnetique`).
+- Point dipoles remain available for comparison (`magnet_model`).
 - The remanence (1.45 T, N54 assumed) and the presence of a hole in the
   magnets are still to be confirmed.
 
@@ -83,9 +83,9 @@ for a one-off run, override them in `PARAMETERS = Parametres(...)`
 
 - The motor is a DC motor in quasi-static electrical regime (inductance
   neglected): U - Ke·β·ω = R·I, and the torque is β·Kt·I after the gearbox.
-- Control modes: `tension` (default), `vitesse` (PI on the relative rotor
-  speed, limited in voltage and torque) and `couple`. Voltages ramp up over
-  `rampe_demarrage`.
+- Control modes: `voltage` (default), `speed` (PI on the relative rotor
+  speed, limited in voltage and torque) and `torque`. Voltages ramp up over
+  `startup_ramp`.
 - The internal dry friction is smoothed (tanh), so it does not reproduce an
   exact static threshold.
 
@@ -97,7 +97,7 @@ for a one-off run, override them in `PARAMETERS = Parametres(...)`
 | `M=0.098`, active mass/inertia | Paper; to check on the current prototype |
 | Reduction 379, Kt, Ke, resistance 9.6 Ω, active friction 0.024 N·m | Paper, fig. 8; not a calibration of the current motor |
 | Voltage 3.25 V | Estimate for a free rotor turning about once every 2 s |
-| `mu_sol`, `mu_robots`, other masses/inertias, eccentricities | Estimates, to measure |
+| `mu_ground`, `mu_shells`, other masses/inertias, eccentricities | Estimates, to measure |
 | Magnets Ø8 mm × 10 mm, flush, axial poles | Estimates and details from Hugo; centres 31 mm from the axis |
 | Remanence, possible hole | 1.45 T and solid magnets assumed; to confirm |
 | Magnetic softening, dt, collision tolerances | Numerical; to check by convergence |
@@ -115,7 +115,7 @@ folders `03_Simulation_PyChrono/validation/` and `essais_plan/`).
 - On the 2-unit bench at 1 V (before the second wheel was added), halving dt
   or doubling the iterations still changes the maximum displacement by about
   1 mm.
-- Triangle at 1 V per motor with `mu_robots=0.05`, over 0.6 s: the motorised
+- Triangle at 1 V per motor with `mu_shells=0.05`, over 0.6 s: the motorised
   parts turn about 14.5°; the centres drift by less than 0.04 mm; the active
   rotors' absolute speed is about 100 times smaller than their speed relative
   to the body; the maximum shell overlap is 3.8 µm.
@@ -128,7 +128,7 @@ folders `03_Simulation_PyChrono/validation/` and `essais_plan/`).
   quantitative prediction.
 
 The 3 mm detachment threshold in the diagnostics is an indicator, not a
-physical breaking law. An ideal link (`--liaison-ideale`) has no pull-off
+physical breaking law. An ideal link (`--ideal-link`) has no pull-off
 force and does not validate the magnetism.
 
 ## To calibrate

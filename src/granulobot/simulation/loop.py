@@ -13,26 +13,26 @@ from granulobot.simulation.world import create_system
 
 
 def simulate(p, output, gif=True, verbose=True):
-    p.verifier()
+    p.check()
     sys, units, references = create_system(p)
     NAMES = unit_names(units)
     rows, min_distances = [], {pair: 2 * p.R for pair in unit_pairs(units)}
     max_force, max_speed, electrical_energy = 0.0, 0.0, 0.0
-    period = max(1, round(1 / (p.frequence_mesures * p.dt)))
-    nsteps = round(p.duree / p.dt)
+    period = max(1, round(1 / (p.sample_rate * p.dt)))
+    nsteps = round(p.duration / p.dt)
     if verbose:
-        print(f"Mode={p.mode_moteur}, dt={p.dt:g} s, duration={p.duree:g} s", flush=True)
-        print(f"Total mass/unit={p.M:g} kg; estimated moment/magnet={p.moment_aimant:.3f} A.m²", flush=True)
+        print(f"Mode={p.motor_mode}, dt={p.dt:g} s, duration={p.duration:g} s", flush=True)
+        print(f"Total mass/unit={p.M:g} kg; estimated moment/magnet={p.magnet_moment:.3f} A.m²", flush=True)
     initial_positions = [xyz(u.body.GetPos()) for u in units]
     for k in range(nsteps + 1):
         t = sys.GetChTime()
         if k % period == 0 or k == nsteps:
             row = measure(t, sys, units, p)
             for n, u in zip(unit_names(units), units):
-                for active, suffix in ((True, "actif"), (False, "libre")):
+                for active, prefix in ((True, "active"), (False, "free")):
                     _, _, pos, _ = u.magnet(active, p)
-                    row[f"{n}_aimant_{suffix}_x_m"] = pos[0]
-                    row[f"{n}_aimant_{suffix}_y_m"] = pos[1]
+                    row[f"{n}_{prefix}_magnet_x_m"] = pos[0]
+                    row[f"{n}_{prefix}_magnet_y_m"] = pos[1]
             rows.append(row)
         for i, j in unit_pairs(units):
             a, b = units[i].body.GetPos(), units[j].body.GetPos()
@@ -51,15 +51,15 @@ def simulate(p, output, gif=True, verbose=True):
             print(f"t={sys.GetChTime():.2f} s  contacts(ground included)={sys.GetNumContacts()}  "
                   f"body speeds={[round(omega(u.body), 3) for u in units]} rad/s", flush=True)
     summary = {
-        "recouvrement_max_m": {NAMES[i] + NAMES[j]: max(0, 2 * p.R - d) for (i, j), d in min_distances.items()},
-        "omega_corps_max_rad_s": max_speed, "force_aimant_max_N": max_force,
-        "energie_electrique_signee_J": electrical_energy,
-        "deplacement_final_m": {n: math.hypot(u.body.GetPos().x - pos[0], u.body.GetPos().y - pos[1])
+        "max_overlap_m": {NAMES[i] + NAMES[j]: max(0, 2 * p.R - d) for (i, j), d in min_distances.items()},
+        "max_body_omega_rad_s": max_speed, "max_magnet_force_N": max_force,
+        "signed_electrical_energy_J": electrical_energy,
+        "final_displacement_m": {n: math.hypot(u.body.GetPos().x - pos[0], u.body.GetPos().y - pos[1])
                                 for n, u, pos in zip(NAMES, units, initial_positions)},
-        "vitesse_actif_final_rad_s": {n: omega(u.active) - omega(u.body) for n, u in zip(unit_names(units), units)},
-        "duree_simulee_s": sys.GetChTime(),
+        "final_active_rel_omega_rad_s": {n: omega(u.active) - omega(u.body) for n, u in zip(unit_names(units), units)},
+        "simulated_duration_s": sys.GetChTime(),
     }
-    summary["accrochage"] = analyze(rows, p)
+    summary["attachment"] = analyze(rows, p)
     write_outputs(rows, p, summary, output)
     if gif:
         animate(rows, p, output)

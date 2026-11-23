@@ -9,7 +9,7 @@ __pycache__/
 # Runs worth keeping go into results/, which is versioned.
 runs/
 # Every default output path points into runs/. These patterns catch outputs
-# written into the code folders by hand (--sortie). JSON files are not
+# written into the code folders by hand (--output). JSON files are not
 # ignored there: they can be sources (configs/ holds parameter files).
 src/**/*.csv
 src/**/*.gif

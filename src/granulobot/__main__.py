@@ -14,13 +14,14 @@ between magnets are left out.
 
 Examples (conda env chrono, from the repo root):
     PYTHONPATH=src python -m granulobot
-    PYTHONPATH=src python -m granulobot --tensions 1 2 3
-    PYTHONPATH=src python -m granulobot --mode vitesse --vitesses 0.3 0.3 0.3
-    PYTHONPATH=src python -m granulobot --sans-sol --sans-magnetisme
-    PYTHONPATH=src python -m granulobot --duree 0.2 --sans-gif --sortie /path/run
+    PYTHONPATH=src python -m granulobot --voltages 1 2 3
+    PYTHONPATH=src python -m granulobot --mode speed --speeds 0.3 0.3 0.3
+    PYTHONPATH=src python -m granulobot --no-ground --no-magnetism
+    PYTHONPATH=src python -m granulobot --duration 0.2 --no-gif --output /path/run
+    PYTHONPATH=src python -m granulobot --params configs/prototype_hugo.json
 
 Outputs: GIF in real time, CSV of measurements, JSON of parameters/summary.
-Without --sortie, they go to runs/sim at the repo root.
+Without --output, they go to runs/sim at the repo root.
 """
 import argparse
 import csv
@@ -29,56 +30,56 @@ from pathlib import Path
 
 from granulobot import REPO_ROOT
 from granulobot.output.animation import animate
-from granulobot.parameters import Parametres
+from granulobot.parameters import Parameters
 from granulobot.simulation.loop import simulate
 
 # Change these parameters for trials. Details are in parameters.py.
-PARAMETERS = Parametres()
+PARAMETERS = Parameters()
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--robots", type=int, choices=(2, 3))
-    parser.add_argument("--liaison-ideale", action="store_true")
-    parser.add_argument("--parametres", type=Path, help="JSON de paramètres mesurés/estimés")
-    parser.add_argument("--duree", type=float)
-    parser.add_argument("--dt", type=float)
-    parser.add_argument("--mode", choices=("tension", "vitesse", "couple"))
-    parser.add_argument("--tensions", type=float, nargs=3, metavar=("A", "B", "C"))
-    parser.add_argument("--vitesses", type=float, nargs=3, metavar=("A", "B", "C"))
-    parser.add_argument("--sans-moteurs", action="store_true")
-    parser.add_argument("--sans-magnetisme", action="store_true")
-    parser.add_argument("--sans-sol", action="store_true")
-    parser.add_argument("--sans-gif", action="store_true")
-    parser.add_argument("--rejouer", type=Path, help="Régénérer le GIF d'un CSV sans refaire la dynamique")
-    parser.add_argument("--sortie", type=Path)
+    parser.add_argument("--units", type=int, choices=(2, 3), help="number of units (2: bench, 3: triangle)")
+    parser.add_argument("--ideal-link", action="store_true", help="rigid reference link between coupled magnets")
+    parser.add_argument("--params", type=Path, help="JSON file of measured/estimated parameters")
+    parser.add_argument("--duration", type=float, help="simulated time (s)")
+    parser.add_argument("--dt", type=float, help="time step (s)")
+    parser.add_argument("--mode", choices=("voltage", "speed", "torque"), help="motor control mode")
+    parser.add_argument("--voltages", type=float, nargs=3, metavar=("A", "B", "C"), help="target voltages (V)")
+    parser.add_argument("--speeds", type=float, nargs=3, metavar=("A", "B", "C"), help="target speeds (rad/s), speed mode")
+    parser.add_argument("--no-motors", action="store_true")
+    parser.add_argument("--no-magnetism", action="store_true")
+    parser.add_argument("--no-ground", action="store_true")
+    parser.add_argument("--no-gif", action="store_true")
+    parser.add_argument("--replay", type=Path, help="rebuild the GIF of a CSV without rerunning the dynamics")
+    parser.add_argument("--output", type=Path, help="output path without extension (default: runs/sim)")
     args = parser.parse_args()
-    if args.rejouer:
-        meta = json.loads(args.rejouer.with_suffix('.json').read_text(encoding='utf-8'))
-        p = Parametres(**meta['parametres'])
-        with args.rejouer.open(encoding='utf-8') as f:
+    if args.replay:
+        meta = json.loads(args.replay.with_suffix('.json').read_text(encoding='utf-8'))
+        p = Parameters(**meta['parameters'])
+        with args.replay.open(encoding='utf-8') as f:
             rows = [{k: float(v) for k, v in row.items()} for row in csv.DictReader(f)]
-        animate(rows, p, args.sortie or args.rejouer.with_suffix(''))
+        animate(rows, p, args.output or args.replay.with_suffix(''))
         print('GIF rebuilt from the measurements, without rerunning the dynamics.', flush=True)
         return
     p = PARAMETERS
-    if args.parametres:
-        data = json.loads(args.parametres.read_text(encoding="utf-8"))
-        for key, value in data.get("parametres", data).items():
-            if key not in p.dictionnaire():
+    if args.params:
+        data = json.loads(args.params.read_text(encoding="utf-8"))
+        for key, value in data.get("parameters", data).items():
+            if key not in p.to_dict():
                 raise ValueError(f"Unknown parameter: {key}")
             setattr(p, key, value)
-    if args.robots is not None:
-        p.nombre_robots = args.robots
-    p.liaison_ideale = p.liaison_ideale or args.liaison_ideale
-    for option, attribute in ((args.duree, "duree"), (args.dt, "dt"), (args.mode, "mode_moteur"),
-                              (args.tensions, "tensions_cibles"), (args.vitesses, "vitesses_cibles")):
+    if args.units is not None:
+        p.n_units = args.units
+    p.ideal_link = p.ideal_link or args.ideal_link
+    for option, attribute in ((args.duration, "duration"), (args.dt, "dt"), (args.mode, "motor_mode"),
+                              (args.voltages, "target_voltages"), (args.speeds, "target_speeds")):
         if option is not None:
             setattr(p, attribute, tuple(option) if isinstance(option, list) else option)
-    p.moteur_actif = not args.sans_moteurs and p.moteur_actif
-    p.magnetisme_actif = not args.sans_magnetisme and p.magnetisme_actif
-    p.sol_actif = not args.sans_sol and p.sol_actif
-    simulate(p, args.sortie or REPO_ROOT / 'runs' / 'sim', not args.sans_gif)
+    p.motors_enabled = not args.no_motors and p.motors_enabled
+    p.magnetism_enabled = not args.no_magnetism and p.magnetism_enabled
+    p.ground_enabled = not args.no_ground and p.ground_enabled
+    simulate(p, args.output or REPO_ROOT / 'runs' / 'sim', not args.no_gif)
 
 
 if __name__ == "__main__":

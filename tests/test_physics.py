@@ -1,7 +1,7 @@
 """Physical checks of the laws, without PyChrono dynamics (fast)."""
 import math
 import unittest
-from granulobot.parameters import Parametres
+from granulobot.parameters import Parameters
 from granulobot.model.magnets import cross, dipoles, for_parameters, AxialCylinders
 from granulobot.model.motor import friction, dc_motor
 from granulobot.output.analysis import analyze
@@ -9,52 +9,52 @@ from granulobot.output.analysis import analyze
 
 class PhysicsLaws(unittest.TestCase):
     def test_cylinders_force_gradient_and_dipole_limit(self):
-        p = Parametres()
+        p = Parameters()
         model = for_parameters(p)
         for d in (0.008, 0.01, 0.02, 0.1):
             h = 1e-7
             gradient = (model.evaluate(d+h)[0] - model.evaluate(d-h)[0]) / (2*h)
             self.assertAlmostEqual(model.evaluate(d)[1], -gradient, delta=1e-6)
         d = 0.2
-        limit = 3e-7 * p.moment_aimant**2 / d**4
+        limit = 3e-7 * p.magnet_moment**2 / d**4
         self.assertLess(abs(model.evaluate(d)[1] / limit - 1), 0.01)
 
     def test_cylinders_refined_quadrature(self):
-        p = Parametres()
-        base = for_parameters(p).direct(p.diametre_aimant_ext)[1]
-        fine = AxialCylinders(p.diametre_aimant_ext, p.diametre_aimant_int,
-            p.epaisseur_aimant, p.remanence, epsilon=p.adoucissement_magnetique,
-            radial=6, angular=24).direct(p.diametre_aimant_ext)[1]
+        p = Parameters()
+        base = for_parameters(p).direct(p.magnet_outer_diameter)[1]
+        fine = AxialCylinders(p.magnet_outer_diameter, p.magnet_inner_diameter,
+            p.magnet_thickness, p.remanence, epsilon=p.magnetic_softening,
+            radial=6, angular=24).direct(p.magnet_outer_diameter)[1]
         self.assertLess(abs(base / fine - 1), 0.01)
 
     def test_flush_geometry_and_axial_attraction(self):
-        p = Parametres()
-        self.assertAlmostEqual(p.rayon_aimant + p.diametre_aimant_ext / 2, p.R)
-        r = (p.diametre_aimant_ext, 0, 0)
-        force, _, _, _ = dipoles(r, (0, 0, p.moment_aimant),
-                                (0, 0, -p.moment_aimant), p.adoucissement_magnetique)
+        p = Parameters()
+        self.assertAlmostEqual(p.magnet_radius + p.magnet_outer_diameter / 2, p.R)
+        r = (p.magnet_outer_diameter, 0, 0)
+        force, _, _, _ = dipoles(r, (0, 0, p.magnet_moment),
+                                (0, 0, -p.magnet_moment), p.magnetic_softening)
         self.assertLess(force[0], 0)
 
     def test_analysis_separates_body_rotation_and_detachment(self):
-        p = Parametres(nombre_robots=2, rampe_demarrage=0)
+        p = Parameters(n_units=2, startup_ramp=0)
         rows = []
         for t in (0, 0.04):
             r = {'t_s': t}
             for n in ('A', 'B'):
-                r.update({f'{n}_angle_corps_rad': -t if n == 'A' else 0,
-                          f'{n}_angle_actif_rad': 0, f'{n}_angle_libre_rad': 0,
-                          f'{n}_omega_libre_relative_rad_s': 0,
+                r.update({f'{n}_body_angle_rad': -t if n == 'A' else 0,
+                          f'{n}_active_angle_rad': 0, f'{n}_free_angle_rad': 0,
+                          f'{n}_free_rel_omega_rad_s': 0,
                           f'{n}_x_m': 0, f'{n}_y_m': 0,
-                          f'{n}_omega_corps_rad_s': -1 if n == 'A' else 0,
-                          f'{n}_omega_actif_relative_rad_s': 1 if n == 'A' else 0})
-            r.update({'A_aimant_actif_x_m': 0, 'A_aimant_actif_y_m': 0,
-                      'B_aimant_libre_x_m': 0.018, 'B_aimant_libre_y_m': 0})
+                          f'{n}_body_omega_rad_s': -1 if n == 'A' else 0,
+                          f'{n}_active_rel_omega_rad_s': 1 if n == 'A' else 0})
+            r.update({'A_active_magnet_x_m': 0, 'A_active_magnet_y_m': 0,
+                      'B_free_magnet_x_m': 0.018, 'B_free_magnet_y_m': 0})
             rows.append(r)
         summary = analyze(rows, p)
-        self.assertEqual(summary['unites']['A']['ratio_rotor_absolu_sur_relatif'], 0)
-        self.assertTrue(summary['paires']['A_actif/B_libre']['reste_proche_sur_essai'])
-        rows[-1]['B_aimant_libre_x_m'] += 0.004
-        self.assertEqual(analyze(rows, p)['paires']['A_actif/B_libre']['premier_eloignement_detecte_s'], 0.04)
+        self.assertEqual(summary['units']['A']['rotor_abs_over_rel_ratio'], 0)
+        self.assertTrue(summary['pairs']['A_active/B_free']['stays_close'])
+        rows[-1]['B_free_magnet_x_m'] += 0.004
+        self.assertEqual(analyze(rows, p)['pairs']['A_active/B_free']['first_separation_s'], 0.04)
 
     def test_force_gradient_energy(self):
         r, mi, mj = (0.021, -0.013, 0.004), (0.2, 0.1, 0.02), (-0.12, 0.21, 0.03)
@@ -92,25 +92,25 @@ class PhysicsLaws(unittest.TestCase):
             self.assertLessEqual(w * friction(w, 0.024, 0.01, 0.05), 0)
 
     def test_motor_braking_and_limits(self):
-        p = Parametres()
+        p = Parameters()
         self.assertLess(dc_motor(0, 1, p)[0], 0)
         self.assertGreater(dc_motor(0, -1, p)[0], 0)
         for voltage in (-100, 0, 100):
             for w in (-100, 0, 100):
                 torque, current, u = dc_motor(voltage, w, p)
-                self.assertLessEqual(abs(torque), p.couple_max)
-                self.assertLessEqual(abs(current), p.courant_max)
-                self.assertLessEqual(abs(u), p.tension_max)
+                self.assertLessEqual(abs(torque), p.max_torque)
+                self.assertLessEqual(abs(current), p.max_current)
+                self.assertLessEqual(abs(u), p.max_voltage)
 
     def test_masses_and_units(self):
-        p = Parametres()
-        p.verifier()
-        self.assertAlmostEqual(p.masse_corps + p.masse_actif + p.masse_libre + p.masse_roue_libre, p.M)
-        self.assertGreater(p.moment_aimant, 0)
-        self.assertLess(p.rayon_aimant, p.R)
-        p.masse_actif = p.M
+        p = Parameters()
+        p.check()
+        self.assertAlmostEqual(p.body_mass + p.active_rotor_mass + p.free_rotor_mass + p.wheel_mass, p.M)
+        self.assertGreater(p.magnet_moment, 0)
+        self.assertLess(p.magnet_radius, p.R)
+        p.active_rotor_mass = p.M
         with self.assertRaises(ValueError):
-            p.verifier()
+            p.check()
 
 
 if __name__ == "__main__":

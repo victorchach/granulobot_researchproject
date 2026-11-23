@@ -9,7 +9,7 @@ description: Use to run a simulation scenario and analyse its outputs without ch
 
 - `make check-env` if the environment has not been used in this session.
 - Translate the request into simulator flags (list in `AGENTS.md`). Use
-  `--parametres file.json` for several overrides; keep that file in `runs/`
+  `--params file.json` for several overrides; keep that file in `runs/`
   for a one-off run, and move it to `configs/` (or into the result folder)
   if the result will be kept.
 - Pick a short, descriptive `NAME`. Outputs go to `runs/NAME.{csv,json,gif}`.
@@ -17,19 +17,19 @@ description: Use to run a simulation scenario and analyse its outputs without ch
 
 ## 2. Probe, then run
 
-1. Probe: `make sim NAME=NAME-probe ARGS="<flags> --duree 0.2 --sans-gif"`, and
+1. Probe: `make sim NAME=NAME-probe ARGS="<flags> --duration 0.2 --no-gif"`, and
    time it to extrapolate the cost of the full run.
 2. If the full run takes more than about 2 minutes, run it in the background
-   and say how long it should take. Add `--sans-gif` for very long runs and
+   and say how long it should take. Add `--no-gif` for very long runs and
    build the GIF afterwards with `make replay` if it is needed.
 
 ## 3. Analyse
 
 - `make diag CSV=runs/NAME.csv` gives the attachment diagnostics. Also read
-  the `bilan` in `runs/NAME.json`: maximum overlap, maximum magnet force,
+  the `summary` in `runs/NAME.json`: maximum overlap, maximum magnet force,
   final displacements.
 - For directional questions, compute the signs of
-  `<X>_omega_actif_relative_rad_s` per unit from the CSV. For the ring, check
+  `<X>_active_rel_omega_rad_s` per unit from the CSV. For the ring, check
   that the directions alternate and that the sum of rotor speeds stays close
   to 0.
 - Look at 3 to 5 frames of the GIF (extract them with PIL into a temporary
