@@ -1,9 +1,9 @@
-"""Import normal du coeur PyChrono sans ses extensions graphiques optionnelles.
+"""Normal import of the PyChrono core, without its optional graphics extensions.
 
-Le paquet conda importe automatiquement vsg3d dans son __init__. Un filtre
-TEMPORAIRE bloque ces imports avant leur chargement natif (et donc SDL2).
-Il ne modifie ni l'installation conda ni les modules binaires. Un simple
-'import pychrono.core' ne suffit pas, car Python exécute aussi __init__.
+The conda package imports vsg3d automatically in its __init__. A TEMPORARY
+filter blocks these imports before their native code loads (and so SDL2).
+It changes neither the conda install nor the binary modules. A plain
+'import pychrono.core' is not enough, because Python also runs __init__.
 """
 import importlib
 import importlib.abc
@@ -15,25 +15,25 @@ import sys
 class _CoreOnly(importlib.abc.MetaPathFinder):
     def find_spec(self, fullname, path=None, target=None):
         if fullname.startswith('pychrono.') and fullname not in ('pychrono.core', 'pychrono._core'):
-            raise ModuleNotFoundError(f'Extension optionnelle désactivée pour cet import : {fullname}')
+            raise ModuleNotFoundError(f'Optional extension disabled for this import: {fullname}')
         return None
 
 
-def charger_chrono():
-    filtre = _CoreOnly()
-    sys.meta_path.insert(0, filtre)
+def load_chrono():
+    core_filter = _CoreOnly()
+    sys.meta_path.insert(0, core_filter)
     try:
         core = importlib.import_module('pychrono.core')
     finally:
-        sys.meta_path.remove(filtre)
-    # L'initialiseur conda ne configure pas ce chemin si fea est désactivé.
+        sys.meta_path.remove(core_filter)
+    # The conda initialiser does not set this path when fea is disabled.
     data = Path(core.__file__).resolve().parent / '../../../Library/data'
     if data.is_dir():
         core.SetChronoDataPath(str(data.resolve()) + '/')
     return core
 
 
-chrono = charger_chrono()
+chrono = load_chrono()
 
 
 # Small conversions between PyChrono objects and plain Python values.
@@ -55,9 +55,9 @@ def omega(b):
 
 
 if __name__ == '__main__':
-    interdits = [n for n in sys.modules if n.startswith(('pychrono.vsg', 'pychrono._vsg',
-                   'pychrono.irrlicht', 'pychrono.sensor'))]
-    if interdits:
-        raise RuntimeError(f'Extensions graphiques déjà chargées : {interdits}')
-    sys_test = chrono.ChSystemNSC()
-    print('Coeur PyChrono opérationnel ; aucune extension graphique chargée.', flush=True)
+    forbidden = [n for n in sys.modules if n.startswith(('pychrono.vsg', 'pychrono._vsg',
+                 'pychrono.irrlicht', 'pychrono.sensor'))]
+    if forbidden:
+        raise RuntimeError(f'Graphics extensions already loaded: {forbidden}')
+    test_system = chrono.ChSystemNSC()
+    print('PyChrono core working; no graphics extension loaded.', flush=True)

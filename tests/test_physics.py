@@ -1,33 +1,33 @@
-"""Vérifications physiques des lois, sans dynamique PyChrono (rapide)."""
+"""Physical checks of the laws, without PyChrono dynamics (fast)."""
 import math
 import unittest
 from granulobot.parameters import Parametres
-from granulobot.model.magnets import cross, dipoles, pour_parametres, CylindresAxiaux
-from granulobot.model.motor import frottement, moteur_cc
-from granulobot.output.analysis import analyser
+from granulobot.model.magnets import cross, dipoles, for_parameters, AxialCylinders
+from granulobot.model.motor import friction, dc_motor
+from granulobot.output.analysis import analyze
 
 
-class LoisPhysiques(unittest.TestCase):
-    def test_cylindres_force_gradient_et_limite_dipolaire(self):
+class PhysicsLaws(unittest.TestCase):
+    def test_cylinders_force_gradient_and_dipole_limit(self):
         p = Parametres()
-        modele = pour_parametres(p)
+        model = for_parameters(p)
         for d in (0.008, 0.01, 0.02, 0.1):
             h = 1e-7
-            gradient = (modele.evaluer(d+h)[0] - modele.evaluer(d-h)[0]) / (2*h)
-            self.assertAlmostEqual(modele.evaluer(d)[1], -gradient, delta=1e-6)
+            gradient = (model.evaluate(d+h)[0] - model.evaluate(d-h)[0]) / (2*h)
+            self.assertAlmostEqual(model.evaluate(d)[1], -gradient, delta=1e-6)
         d = 0.2
-        limite = 3e-7 * p.moment_aimant**2 / d**4
-        self.assertLess(abs(modele.evaluer(d)[1] / limite - 1), 0.01)
+        limit = 3e-7 * p.moment_aimant**2 / d**4
+        self.assertLess(abs(model.evaluate(d)[1] / limit - 1), 0.01)
 
-    def test_cylindres_quadrature_raffinee(self):
+    def test_cylinders_refined_quadrature(self):
         p = Parametres()
-        base = pour_parametres(p).direct(p.diametre_aimant_ext)[1]
-        fin = CylindresAxiaux(p.diametre_aimant_ext, p.diametre_aimant_int,
+        base = for_parameters(p).direct(p.diametre_aimant_ext)[1]
+        fine = AxialCylinders(p.diametre_aimant_ext, p.diametre_aimant_int,
             p.epaisseur_aimant, p.remanence, epsilon=p.adoucissement_magnetique,
-            radial=6, angulaire=24).direct(p.diametre_aimant_ext)[1]
-        self.assertLess(abs(base / fin - 1), 0.01)
+            radial=6, angular=24).direct(p.diametre_aimant_ext)[1]
+        self.assertLess(abs(base / fine - 1), 0.01)
 
-    def test_geometrie_affleurante_et_attraction_axiale(self):
+    def test_flush_geometry_and_axial_attraction(self):
         p = Parametres()
         self.assertAlmostEqual(p.rayon_aimant + p.diametre_aimant_ext / 2, p.R)
         r = (p.diametre_aimant_ext, 0, 0)
@@ -35,7 +35,7 @@ class LoisPhysiques(unittest.TestCase):
                                 (0, 0, -p.moment_aimant), p.adoucissement_magnetique)
         self.assertLess(force[0], 0)
 
-    def test_diagnostic_distingue_rotation_corps_et_decrochage(self):
+    def test_analysis_separates_body_rotation_and_detachment(self):
         p = Parametres(nombre_robots=2, rampe_demarrage=0)
         rows = []
         for t in (0, 0.04):
@@ -50,13 +50,13 @@ class LoisPhysiques(unittest.TestCase):
             r.update({'A_aimant_actif_x_m': 0, 'A_aimant_actif_y_m': 0,
                       'B_aimant_libre_x_m': 0.018, 'B_aimant_libre_y_m': 0})
             rows.append(r)
-        bilan = analyser(rows, p)
-        self.assertEqual(bilan['unites']['A']['ratio_rotor_absolu_sur_relatif'], 0)
-        self.assertTrue(bilan['paires']['A_actif/B_libre']['reste_proche_sur_essai'])
+        summary = analyze(rows, p)
+        self.assertEqual(summary['unites']['A']['ratio_rotor_absolu_sur_relatif'], 0)
+        self.assertTrue(summary['paires']['A_actif/B_libre']['reste_proche_sur_essai'])
         rows[-1]['B_aimant_libre_x_m'] += 0.004
-        self.assertEqual(analyser(rows, p)['paires']['A_actif/B_libre']['premier_eloignement_detecte_s'], 0.04)
+        self.assertEqual(analyze(rows, p)['paires']['A_actif/B_libre']['premier_eloignement_detecte_s'], 0.04)
 
-    def test_force_gradient_energie(self):
+    def test_force_gradient_energy(self):
         r, mi, mj = (0.021, -0.013, 0.004), (0.2, 0.1, 0.02), (-0.12, 0.21, 0.03)
         f, _, _, _ = dipoles(r, mi, mj, 0.008)
         h = 1e-7
@@ -67,7 +67,7 @@ class LoisPhysiques(unittest.TestCase):
             gradient = (dipoles(rp, mi, mj, 0.008)[3] - dipoles(rm, mi, mj, 0.008)[3]) / (2 * h)
             self.assertAlmostEqual(f[k], -gradient, delta=1e-7)
 
-    def test_action_reaction_et_moment_total(self):
+    def test_action_reaction_and_total_moment(self):
         r, mi, mj = (0.021, -0.013, 0.004), (0.2, 0.1, 0.02), (-0.12, 0.21, 0.03)
         f, ti, tj, _ = dipoles(r, mi, mj, 0.008)
         inverse = dipoles(tuple(-x for x in r), mj, mi, 0.008)[0]
@@ -76,7 +76,7 @@ class LoisPhysiques(unittest.TestCase):
             self.assertAlmostEqual(f[k], -inverse[k], places=12)
             self.assertAlmostEqual(ti[k] + tj[k] + orbital[k], 0, places=12)
 
-    def test_couple_gradient_orientation(self):
+    def test_torque_orientation_gradient(self):
         r, mi, mj = (0.022, 0.01, 0), (0.2, 0.1, 0), (0.1, -0.2, 0)
         _, ti, _, _ = dipoles(r, mi, mj, 0.008)
         h = 1e-6
@@ -87,22 +87,22 @@ class LoisPhysiques(unittest.TestCase):
                     dipoles(r, rotation(-h), mj, 0.008)[3]) / (2 * h)
         self.assertAlmostEqual(ti[2], -gradient, places=10)
 
-    def test_frottement_dissipe(self):
+    def test_friction_dissipates(self):
         for w in (-10, -0.1, 0, 0.1, 10):
-            self.assertLessEqual(w * frottement(w, 0.024, 0.01, 0.05), 0)
+            self.assertLessEqual(w * friction(w, 0.024, 0.01, 0.05), 0)
 
-    def test_moteur_freinage_et_limites(self):
+    def test_motor_braking_and_limits(self):
         p = Parametres()
-        self.assertLess(moteur_cc(0, 1, p)[0], 0)
-        self.assertGreater(moteur_cc(0, -1, p)[0], 0)
+        self.assertLess(dc_motor(0, 1, p)[0], 0)
+        self.assertGreater(dc_motor(0, -1, p)[0], 0)
         for voltage in (-100, 0, 100):
             for w in (-100, 0, 100):
-                couple, courant, u = moteur_cc(voltage, w, p)
-                self.assertLessEqual(abs(couple), p.couple_max)
-                self.assertLessEqual(abs(courant), p.courant_max)
+                torque, current, u = dc_motor(voltage, w, p)
+                self.assertLessEqual(abs(torque), p.couple_max)
+                self.assertLessEqual(abs(current), p.courant_max)
                 self.assertLessEqual(abs(u), p.tension_max)
 
-    def test_masses_et_unites(self):
+    def test_masses_and_units(self):
         p = Parametres()
         p.verifier()
         self.assertAlmostEqual(p.masse_corps + p.masse_actif + p.masse_libre + p.masse_roue_libre, p.M)

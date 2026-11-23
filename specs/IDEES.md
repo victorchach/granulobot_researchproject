@@ -7,8 +7,10 @@ removed from this list.
 
 - Generalize the simulator from 2 or 3 units to N units, with a regular
   hexagon ring for N = 6. The 2/3 assumption is hard-coded in
-  `Parametres.verifier`, `appariements`, the 3-value tuples (`tensions_cibles`,
-  ...), the `--tensions A B C` CLI flags and `analysis.analyser`.
+  `Parametres.verifier`, `simulation/world.py` (`coupled_pairs`, the triangle
+  positions), `model/unit.py` (`create_unit`, rotor orientations), the 3-value
+  tuples (`tensions_cibles`, ...), the `--tensions A B C` CLI flags and
+  `output/analysis.py` (`analyze`).
 - Alternating open-loop biases u_i = (-1)^i |u| (paper eq. 8).
 - Long-run metrics for step 1: ring shape, alternation of rotor directions,
   sum of rotor speeds.
@@ -26,5 +28,6 @@ removed from this list.
 
 ## Cleanup
 
-- Translate the French identifiers, comments and CSV column names to English.
-  This breaks old CSV/JSON files; plan a compatibility note.
+- Translate the interface to English (`Parametres` fields, CLI flags, CSV
+  columns, JSON keys, GIF text, campaign names): spec 005, next after 004.
+  No compatibility with old run files (decided 2026-11-23).

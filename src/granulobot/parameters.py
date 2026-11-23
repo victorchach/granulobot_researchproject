@@ -8,104 +8,104 @@ import math
 
 @dataclass
 class Parametres:
-    nombre_robots: int = 3                       # 2 : banc d'essai ; 3 : triangle
-    liaison_ideale: bool = False                 # référence cinématique, PAS modèle réel
-    perturbation_rotor_rad: float = 0.0          # rotor actif A, test de rappel passif
-    marge_detection_decrochage: float = 0.003     # critère diagnostic, pas loi physique
-    # Mesures fournies par Hugo ; M reste à peser sur le prototype actuel.
-    R: float = 0.035                 # rayon extérieur (m)
-    H: float = 0.050                 # hauteur (m)
-    M: float = 0.098                 # masse TOTALE, rotors compris (kg)
-    roue_libre_exterieure: bool = True           # mécanique confirmée : seconde roue libre
-    masse_roue_libre: float = 0.008              # estimation incluse dans M
-    epaisseur_roue: float = 0.004                # épaisseur des deux jantes, à mesurer
-    roue_motorisee_en_bas: bool = True          # disposition de l'article, à vérifier
-    couple_frottement_roue: float = 0.0001       # roulement roue/corps, estimation N.m
+    nombre_robots: int = 3                       # 2: test bench; 3: triangle
+    liaison_ideale: bool = False                 # kinematic reference, NOT a real model
+    perturbation_rotor_rad: float = 0.0          # active rotor of A, passive restoring test
+    marge_detection_decrochage: float = 0.003     # diagnostic criterion, not a physical law
+    # Measurements provided by Hugo; M is still to be weighed on the current prototype.
+    R: float = 0.035                 # outer radius (m)
+    H: float = 0.050                 # height (m)
+    M: float = 0.098                 # TOTAL mass, rotors included (kg)
+    roue_libre_exterieure: bool = True           # confirmed mechanics: second free wheel
+    masse_roue_libre: float = 0.008              # estimate, included in M
+    epaisseur_roue: float = 0.004                # thickness of both rims, to measure
+    roue_motorisee_en_bas: bool = True          # layout from the paper, to check
+    couple_frottement_roue: float = 0.0001       # wheel/body bearing, estimate N.m
     viscosite_roue: float = 0.00001              # N.m.s/rad
-    # Répartition estimée ; masse/inertie du rotor actif issues de la fig. 8.
+    # Estimated split; active rotor mass/inertia from fig. 8.
     masse_actif: float = 0.036
     masse_libre: float = 0.010
     inertie_actif_pivot: float = 0.036 * 0.020**2  # kg.m²
-    inertie_libre_pivot: float = 0.010 * 0.020**2  # estimation
-    excentricite_actif: float = 0.008             # COM décalé, estimation (m)
-    excentricite_libre: float = 0.004             # estimation (m)
-    facteur_inertie_corps: float = 0.65           # Izz = facteur * M_corps * R²
-    # Contact NSC avec compliance paramétrable ; pas de force de ressort ajoutée.
-    mu_robots: float = 0.6                       # à mesurer
-    compliance_coques: float = 1e-7             # m/N par matériau, plastique estimé
-    compliance_aimants: float = 1e-8             # m/N par matériau, métal estimé
-    # Faible déformation NSC : partage de charge entre contacts affleurants.
-    # Mettre les deux à zéro reproduit la référence parfaitement rigide.
+    inertie_libre_pivot: float = 0.010 * 0.020**2  # estimate
+    excentricite_actif: float = 0.008             # offset COM, estimate (m)
+    excentricite_libre: float = 0.004             # estimate (m)
+    facteur_inertie_corps: float = 0.65           # Izz = factor * M_body * R²
+    # NSC contact with configurable compliance; no added spring force.
+    mu_robots: float = 0.6                       # to measure
+    compliance_coques: float = 1e-7             # m/N per material, plastic estimate
+    compliance_aimants: float = 1e-8             # m/N per material, metal estimate
+    # Small NSC deformation: load sharing between flush contacts.
+    # Setting both to zero gives back the perfectly rigid reference.
     restitution: float = 0.0
-    roulement_contact: float = 0.0               # résistance au roulement NSC, option
-    pivotement_contact: float = 0.0             # résistance au pivotement NSC, option
-    enveloppe_collision: float = 1e-5            # paramètre numérique (m)
+    roulement_contact: float = 0.0               # NSC rolling resistance, optional
+    pivotement_contact: float = 0.0             # NSC spinning resistance, optional
+    enveloppe_collision: float = 1e-5            # numerical parameter (m)
     marge_collision: float = 1e-5
-    # Sol réel : gravité + réaction normale + Coulomb calculés par Chrono.
+    # Real ground: gravity + normal reaction + Coulomb computed by Chrono.
     sol_actif: bool = True
-    modele_sol: str = 'disque_equivalent'        # contact NSC central + résistance torsion
-    facteur_rayon_frottement_sol: float = 2/3    # disque à pression uniforme : R_eff=2R/3
+    modele_sol: str = 'disque_equivalent'        # central NSC contact + torsion resistance
+    facteur_rayon_frottement_sol: float = 2/3    # uniform-pressure disc: R_eff=2R/3
     gravite: float = 9.81
-    mu_sol: float = 0.10                         # estimation, support à préciser
+    mu_sol: float = 0.10                         # estimate, support to be specified
     largeur_sol: float = 2.0                     # m
     epaisseur_sol: float = 0.05
-    # Résistances supplémentaires, désactivées pour éviter de doubler Coulomb.
-    resistance_translation: float = 0.0          # N.s/m, option air/fluide/support
+    # Extra resistances, off so that Coulomb is not counted twice.
+    resistance_translation: float = 0.0          # N.s/m, optional air/fluid/support
     resistance_rotation: float = 0.0             # N.m.s/rad
-    # Moteur de l'article, fig. 8D ; à recalibrer pour le moteur utilisé.
+    # Motor from the paper, fig. 8D; to recalibrate for the motor actually used.
     moteur_actif: bool = True
     mode_moteur: str = "tension"                 # tension, vitesse, couple
     rapport_reduction: float = 379.0
-    kt: float = 5.8e-3                           # N.m/A, AVANT réducteur
-    ke: float = 2.65e-3                          # V.s/rad, AVANT réducteur
+    kt: float = 5.8e-3                           # N.m/A, BEFORE the gearbox
+    ke: float = 2.65e-3                          # V.s/rad, BEFORE the gearbox
     resistance_moteur: float = 9.6               # ohms
-    rendement_reducteur: float = 1.0             # modèle ajusté de l'article
+    rendement_reducteur: float = 1.0             # fitted model from the paper
     tension_max: float = 6.0
-    courant_max: float = 0.4                     # limite estimée, à mesurer
-    couple_max: float = 0.10                     # protection mécanique estimée
-    vitesses_cibles: tuple = (math.pi, math.pi, math.pi)  # 1 tour/2 s, mode vitesse
-    tensions_cibles: tuple = (3.25, 3.25, 3.25)  # estimation ~30 tr/min à vide
-    couples_cibles: tuple = (5e-5, 5e-5, 5e-5)  # N.m, mode couple seulement
-    gain_p_vitesse: float = 1.0                  # V / (rad/s), estimation
-    gain_i_vitesse: float = 0.5                  # V / rad, estimation
+    courant_max: float = 0.4                     # estimated limit, to measure
+    couple_max: float = 0.10                     # estimated mechanical protection
+    vitesses_cibles: tuple = (math.pi, math.pi, math.pi)  # 1 turn/2 s, speed mode
+    tensions_cibles: tuple = (3.25, 3.25, 3.25)  # estimate ~30 rpm without load
+    couples_cibles: tuple = (5e-5, 5e-5, 5e-5)  # N.m, torque mode only
+    gain_p_vitesse: float = 1.0                  # V / (rad/s), estimate
+    gain_i_vitesse: float = 0.5                  # V / rad, estimate
     rampe_demarrage: float = 0.5                 # s
-    # Frottement sec régularisé : oppose la vitesse, pas de vrai blocage statique.
+    # Regularised dry friction: opposes the speed, no real static locking.
     frottement_interne_actif: bool = True
-    couple_frottement_actif: float = 0.024       # N.m, article fig. 8
-    couple_frottement_libre: float = 0.0002      # N.m, estimation roulement
-    viscosite_libre: float = 0.0001              # N.m.s/rad, estimation
-    vitesse_regularisation: float = 0.05        # rad/s, numérique, à raffiner
-    # Aimants cylindriques : diamètre/affleurement estimés par Hugo ;
-    # hauteur 10 mm et pôles axiaux fournis ; perçage et rémanence à confirmer.
+    couple_frottement_actif: float = 0.024       # N.m, paper fig. 8
+    couple_frottement_libre: float = 0.0002      # N.m, bearing estimate
+    viscosite_libre: float = 0.0001              # N.m.s/rad, estimate
+    vitesse_regularisation: float = 0.05        # rad/s, numerical, to refine
+    # Cylindrical magnets: diameter/flush mounting estimated by Hugo;
+    # 10 mm height and axial poles provided; hole and remanence to confirm.
     magnetisme_actif: bool = True
-    contact_aimants: bool = True                 # contact latéral, aimants entre unités
-    orientation_aimant: str = 'axiale'           # pôles sur faces plates confirmés par Hugo
-    modele_magnetique: str = 'cylindres'          # cylindres finis ou dipoles de comparaison
-    quadrature_radiale: int = 4                 # précision des faces aimantées
+    contact_aimants: bool = True                 # side contact between magnets of different units
+    orientation_aimant: str = 'axiale'           # poles on the flat faces, confirmed by Hugo
+    modele_magnetique: str = 'cylindres'          # finite cylinders, or dipoles for comparison
+    quadrature_radiale: int = 4                 # accuracy of the magnetised faces
     quadrature_angulaire: int = 16
-    mu_aimants: float = 0.05                     # estimation, indépendant des coques
-    diametre_aimant_ext: float = 0.008            # estimation donnée par Hugo
-    diametre_aimant_int: float = 0.0             # plein supposé ; trou éventuel à confirmer
-    epaisseur_aimant: float = 0.010              # estimation donnée par Hugo
-    remanence: float = 1.45                      # T, estimation N54
-    facteur_moment: float = 1.0                  # calibration du moment effectif
-    retrait_aimant: float = 0.0                  # tranche affleurante confirmée par Hugo
-    adoucissement_magnetique: float = 0.0002     # numérique, à vérifier par convergence
-    interactions_internes: bool = False         # aimants du même robot, à étudier
-    # Dipôles supposés solidaires de leur rotor ; rotation propre de l'aimant omise.
-    # Triangle, moteurs indépendants ; pas de lien permanent entre voisins.
-    jeu_initial: float = 5e-5                    # m entre les coques
-    dt: float = 1e-5                            # s, résout le freinage moteur raide
+    mu_aimants: float = 0.05                     # estimate, independent of the shells
+    diametre_aimant_ext: float = 0.008            # estimate given by Hugo
+    diametre_aimant_int: float = 0.0             # assumed solid; possible hole to confirm
+    epaisseur_aimant: float = 0.010              # estimate given by Hugo
+    remanence: float = 1.45                      # T, N54 estimate
+    facteur_moment: float = 1.0                  # calibration of the effective moment
+    retrait_aimant: float = 0.0                  # flush edge, confirmed by Hugo
+    adoucissement_magnetique: float = 0.0002     # numerical, to check by convergence
+    interactions_internes: bool = False         # magnets of the same robot, to study
+    # Dipoles assumed rigidly attached to their rotor; the magnet's own spin is omitted.
+    # Triangle, independent motors; no permanent link between neighbours.
+    jeu_initial: float = 5e-5                    # m between the shells
+    dt: float = 1e-5                            # s, resolves the stiff motor braking
     duree: float = 3.0
-    fps: int = 25                               # 40 ms : exact au format GIF
-    frequence_mesures: int = 200                # données distinctes du rythme vidéo
+    fps: int = 25                               # 40 ms: exact in the GIF format
+    frequence_mesures: int = 200                # data separate from the video rate
     iterations_solveur: int = 1000
-    solveur: str = 'PSOR'                      # PSOR ou APGD, comparaison numérique
+    solveur: str = 'PSOR'                      # PSOR or APGD, numerical comparison
     tolerance_solveur: float = 1e-9
-    vitesse_correction_contact: float = 10.0     # m/s, plafond NUMÉRIQUE, pas une vitesse imposée
-    # Avec compliance Ctot, ce plafond borne aussi N ~ v_max*dt/Ctot.
-    # L'ancienne valeur 0.05 plafonnait les coques à 2.5 N au pas 1e-5 s,
-    # insuffisant sous ~12 N magnétiques. 10 évite ce bridage dans les essais.
+    vitesse_correction_contact: float = 10.0     # m/s, NUMERICAL cap, not an imposed speed
+    # With compliance Ctot, this cap also bounds N ~ v_max*dt/Ctot.
+    # The old value 0.05 capped the shells at 2.5 N at dt = 1e-5 s, not enough
+    # under ~12 N of magnetic force. 10 avoids this limit in the runs.
 
     @property
     def masse_corps(self):
@@ -124,57 +124,57 @@ class Parametres:
 
     def verifier(self):
         if self.nombre_robots not in (2, 3):
-            raise ValueError("Le banc accepte deux ou trois granulobots")
+            raise ValueError("The bench accepts two or three granulobots")
         if self.solveur not in ('PSOR', 'APGD'):
-            raise ValueError('solveur : PSOR ou APGD')
+            raise ValueError('solveur: PSOR or APGD')
         if self.modele_sol not in ('disque_equivalent', 'bullet'):
-            raise ValueError('modele_sol : disque_equivalent ou bullet')
+            raise ValueError('modele_sol: disque_equivalent or bullet')
         if self.orientation_aimant not in ('radiale', 'axiale'):
-            raise ValueError('orientation_aimant : radiale ou axiale')
+            raise ValueError('orientation_aimant: radiale or axiale')
         if self.modele_magnetique not in ('cylindres', 'dipoles'):
-            raise ValueError('modele_magnetique : cylindres ou dipoles')
+            raise ValueError('modele_magnetique: cylindres or dipoles')
         if self.modele_magnetique == 'cylindres' and self.orientation_aimant != 'axiale':
-            raise ValueError('Le modèle de cylindres nécessite une aimantation axiale')
+            raise ValueError('The cylinder model needs an axial magnetisation')
         if self.quadrature_radiale < 1 or self.quadrature_angulaire < 4:
-            raise ValueError('Quadrature magnétique invalide')
+            raise ValueError('Invalid magnetic quadrature')
         if self.adoucissement_magnetique >= self.diametre_aimant_ext * math.sqrt(2 / 3):
-            raise ValueError('Adoucissement trop grand : la force radiale peut changer de signe au contact')
-        for nom in ("R", "H", "M", "masse_actif", "masse_libre", "dt", "duree",
-                    "fps", "resistance_moteur", "rapport_reduction", "kt", "ke",
-                    "vitesse_regularisation", "adoucissement_magnetique",
-                    "tension_max", "courant_max", "couple_max", "largeur_sol"):
-            if not math.isfinite(getattr(self, nom)) or getattr(self, nom) <= 0:
-                raise ValueError(f"{nom} doit être positif et fini")
+            raise ValueError('Softening too large: the radial force can change sign at contact')
+        for name in ("R", "H", "M", "masse_actif", "masse_libre", "dt", "duree",
+                     "fps", "resistance_moteur", "rapport_reduction", "kt", "ke",
+                     "vitesse_regularisation", "adoucissement_magnetique",
+                     "tension_max", "courant_max", "couple_max", "largeur_sol"):
+            if not math.isfinite(getattr(self, name)) or getattr(self, name) <= 0:
+                raise ValueError(f"{name} must be positive and finite")
         if self.masse_corps <= 0 or self.rayon_aimant <= 0:
-            raise ValueError("Répartition des masses ou géométrie des aimants impossible")
+            raise ValueError("Impossible mass split or magnet geometry")
         if self.roue_libre_exterieure and (not 0 < self.epaisseur_roue < self.H / 2
                                          or not 0 < self.masse_roue_libre < self.M):
-            raise ValueError("Masse ou épaisseur de la roue libre invalide")
-        for masse, inertie, excentricite in (
+            raise ValueError("Invalid free wheel mass or thickness")
+        for mass, inertia, eccentricity in (
                 (self.masse_actif, self.inertie_actif_pivot, self.excentricite_actif),
                 (self.masse_libre, self.inertie_libre_pivot, self.excentricite_libre)):
-            if excentricite < 0 or inertie <= masse * excentricite**2:
-                raise ValueError("L'inertie au pivot doit dépasser masse * excentricité²")
+            if eccentricity < 0 or inertia <= mass * eccentricity**2:
+                raise ValueError("The inertia about the pivot must exceed mass * eccentricity²")
         if self.mode_moteur not in ("vitesse", "tension", "couple"):
-            raise ValueError("mode_moteur : vitesse, tension ou couple")
-        for cibles in (self.vitesses_cibles, self.tensions_cibles, self.couples_cibles):
-            if len(cibles) != 3 or not all(math.isfinite(v) for v in cibles):
-                raise ValueError("Il faut trois consignes finies, pour A, B et C")
-        for nom in ("mu_robots", "mu_sol", "gravite", "resistance_translation",
-                    "resistance_rotation", "couple_frottement_actif",
-                    "couple_frottement_libre", "viscosite_libre", "jeu_initial",
-                    "rampe_demarrage", "facteur_moment", "roulement_contact",
-                    "pivotement_contact", "mu_aimants", "retrait_aimant",
-                    "marge_detection_decrochage", "compliance_coques", "compliance_aimants",
-                    "couple_frottement_roue", "viscosite_roue"):
-            if not math.isfinite(getattr(self, nom)) or getattr(self, nom) < 0:
-                raise ValueError(f"{nom} doit être positif ou nul")
+            raise ValueError("mode_moteur: vitesse, tension or couple")
+        for targets in (self.vitesses_cibles, self.tensions_cibles, self.couples_cibles):
+            if len(targets) != 3 or not all(math.isfinite(v) for v in targets):
+                raise ValueError("Three finite set points are needed, for A, B and C")
+        for name in ("mu_robots", "mu_sol", "gravite", "resistance_translation",
+                     "resistance_rotation", "couple_frottement_actif",
+                     "couple_frottement_libre", "viscosite_libre", "jeu_initial",
+                     "rampe_demarrage", "facteur_moment", "roulement_contact",
+                     "pivotement_contact", "mu_aimants", "retrait_aimant",
+                     "marge_detection_decrochage", "compliance_coques", "compliance_aimants",
+                     "couple_frottement_roue", "viscosite_roue"):
+            if not math.isfinite(getattr(self, name)) or getattr(self, name) < 0:
+                raise ValueError(f"{name} must be positive or zero")
         if not 0 <= self.restitution <= 1 or not 0 < self.rendement_reducteur <= 1:
-            raise ValueError("Restitution ou rendement hors limites")
+            raise ValueError("Restitution or gearbox efficiency out of range")
         if not 0 <= self.diametre_aimant_int < self.diametre_aimant_ext:
-            raise ValueError("Diamètres de l'aimant invalides")
+            raise ValueError("Invalid magnet diameters")
         if self.roulement_contact > 0 and self.pivotement_contact == 0:
-            raise ValueError("Chrono recommande un pivotement non nul avec le roulement")
+            raise ValueError("Chrono recommends a non-zero spinning resistance with rolling resistance")
 
     def dictionnaire(self):
         return asdict(self)
