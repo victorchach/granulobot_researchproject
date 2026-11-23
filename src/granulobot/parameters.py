@@ -1,8 +1,6 @@
-"""Lois physiques indépendantes de PyChrono ; toutes les unités sont SI.
+"""Parametres: every physical and numerical setting, in SI units, with its origin.
 
-Dipôles ponctuels avec potentiel régularisé : approximation des aimants finis,
-non valable comme prédiction quantitative à très courte distance sans calibration.
-Moteur CC en régime électrique quasi stationnaire (inductance négligée).
+The laws that use them live in granulobot.model (motor.py, magnets.py).
 """
 from dataclasses import dataclass, asdict
 import math
@@ -180,51 +178,3 @@ class Parametres:
 
     def dictionnaire(self):
         return asdict(self)
-
-
-def dot(a, b):
-    return sum(x * y for x, y in zip(a, b))
-
-
-def cross(a, b):
-    return (a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2],
-            a[0] * b[1] - a[1] * b[0])
-
-
-def dipoles(r, mi, mj, epsilon):
-    """r = position_j - position_i ; retourne F sur j, couples i/j et énergie.
-
-    Force = -gradient_r U. La force sur i vaut -F. Chaque force doit être
-    appliquée AU POINT de l'aimant ; les couples retournés sont des couples
-    purs (orientation du dipôle), supplémentaires au moment de cette force.
-    Le même potentiel adouci sert aux forces et aux couples, sans plafonnement.
-    """
-    s2 = dot(r, r) + epsilon**2
-    s3, s5, s7 = s2**1.5, s2**2.5, s2**3.5
-    a, b, c = dot(mi, r), dot(mj, r), dot(mi, mj)
-    force = tuple(3e-7 * ((c * rk + b * mik + a * mjk) / s5 -
-                         5 * a * b * rk / s7)
-                  for rk, mik, mjk in zip(r, mi, mj))
-    bi = tuple(1e-7 * (3 * rk * b / s5 - mjk / s3) for rk, mjk in zip(r, mj))
-    bj = tuple(1e-7 * (3 * rk * a / s5 - mik / s3) for rk, mik in zip(r, mi))
-    return force, cross(mi, bi), cross(mj, bj), 1e-7 * (c / s3 - 3 * a * b / s5)
-
-
-def frottement(vitesse, sec, visqueux, epsilon):
-    """Couple dissipatif lissé ; ne représente pas exactement la friction statique."""
-    return -sec * math.tanh(vitesse / epsilon) - visqueux * vitesse
-
-
-def moteur_cc(tension, vitesse_relative, p):
-    """U - Ke * beta * omega = R_elec * I ; couple en sortie du réducteur.
-
-    Le courant peut être négatif : freinage électrique / moteur rétro-entraîné.
-    Pas de facteur de rendement supplémentaire caché dans le freinage.
-    """
-    u = max(-p.tension_max, min(p.tension_max, tension))
-    courant = (u - p.ke * p.rapport_reduction * vitesse_relative) / p.resistance_moteur
-    courant = max(-p.courant_max, min(p.courant_max, courant))
-    gain = p.rendement_reducteur * p.rapport_reduction * p.kt
-    couple = max(-p.couple_max, min(p.couple_max, gain * courant))
-    # Courant correspondant au couple effectivement transmis après saturation.
-    return couple, couple / gain, u

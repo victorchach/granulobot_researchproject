@@ -8,8 +8,12 @@ import argparse
 import tempfile
 import unittest
 
+from granulobot import RACINE
+from granulobot.chrono_env import omega
+from granulobot.model.motor import appliquer_moteur
 from granulobot.parameters import Parametres
-from granulobot.simulator import RACINE, creer_systeme, appliquer_moteur, omega, simuler
+from granulobot.simulation.loop import simuler
+from granulobot.simulation.world import creer_systeme
 
 
 class Dynamique(unittest.TestCase):

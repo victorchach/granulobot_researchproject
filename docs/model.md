@@ -4,7 +4,7 @@ The modelling assumptions, where the parameters come from, and the known
 limitations of the current simulator (`src/granulobot/`). All values
 are SI. The parameters live in `Parametres` (`src/granulobot/parameters.py`);
 for a one-off run, override them in `PARAMETRES = Parametres(...)`
-(`simulator.py`) or with `--parametres file.json`.
+(`src/granulobot/__main__.py`) or with `--parametres file.json`.
 
 ## Mechanics of one unit
 

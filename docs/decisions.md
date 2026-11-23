@@ -2,6 +2,23 @@
 
 Newest first. Each entry gives the decision and the reason for it.
 
+## 2026-11-23: split the simulator (spec 003)
+
+- **`simulator.py` (670 lines) was split into `model/`, `simulation/` and
+  `output/`**, the target drawn with Victor. `model/` says what a Granulobot
+  is (unit, motor, magnets, contacts), `simulation/` how a run works (world,
+  loop, recording), `output/` what comes out (analysis, GIF). The 6-unit ring
+  and the controllers now have obvious places: `simulation/world.py` and a
+  future `model/controller.py`.
+- **A law and the code that applies it live together**: `model/motor.py`
+  holds the DC motor law and `appliquer_moteur`; `model/magnets.py` holds the
+  field models and `appliquer_magnetisme`. Victor preferred this to keeping
+  PyChrono-free laws apart, since everything about the motor is in one file.
+  The cost is that `make test` now loads PyChrono (about 30 ms).
+- Code was moved, not rewritten: all seven reference runs (triangle, 2-unit
+  bench, ideal link, speed mode, dipoles, no ground, with GIF) give
+  byte-identical CSV, JSON and GIF files.
+
 ## 2026-11-23: src layout (spec 002)
 
 - **The code moved to a "src layout"**: the package `src/granulobot/`, with

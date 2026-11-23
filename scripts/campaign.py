@@ -9,8 +9,9 @@ import argparse
 from dataclasses import replace
 import json
 from pathlib import Path
+from granulobot import RACINE
 from granulobot.parameters import Parametres
-from granulobot.simulator import RACINE, simuler
+from granulobot.simulation.loop import simuler
 
 
 def scenarios(base):

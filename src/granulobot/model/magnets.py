@@ -8,10 +8,17 @@ Une rotation propre autour de Z ne change ni les pôles ni cette interaction.
 Br et l'uniformité de l'aimantation restent des hypothèses à calibrer.
 Référence de la méthode des charges surfaciques :
 https://doi.org/10.1016/j.jmmm.2022.169482
+
+Dipôles ponctuels avec potentiel régularisé : approximation des aimants finis,
+non valable comme prédiction quantitative à très courte distance sans calibration.
+appliquer_magnetisme applique l'un ou l'autre modèle aux corps Chrono à chaque pas.
 """
 from bisect import bisect_right
 from functools import lru_cache
+from itertools import combinations
 import math
+
+from granulobot.chrono_env import vect
 
 
 class CylindresAxiaux:
@@ -75,3 +82,65 @@ def pour_parametres(p):
     return modele(p.diametre_aimant_ext, p.diametre_aimant_int, p.epaisseur_aimant,
                   p.remanence, p.facteur_moment, p.adoucissement_magnetique,
                   p.quadrature_radiale, p.quadrature_angulaire)
+
+
+def dot(a, b):
+    return sum(x * y for x, y in zip(a, b))
+
+
+def cross(a, b):
+    return (a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2],
+            a[0] * b[1] - a[1] * b[0])
+
+
+def dipoles(r, mi, mj, epsilon):
+    """r = position_j - position_i ; retourne F sur j, couples i/j et énergie.
+
+    Force = -gradient_r U. La force sur i vaut -F. Chaque force doit être
+    appliquée AU POINT de l'aimant ; les couples retournés sont des couples
+    purs (orientation du dipôle), supplémentaires au moment de cette force.
+    Le même potentiel adouci sert aux forces et aux couples, sans plafonnement.
+    """
+    s2 = dot(r, r) + epsilon**2
+    s3, s5, s7 = s2**1.5, s2**2.5, s2**3.5
+    a, b, c = dot(mi, r), dot(mj, r), dot(mi, mj)
+    force = tuple(3e-7 * ((c * rk + b * mik + a * mjk) / s5 -
+                         5 * a * b * rk / s7)
+                  for rk, mik, mjk in zip(r, mi, mj))
+    bi = tuple(1e-7 * (3 * rk * b / s5 - mjk / s3) for rk, mjk in zip(r, mj))
+    bj = tuple(1e-7 * (3 * rk * a / s5 - mik / s3) for rk, mik in zip(r, mi))
+    return force, cross(mi, bi), cross(mj, bj), 1e-7 * (c / s3 - 3 * a * b / s5)
+
+
+def appliquer_magnetisme(robots, p):
+    if not p.magnetisme_actif or p.liaison_ideale:
+        return 0.0, 0.0
+    aimants = [(i, *u.aimant(actif, p)) for i, u in enumerate(robots) for actif in (True, False)]
+    cylindres = None
+    if p.modele_magnetique == 'cylindres':
+        cylindres = pour_parametres(p)
+    energie, force_max = 0.0, 0.0
+    for ai, aj in combinations(aimants, 2):
+        i, bi, idxi, pi, mi = ai
+        j, bj, idxj, pj, mj = aj
+        if i == j and not p.interactions_internes:
+            continue
+        r = tuple(b - a for a, b in zip(pi, pj))
+        if cylindres is None:
+            f, ti, tj, potentiel = dipoles(r, mi, mj, p.adoucissement_magnetique)
+        else:
+            d = math.hypot(r[0], r[1])
+            if d < 1e-12:
+                raise RuntimeError('Centres des aimants confondus')
+            potentiel, radial = cylindres.evaluer(d)
+            signe = 1 if mi[2] * mj[2] >= 0 else -1
+            potentiel *= signe
+            f = (signe * radial * r[0] / d, signe * radial * r[1] / d, 0)
+            ti = tj = (0, 0, 0)  # Axiale : pas de couple propre autour de Z.
+        bi.AccumulateForce(idxi, vect(tuple(-c for c in f)), vect(pi), False)
+        bj.AccumulateForce(idxj, vect(f), vect(pj), False)
+        bi.AccumulateTorque(idxi, vect(ti), False)
+        bj.AccumulateTorque(idxj, vect(tj), False)
+        energie += potentiel
+        force_max = max(force_max, math.sqrt(sum(c * c for c in f)))
+    return energie, force_max
