@@ -1,14 +1,15 @@
 """Vérifications dynamiques PyChrono : réaction moteur et absence de dérive.
 
-Exécuter dans conda chrono : python validation_modele.py
+Exécuter dans conda chrono, depuis la racine du dépôt :
+    PYTHONPATH=src python tests/test_dynamics.py   (ou make validate)
 """
 from pathlib import Path
 import argparse
 import tempfile
 import unittest
 
-from granulobot_physics import Parametres
-from test_3_granulobots import creer_systeme, appliquer_moteur, omega, simuler
+from granulobot.parameters import Parametres
+from granulobot.simulator import RACINE, creer_systeme, appliquer_moteur, omega, simuler
 
 
 class Dynamique(unittest.TestCase):
@@ -84,7 +85,7 @@ class Dynamique(unittest.TestCase):
                        jeu_initial=0.01)
         sys, robots, refs = creer_systeme(p)
         u = robots[0]
-        from chrono_headless import chrono
+        from granulobot.chrono_env import chrono
         self.assertFalse(u.roue.IsFixed())
         u.roue.SetAngVelParent(chrono.ChVector3d(0, 0, 1))
         for _ in range(100):
@@ -108,4 +109,4 @@ if __name__ == "__main__":
     if not resultat.wasSuccessful():
         raise SystemExit(1)
     if args.animation:
-        simuler(Parametres(), Path(__file__).with_name("test_3_granulobots"))
+        simuler(Parametres(), RACINE / "runs" / "validation_animation")

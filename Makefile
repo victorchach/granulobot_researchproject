@@ -2,7 +2,8 @@
 # Without make: run the raw commands listed in AGENTS.md.
 
 ENV ?= chrono
-SIM := 03_Simulation_PyChrono
+# The granulobot package lives in src/; every Python command needs it on the path.
+export PYTHONPATH := src$(if $(PYTHONPATH),:$(PYTHONPATH))
 ifndef PY
 PY := $(shell conda run -n $(ENV) python -c "import sys; print(sys.executable)" 2>/dev/null)
 endif
@@ -19,23 +20,23 @@ setup:  ## Create the conda env and install the git hooks
 
 check-env:  ## Check that PyChrono imports without the graphics extensions
 	@test -n "$(PY)" || { echo "conda env '$(ENV)' not found: run make setup"; exit 1; }
-	$(PY) $(SIM)/chrono_headless.py
+	$(PY) -m granulobot.chrono_env
 
 test:  ## Fast unit tests of the physics laws (no PyChrono dynamics, <1 s)
 	@test -n "$(PY)" || { echo "conda env '$(ENV)' not found: run make setup"; exit 1; }
-	$(PY) -m unittest discover -s $(SIM) -p test_granulobot_physics.py
+	$(PY) -m unittest discover -s tests -p test_physics.py
 
 validate:  ## PyChrono dynamics checks (~15 s)
-	$(PY) $(SIM)/validation_modele.py
+	$(PY) tests/test_dynamics.py
 
 sim:  ## Run the simulator: make sim NAME=run_name ARGS="--duree 0.2 --sans-gif"
-	$(PY) $(SIM)/test_3_granulobots.py --sortie runs/$(or $(NAME),sim) $(ARGS)
+	$(PY) -m granulobot --sortie runs/$(or $(NAME),sim) $(ARGS)
 
 diag:  ## Analyse a run: make diag CSV=runs/sim.csv
-	$(PY) $(SIM)/diagnostic_accrochage.py $(CSV)
+	$(PY) -m granulobot.analysis $(CSV)
 
 replay:  ## Rebuild a GIF from a CSV without rerunning: make replay CSV=runs/sim.csv
-	$(PY) $(SIM)/test_3_granulobots.py --rejouer $(CSV)
+	$(PY) -m granulobot --rejouer $(CSV)
 
 hooks:  ## Install the git hooks from tools/git-hooks (redo after every fresh clone)
 	cp tools/git-hooks/commit-msg tools/git-hooks/pre-commit .git/hooks/

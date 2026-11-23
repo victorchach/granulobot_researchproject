@@ -21,10 +21,13 @@ Pr. Baudouin Saintyves (Inria / INSA, CITI lab).
 
 | Path | Content |
 | --- | --- |
-| `01_Sujet_et_rapports/` | Reference material: the paper, its supplementary material, the assignment and last year's report (PDF, plus `.txt` extractions for search). Read only. |
-| `03_Simulation_PyChrono/` | All simulation code (flat Python modules, see Architecture). |
-| `04_Design_STL/` | CAD files of the real unit. Read only. |
-| `docs/` | Roadmap, decisions and model notes (Markdown, the source of truth). |
+| `src/granulobot/` | The simulator, as a Python package (see Architecture). |
+| `tests/` | `test_physics.py` (fast, `make test`) and `test_dynamics.py` (PyChrono, `make validate`). |
+| `scripts/` | Entry points built on the package, such as scenario campaigns. |
+| `configs/` | Parameter files for `--parametres` (inputs, versioned). |
+| `references/` | Reference material: the paper, its supplementary material, the assignment and last year's report (PDF, plus `.txt` extractions for search). Read only. |
+| `cad/` | CAD files (STL) of the real unit. Read only. |
+| `docs/` | Roadmap, decisions, architecture and model notes (Markdown, the source of truth). |
 | `specs/` | Feature specs (`NNN-name/spec.md`), index and ideas backlog. |
 | `results/` | Runs worth keeping, versioned on purpose (see `results/README.md`). |
 | `runs/` | Scratch simulation outputs. Ignored by git. |
@@ -70,16 +73,22 @@ skills in `.agents/skills/`:
 PyChrono is only distributed via conda. The tested env is named `chrono`, with
 Python 3.11 and PyChrono 10.0.0, on macOS (Victor) and Ubuntu (Hugo, Python 3.11.17).
 
-| `make` | Raw command (inside `conda activate chrono`) |
+The package lives in `src/`, so every raw command runs from the repo root
+with `PYTHONPATH=src` (the Makefile sets it).
+
+| `make` | Raw command (inside `conda activate chrono`, from the repo root) |
 | --- | --- |
 | `make setup` | `conda create -n chrono -c projectchrono -c conda-forge python=3.11 pychrono matplotlib pillow` |
-| `make check-env` | `python 03_Simulation_PyChrono/chrono_headless.py` |
-| `make test` | `python -m unittest discover -s 03_Simulation_PyChrono -p test_granulobot_physics.py` (fast, under 1 s) |
-| `make validate` | `python 03_Simulation_PyChrono/validation_modele.py` (PyChrono dynamics, about 15 s) |
-| `make sim NAME=x ARGS="..."` | `python 03_Simulation_PyChrono/test_3_granulobots.py --sortie runs/x ...` |
-| `make diag CSV=runs/x.csv` | `python 03_Simulation_PyChrono/diagnostic_accrochage.py runs/x.csv` |
-| `make replay CSV=runs/x.csv` | `python 03_Simulation_PyChrono/test_3_granulobots.py --rejouer runs/x.csv` |
+| `make check-env` | `PYTHONPATH=src python -m granulobot.chrono_env` |
+| `make test` | `PYTHONPATH=src python -m unittest discover -s tests -p test_physics.py` (fast, under 1 s) |
+| `make validate` | `PYTHONPATH=src python tests/test_dynamics.py` (PyChrono dynamics, about 15 s) |
+| `make sim NAME=x ARGS="..."` | `PYTHONPATH=src python -m granulobot --sortie runs/x ...` |
+| `make diag CSV=runs/x.csv` | `PYTHONPATH=src python -m granulobot.analysis runs/x.csv` |
+| `make replay CSV=runs/x.csv` | `PYTHONPATH=src python -m granulobot --rejouer runs/x.csv` |
 | `make hooks` | copy `tools/git-hooks/*` into `.git/hooks/` |
+
+Scenario campaigns: `PYTHONPATH=src python scripts/campaign.py --duree 0.6`
+(outputs in `runs/campaign/`).
 
 Useful simulator flags: `--robots {2,3}`, `--duree`, `--dt`,
 `--mode {tension,vitesse,couple}`, `--tensions A B C`, `--vitesses A B C`,
@@ -87,24 +96,30 @@ Useful simulator flags: `--robots {2,3}`, `--duree`, `--dt`,
 `--liaison-ideale`, `--parametres file.json`. Run a short probe first
 (`--duree 0.2 --sans-gif`): the default `dt = 1e-5 s` makes long runs slow.
 
-`make test` only covers `test_granulobot_physics.py`. `test_3_granulobots.py`
-matches `test_*.py` but is the simulator, not a test file (a rename is
-planned).
+Without `--sortie`, the simulator writes to `runs/sim` at the repo root.
+Nothing writes into `src/`, `scripts/` or `tests/`.
+
+`make test` only covers `tests/test_physics.py`. The dynamics tests in
+`tests/test_dynamics.py` take about 15 s and run with `make validate`.
 
 The 2-unit bench (one facing pair, active A to free B):
 `make sim NAME=bench_2 ARGS="--robots 2 --tensions 0.3 0 0"`.
 
-## Architecture (03_Simulation_PyChrono/)
+## Architecture (src/granulobot/)
 
-- `granulobot_physics.py`: the `Parametres` dataclass, which holds every
+`docs/architecture.md` shows the call flow of a run, from the CLI to the
+outputs. Imports are absolute (`from granulobot.parameters import ...`).
+
+- `__main__.py`: `python -m granulobot` runs `simulator.main()`.
+- `parameters.py`: the `Parametres` dataclass, which holds every
   physical and numerical parameter together with a comment on where it comes
   from. It also has the pure laws, which don't need PyChrono: point dipoles
   (`dipoles`), the smoothed dry friction (`frottement`) and the DC motor
   (`moteur_cc`).
-- `magnet_cylinders.py`: the field of axially magnetised finite cylinders,
+- `magnets.py`: the field of axially magnetised finite cylinders,
   computed by surface-charge quadrature. The energy is Hermite-interpolated so
   that F = -dU/dd holds exactly.
-- `test_3_granulobots.py`: the simulator, despite its name.
+- `simulator.py`: the simulator (spec 003 will split it into modules).
   - `creer_systeme` builds the bodies: per unit, a body, an active rotor, a
     free rotor and an outer free wheel.
   - `ContactsCirculaires` is a custom collision callback: analytic contacts
@@ -114,13 +129,17 @@ The 2-unit bench (one facing pair, active A to free B):
   - `mesure` records the CSV row, `animation` makes the GIF, `simuler` and
     `main` run the simulation and the CLI.
   - It is currently limited to 2 or 3 units.
-- `chrono_headless.py`: imports the PyChrono core without the graphics
-  extensions, which fail to load (vsg3d/SDL2). Always import chrono through it.
-- `diagnostic_accrochage.py`: post-analysis of a CSV (rotations, distances,
-  detachment events). No PyChrono needed.
-- `campagne_accrochage.py`: scenario sweeps and convergence campaigns.
-- `prototype_hugo.json`: the prototype dimensions Hugo provided, plus what is
-  still to measure.
+- `chrono_env.py`: imports the PyChrono core without the graphics
+  extensions, which fail to load (vsg3d/SDL2). Always import chrono through it
+  (`from granulobot.chrono_env import chrono`).
+- `analysis.py`: post-analysis of a CSV (rotations, distances, detachment
+  events). No PyChrono needed.
+
+Outside the package:
+
+- `scripts/campaign.py`: scenario sweeps and convergence campaigns.
+- `configs/prototype_hugo.json`: the prototype dimensions Hugo provided, plus
+  what is still to measure.
 
 Outputs of a run: `<name>.csv` (200 Hz measurements, including contact
 forces), `<name>.json` (parameters, assumptions, summary) and `<name>.gif`
@@ -149,12 +168,13 @@ the known limitations.
 
 ## Rules
 
-- Never edit or delete `01_Sujet_et_rapports/` or `04_Design_STL/`.
+- Never edit or delete `references/` or `cad/`.
 - Never commit derived outputs (CSV, GIF, MP4, logs, run JSON) outside
   `results/`. The `.gitignore` and the pre-commit hook enforce this.
-  Input files (parameter JSON, `requirements.txt`, ...) are versioned: keep
-  them outside `runs/`, `essais_*/` and `validation/`, which are ignored
-  whole.
+  Input files (parameter JSON, `requirements.txt`, ...) are versioned: a
+  parameter file worth keeping goes in `configs/` (or next to the result it
+  produced in `results/`). `runs/` is ignored whole, so a file there is
+  scratch.
 - Commit messages are in English, in the imperative mood, with no AI
   attribution (no `Co-Authored-By` trailer, no "Generated with" line). The
   commit-msg hook enforces this.

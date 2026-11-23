@@ -6,6 +6,7 @@ Saintyves, Spenko and Jaeger (*Science Robotics*, 2024). Research project
 
 - Goal, layout, commands and conventions: [`AGENTS.md`](AGENTS.md)
 - Plan: [`docs/roadmap.md`](docs/roadmap.md)
+- How the code fits together: [`docs/architecture.md`](docs/architecture.md)
 - Modelling assumptions and limitations: [`docs/model.md`](docs/model.md)
 - Decisions and their reasons: [`docs/decisions.md`](docs/decisions.md)
 
@@ -17,7 +18,7 @@ Apple Silicon, use [Miniforge](https://github.com/conda-forge/miniforge).
 ```bash
 make setup            # or: conda create -n chrono -c projectchrono -c conda-forge python=3.11 pychrono matplotlib pillow
 conda activate chrono
-make check-env        # or: python 03_Simulation_PyChrono/chrono_headless.py
+make check-env        # or: PYTHONPATH=src python -m granulobot.chrono_env
 ```
 
 ## Use

@@ -2,6 +2,24 @@
 
 Newest first. Each entry gives the decision and the reason for it.
 
+## 2026-11-23: src layout (spec 002)
+
+- **The code moved to a "src layout"**: the package `src/granulobot/`, with
+  `tests/`, `scripts/` and `configs/` beside it. Victor chose it over a flat
+  `src/` because a package can later hold sub-packages (`model/`,
+  `simulation/`, `output/`, spec 003) and runs as `python -m granulobot`.
+  The file names now say what the files do: `test_3_granulobots.py` became
+  `simulator.py`, `granulobot_physics.py` became `parameters.py`, and so on
+  (full table in `specs/002-src-layout/spec.md`).
+- **`PYTHONPATH=src` instead of `pip install -e .`**: the Makefile exports it,
+  so there is no extra setup step for either developer.
+- **Default outputs go to `runs/`**, never into the code folders.
+- **`01_Sujet_et_rapports/` became `references/` and `04_Design_STL/` became
+  `cad/`**: top-level names say what the folders hold, without numbers. Both
+  stay read only; the deny rules in `.claude/settings.json` follow them
+  (approved by Victor).
+- Entries below keep the old paths, since they describe the repo as it was.
+
 ## 2026-11-23: reorganise the repo before the 6-unit ring
 
 - **The repo is reorganised now, in small specs, without waiting for Hugo.**

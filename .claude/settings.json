@@ -33,10 +33,10 @@
       "Bash(git reset:*)"
     ],
     "deny": [
-      "Edit(01_Sujet_et_rapports/**)",
-      "Write(01_Sujet_et_rapports/**)",
-      "Edit(04_Design_STL/**)",
-      "Write(04_Design_STL/**)",
+      "Edit(references/**)",
+      "Write(references/**)",
+      "Edit(cad/**)",
+      "Write(cad/**)",
       "Bash(git push --force:*)",
       "Bash(git push -f:*)"
     ]

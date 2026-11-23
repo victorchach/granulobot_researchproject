@@ -15,3 +15,4 @@ Status values: `draft` (waiting for approval), `approved` (being implemented),
 | NNN | Name | Status | Summary |
 | --- | --- | --- | --- |
 | 001 | remove-dead-code | merged | Delete `unite.py`, `test_3_granulobots_simple.py` and `test_2_granulobots.py` |
+| 002 | src-layout | merged | Move the code to `src/granulobot/`, `tests/`, `scripts/`, `configs/`; rename `01_`/`04_` to `references/`, `cad/` |

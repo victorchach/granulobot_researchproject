@@ -10,7 +10,7 @@ import csv
 import json
 import math
 from pathlib import Path
-from granulobot_physics import Parametres
+from granulobot.parameters import Parametres
 
 
 def derouler(angles):
