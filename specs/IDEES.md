@@ -28,7 +28,5 @@ removed from this list.
 
 - Translate the French identifiers, comments and CSV column names to English.
   This breaks old CSV/JSON files; plan a compatibility note.
-- Remove the legacy scripts `test_3_granulobots_simple.py` (it runs a
-  simulation when imported, which breaks `unittest` discovery) and `unite.py`.
 - Rename `test_3_granulobots.py` (it is the simulator, not a test) and move
   `validation_modele.py` under the test naming.

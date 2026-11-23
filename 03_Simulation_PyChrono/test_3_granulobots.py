@@ -20,7 +20,6 @@ Exemples (environnement conda chrono) :
     python test_3_granulobots.py --duree 0.2 --sans-gif --sortie /chemin/essai
 
 Sorties : GIF à vitesse réelle, CSV de mesures, JSON de paramètres/bilan.
-Le modèle simple précédent reste dans test_3_granulobots_simple.py.
 """
 import argparse
 from bisect import bisect_left

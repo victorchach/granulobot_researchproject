@@ -14,3 +14,4 @@ Status values: `draft` (waiting for approval), `approved` (being implemented),
 
 | NNN | Name | Status | Summary |
 | --- | --- | --- | --- |
+| 001 | remove-dead-code | merged | Delete `unite.py`, `test_3_granulobots_simple.py` and `test_2_granulobots.py` |
