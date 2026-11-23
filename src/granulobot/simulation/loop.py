@@ -1,69 +1,69 @@
-"""La boucle de simulation : mesures, forces, pas Chrono, puis bilan et sorties."""
+"""The simulation loop: measurements, forces, Chrono step, then summary and outputs."""
 import json
 import math
 
 from granulobot.chrono_env import omega, xyz
-from granulobot.model.magnets import appliquer_magnetisme
-from granulobot.model.motor import appliquer_moteur
-from granulobot.model.unit import noms, paires
-from granulobot.output.analysis import analyser
-from granulobot.output.animation import animation
-from granulobot.simulation.recording import ecrire_sorties, mesure
-from granulobot.simulation.world import creer_systeme
+from granulobot.model.magnets import apply_magnetism
+from granulobot.model.motor import apply_motor
+from granulobot.model.unit import unit_names, unit_pairs
+from granulobot.output.analysis import analyze
+from granulobot.output.animation import animate
+from granulobot.simulation.recording import measure, write_outputs
+from granulobot.simulation.world import create_system
 
 
-def simuler(p, sortie, gif=True, verbose=True):
+def simulate(p, output, gif=True, verbose=True):
     p.verifier()
-    sys, robots, references = creer_systeme(p)
-    NOMS = noms(robots)
-    rows, min_distances = [], {paire: 2 * p.R for paire in paires(robots)}
-    force_max, vitesse_max, energie_elec = 0.0, 0.0, 0.0
-    periode = max(1, round(1 / (p.frequence_mesures * p.dt)))
+    sys, units, references = create_system(p)
+    NAMES = unit_names(units)
+    rows, min_distances = [], {pair: 2 * p.R for pair in unit_pairs(units)}
+    max_force, max_speed, electrical_energy = 0.0, 0.0, 0.0
+    period = max(1, round(1 / (p.frequence_mesures * p.dt)))
     nsteps = round(p.duree / p.dt)
     if verbose:
-        print(f"Mode={p.mode_moteur}, dt={p.dt:g} s, durée={p.duree:g} s", flush=True)
-        print(f"Masse totale/unité={p.M:g} kg ; moment estimé/aimant={p.moment_aimant:.3f} A.m²", flush=True)
-    positions_initiales = [xyz(u.corps.GetPos()) for u in robots]
+        print(f"Mode={p.mode_moteur}, dt={p.dt:g} s, duration={p.duree:g} s", flush=True)
+        print(f"Total mass/unit={p.M:g} kg; estimated moment/magnet={p.moment_aimant:.3f} A.m²", flush=True)
+    initial_positions = [xyz(u.body.GetPos()) for u in units]
     for k in range(nsteps + 1):
         t = sys.GetChTime()
-        if k % periode == 0 or k == nsteps:
-            row = mesure(t, sys, robots, p)
-            for n, u in zip(noms(robots), robots):
-                for actif, suffixe in ((True, "actif"), (False, "libre")):
-                    _, _, pos, _ = u.aimant(actif, p)
-                    row[f"{n}_aimant_{suffixe}_x_m"] = pos[0]
-                    row[f"{n}_aimant_{suffixe}_y_m"] = pos[1]
+        if k % period == 0 or k == nsteps:
+            row = measure(t, sys, units, p)
+            for n, u in zip(unit_names(units), units):
+                for active, suffix in ((True, "actif"), (False, "libre")):
+                    _, _, pos, _ = u.magnet(active, p)
+                    row[f"{n}_aimant_{suffix}_x_m"] = pos[0]
+                    row[f"{n}_aimant_{suffix}_y_m"] = pos[1]
             rows.append(row)
-        for i, j in paires(robots):
-            a, b = robots[i].corps.GetPos(), robots[j].corps.GetPos()
+        for i, j in unit_pairs(units):
+            a, b = units[i].body.GetPos(), units[j].body.GetPos()
             min_distances[i, j] = min(min_distances[i, j], math.hypot(b.x - a.x, b.y - a.y))
-        vitesse_max = max(vitesse_max, *(abs(omega(u.corps)) for u in robots))
+        max_speed = max(max_speed, *(abs(omega(u.body)) for u in units))
         if k == nsteps:
             break
-        for i, u in enumerate(robots):
-            u.vider_forces()
-            appliquer_moteur(u, i, t, p)
-        _, fm = appliquer_magnetisme(robots, p)
-        force_max = max(force_max, fm)
-        energie_elec += sum(u.tension * u.courant for u in robots) * p.dt
+        for i, u in enumerate(units):
+            u.clear_forces()
+            apply_motor(u, i, t, p)
+        _, fm = apply_magnetism(units, p)
+        max_force = max(max_force, fm)
+        electrical_energy += sum(u.voltage * u.current for u in units) * p.dt
         sys.DoStepDynamics(p.dt)
         if verbose and (k + 1) % max(1, round(0.5 / p.dt)) == 0:
-            print(f"t={sys.GetChTime():.2f} s  contacts(sol compris)={sys.GetNumContacts()}  "
-                  f"vitesses corps={[round(omega(u.corps), 3) for u in robots]} rad/s", flush=True)
-    bilan = {
-        "recouvrement_max_m": {NOMS[i] + NOMS[j]: max(0, 2 * p.R - d) for (i, j), d in min_distances.items()},
-        "omega_corps_max_rad_s": vitesse_max, "force_aimant_max_N": force_max,
-        "energie_electrique_signee_J": energie_elec,
-        "deplacement_final_m": {n: math.hypot(u.corps.GetPos().x - pos[0], u.corps.GetPos().y - pos[1])
-                                for n, u, pos in zip(NOMS, robots, positions_initiales)},
-        "vitesse_actif_final_rad_s": {n: omega(u.actif) - omega(u.corps) for n, u in zip(noms(robots), robots)},
+            print(f"t={sys.GetChTime():.2f} s  contacts(ground included)={sys.GetNumContacts()}  "
+                  f"body speeds={[round(omega(u.body), 3) for u in units]} rad/s", flush=True)
+    summary = {
+        "recouvrement_max_m": {NAMES[i] + NAMES[j]: max(0, 2 * p.R - d) for (i, j), d in min_distances.items()},
+        "omega_corps_max_rad_s": max_speed, "force_aimant_max_N": max_force,
+        "energie_electrique_signee_J": electrical_energy,
+        "deplacement_final_m": {n: math.hypot(u.body.GetPos().x - pos[0], u.body.GetPos().y - pos[1])
+                                for n, u, pos in zip(NAMES, units, initial_positions)},
+        "vitesse_actif_final_rad_s": {n: omega(u.active) - omega(u.body) for n, u in zip(unit_names(units), units)},
         "duree_simulee_s": sys.GetChTime(),
     }
-    bilan["accrochage"] = analyser(rows, p)
-    ecrire_sorties(rows, p, bilan, sortie)
+    summary["accrochage"] = analyze(rows, p)
+    write_outputs(rows, p, summary, output)
     if gif:
-        animation(rows, p, sortie)
+        animate(rows, p, output)
     if verbose:
-        print(json.dumps(bilan, indent=2, ensure_ascii=False), flush=True)
-        print(f"Résultats : {sortie} (.csv, .json" + (", .gif)" if gif else ")"), flush=True)
-    return rows, bilan
+        print(json.dumps(summary, indent=2, ensure_ascii=False), flush=True)
+        print(f"Results: {output} (.csv, .json" + (", .gif)" if gif else ")"), flush=True)
+    return rows, summary

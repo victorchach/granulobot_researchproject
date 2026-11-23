@@ -8,4 +8,4 @@ importing the package does not load PyChrono.
 from pathlib import Path
 
 # Repo root (src/granulobot/__init__.py -> root): default outputs go to runs/.
-RACINE = Path(__file__).resolve().parents[2]
+REPO_ROOT = Path(__file__).resolve().parents[2]

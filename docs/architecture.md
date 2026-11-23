@@ -9,21 +9,21 @@ file updates it.
 
 ```
 src/granulobot/               the simulator package
-├── __main__.py               CLI: python -m granulobot (PARAMETRES, main)
-├── __init__.py               RACINE, the repo root (default outputs in runs/)
+├── __main__.py               CLI: python -m granulobot (PARAMETERS, main)
+├── __init__.py               REPO_ROOT, the repo root (default outputs in runs/)
 ├── parameters.py             Parametres: every setting, with its origin
 ├── chrono_env.py             PyChrono import without graphics + vect, xyz, angle, omega
 │
 ├── model/                    WHAT a Granulobot is
-│   ├── unit.py               Unite and creer_unite: the 4 bodies and their links
-│   ├── motor.py              DC motor law, internal friction, appliquer_moteur
-│   ├── magnets.py            cylinder and dipole fields, appliquer_magnetisme
-│   └── contacts.py           ContactsCirculaires: analytic shell/magnet/ground contacts
+│   ├── unit.py               Unit and create_unit: the 4 bodies and their links
+│   ├── motor.py              DC motor law, internal friction, apply_motor
+│   ├── magnets.py            cylinder and dipole fields, apply_magnetism
+│   └── contacts.py           CircularContacts: analytic shell/magnet/ground contacts
 │
 ├── simulation/               HOW a run works
-│   ├── world.py              creer_systeme: solver, ground, layout of the units
-│   ├── loop.py               simuler: the time loop, summary, outputs
-│   └── recording.py          mesure (one CSV row), CSV and JSON writing
+│   ├── world.py              create_system: solver, ground, layout of the units
+│   ├── loop.py               simulate: the time loop, summary, outputs
+│   └── recording.py          measure (one CSV row), CSV and JSON writing
 │
 └── output/                   WHAT we get out of it (no PyChrono)
     ├── analysis.py           rotations, distances, detachments of a run
@@ -52,60 +52,60 @@ Each step names the file it lives in; `[PyChrono]` marks library calls.
    │
    ▼
  ═══ main() ═══════════════════════════════════════════════  [__main__.py]
-   PARAMETRES = Parametres()  all defaults                 [parameters.py]
+   PARAMETERS = Parametres()  all defaults                 [parameters.py]
    parse the CLI options (argparse)
-   p = PARAMETRES, then --parametres JSON, then the flags override it
+   p = PARAMETERS, then --parametres JSON, then the flags override it
    │
    ▼
- ═══ simuler(p, sortie) ═══════════════════════════  [simulation/loop.py]
+ ═══ simulate(p, output) ═══════════════════════════  [simulation/loop.py]
    │
    ├─ p.verifier()  are the values consistent?             [parameters.py]
    │
    ├─ 1. BUILD ──────────────────────────────────────────────────────────
-   │   creer_systeme(p)                               [simulation/world.py]
+   │   create_system(p)                               [simulation/world.py]
    │     ├─ ChSystemNSC(), solver PSOR or APGD             [PyChrono]
    │     ├─ fixed reference body (ChBody), the guides' anchor
    │     ├─ the ground, if sol_actif: ChBodyEasyBox        [PyChrono]
    │     ├─ positions: 2 units face to face, or a triangle
-   │     ├─ per unit: creer_unite(...)                       [model/unit.py]
+   │     ├─ per unit: create_unit(...)                       [model/unit.py]
    │     │    shell, active rotor, free rotor, free wheel
    │     │    ├─ ChLinkMateGeneric  guide: blocks tipping only
    │     │    ├─ ChLinkMotorRotationTorque  motor, active rotor <-> shell
    │     │    └─ ChLinkLockRevolute  pivots of free rotor and free wheel
    │     ├─ optional ideal link between paired magnets (--liaison-ideale)
-   │     └─ ContactsCirculaires(...)                     [model/contacts.py]
+   │     └─ CircularContacts(...)                     [model/contacts.py]
    │          └─ RegisterCustomCollisionCallback       [PyChrono]
    │
    ├─ 2. LOOP: duree / dt steps (20 000 for 0.2 s at 1e-5 s) ───────────
    │   each step:
-   │   ├─ every 1/200 s: mesure(t, sys, robots, p) -> one CSV row
+   │   ├─ every 1/200 s: measure(t, sys, units, p) -> one CSV row
    │   │                                         [simulation/recording.py]
    │   │    ├─ ComputeContactForces, GetPos, ...       [PyChrono]
    │   │    └─ angle(), omega()                           [chrono_env.py]
-   │   │    + magnet positions, from u.aimant(...)        [model/unit.py]
-   │   ├─ u.vider_forces()  clear last step's forces      [model/unit.py]
-   │   ├─ appliquer_moteur(u, i, t, p)  per unit         [model/motor.py]
-   │   │    ├─ moteur_cc(...)  voltage -> current -> torque
-   │   │    └─ frottement(...)  internal friction of rotors and wheel
-   │   ├─ appliquer_magnetisme(robots, p)  all magnet pairs [model/magnets.py]
-   │   │    ├─ u.aimant(...)  magnet position             [model/unit.py]
-   │   │    ├─ pour_parametres(p)  magnet model, cached
-   │   │    ├─ CylindresAxiaux.evaluer(d)  force vs distance
+   │   │    + magnet positions, from u.magnet(...)        [model/unit.py]
+   │   ├─ u.clear_forces()  clear last step's forces      [model/unit.py]
+   │   ├─ apply_motor(u, i, t, p)  per unit         [model/motor.py]
+   │   │    ├─ dc_motor(...)  voltage -> current -> torque
+   │   │    └─ friction(...)  internal friction of rotors and wheel
+   │   ├─ apply_magnetism(units, p)  all magnet pairs [model/magnets.py]
+   │   │    ├─ u.magnet(...)  magnet position             [model/unit.py]
+   │   │    ├─ for_parameters(p)  magnet model, cached
+   │   │    ├─ AxialCylinders.evaluate(d)  force vs distance
    │   │    │   (or dipoles(...) if modele_magnetique = "dipoles")
    │   │    └─ AccumulateForce / AccumulateTorque      [PyChrono]
    │   └─ sys.DoStepDynamics(dt)                       [PyChrono]
-   │        ├─ calls ContactsCirculaires.OnCustomCollision:
+   │        ├─ calls CircularContacts.OnCustomCollision:
    │        │  contact points, normals, distances      [model/contacts.py]
    │        ├─ solves contact forces + Coulomb friction [PyChrono]
    │        └─ integrates velocities and positions     [PyChrono]
    │
    └─ 3. END ────────────────────────────────────────────────────────────
        ├─ summary: max overlap, max force, displacements [simulation/loop.py]
-       ├─ analyser(rows, p)  rotations, distances, detachments
+       ├─ analyze(rows, p)  rotations, distances, detachments
        │                                              [output/analysis.py]
-       ├─ ecrire_sorties: runs/probe.csv and runs/probe.json
+       ├─ write_outputs: runs/probe.csv and runs/probe.json
        │    (parameters, assumptions, summary)    [simulation/recording.py]
-       └─ animation(rows, p, sortie) -> runs/probe.gif [output/animation.py]
+       └─ animate(rows, p, output) -> runs/probe.gif [output/animation.py]
             matplotlib redraws from the rows; no physics
 ```
 
@@ -119,7 +119,7 @@ compute ourselves, PyChrono does the heavy work inside `DoStepDynamics`, and
   its JSON, prints the analysis. No PyChrono.
 - `make replay CSV=...`: `python -m granulobot --rejouer`, redraws the GIF
   from a CSV without rerunning the dynamics (`output/animation.py`).
-- `scripts/campaign.py`: calls `simuler` once per scenario and writes a
+- `scripts/campaign.py`: calls `simulate` once per scenario and writes a
   summary to `runs/campaign/`.
-- `tests/test_dynamics.py`: calls `creer_systeme`, `appliquer_moteur` and
-  `simuler` on short runs.
+- `tests/test_dynamics.py`: calls `create_system`, `apply_motor` and
+  `simulate` on short runs.

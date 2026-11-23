@@ -109,12 +109,12 @@ The 2-unit bench (one facing pair, active A to free B):
 
 `docs/architecture.md` has the file map and the call flow of a run, from the
 CLI to the outputs. Imports are absolute
-(`from granulobot.model.motor import moteur_cc`). The simulator is currently
+(`from granulobot.model.motor import dc_motor`). The simulator is currently
 limited to 2 or 3 units.
 
-- `__main__.py`: the CLI (`python -m granulobot`), with `PARAMETRES`, the
+- `__main__.py`: the CLI (`python -m granulobot`), with `PARAMETERS`, the
   defaults used by a run, and `main`.
-- `__init__.py`: `RACINE`, the repo root, for default outputs in `runs/`.
+- `__init__.py`: `REPO_ROOT`, the repo root, for default outputs in `runs/`.
 - `parameters.py`: the `Parametres` dataclass, which holds every
   physical and numerical parameter together with a comment on where it comes
   from.
@@ -123,27 +123,27 @@ limited to 2 or 3 units.
   (`from granulobot.chrono_env import chrono`). Also `vect`, `xyz`, `angle`,
   `omega`.
 - `model/`, what a Granulobot is:
-  - `unit.py`: `Unite` and `creer_unite`, which builds one unit's four bodies
+  - `unit.py`: `Unit` and `create_unit`, which builds one unit's four bodies
     (shell, active rotor, free rotor, outer free wheel) and their links;
-    `noms` and `paires`.
-  - `motor.py`: the DC motor law (`moteur_cc`), the smoothed dry friction
-    (`frottement`) and `appliquer_moteur`, which applies them at each step.
+    `unit_names` and `unit_pairs`.
+  - `motor.py`: the DC motor law (`dc_motor`), the smoothed dry friction
+    (`friction`) and `apply_motor`, which applies them at each step.
   - `magnets.py`: the field of axially magnetised finite cylinders, computed
     by surface-charge quadrature (the energy is Hermite-interpolated so that
     F = -dU/dd holds exactly), point dipoles (`dipoles`), and
-    `appliquer_magnetisme`, which applies them at each step.
-  - `contacts.py`: `ContactsCirculaires`, a custom collision callback with
+    `apply_magnetism`, which applies them at each step.
+  - `contacts.py`: `CircularContacts`, a custom collision callback with
     analytic contacts between the shells, between the magnets and with the
     ground, passed to the NSC solver.
 - `simulation/`, how a run works:
-  - `world.py`: `creer_systeme` (solver, ground, layout of the units, ideal
+  - `world.py`: `create_system` (solver, ground, layout of the units, ideal
     link, contact callback).
-  - `loop.py`: `simuler`, the time loop, the summary and the outputs.
-  - `recording.py`: `mesure` (one CSV row) and the CSV/JSON writing.
+  - `loop.py`: `simulate`, the time loop, the summary and the outputs.
+  - `recording.py`: `measure` (one CSV row) and the CSV/JSON writing.
 - `output/`, what we get out of a run (no PyChrono needed):
-  - `analysis.py`: post-analysis of a CSV (rotations, distances, detachment
-    events).
-  - `animation.py`: the GIF.
+  - `analysis.py`: `analyze`, post-analysis of a CSV (rotations, distances,
+    detachment events).
+  - `animation.py`: `animate`, the GIF.
 
 Outside the package:
 
@@ -172,9 +172,10 @@ the known limitations.
   - a large `dt` causes tunneling;
   - names changed after version 8 (`ChVectorD` became `ChVector3d`).
 - Language: everything written to the repo (code, comments, docs, commit
-  messages) is in English. Existing French identifiers and comments are kept
-  until a dedicated spec translates them; match the style of the file you
-  edit.
+  messages) is in English. The code internals are translated (spec 004).
+  What still reaches files or the CLI is in French until spec 005: the
+  `Parametres` fields, the CLI flags, CSV columns, JSON keys and GIF text.
+  Use the glossary in `specs/004-translate-internals/spec.md` for new names.
 
 ## Rules
 

@@ -1,39 +1,39 @@
-"""Trois granulobots : roue motorisée, deux rotors et roue libre, vue de dessus.
+"""Three granulobots: motorised wheel, two rotors and free wheel, top view.
 
-Les paramètres SI et leurs origines sont dans parameters.py.
-Commande en tension par défaut ; pas de vitesse ni de déplacement imposé.
-Le sol fournit la réaction au poids et les frottements NSC. Un guide ne
-bloque que le basculement (Rx/Ry), jamais X, Y, Z ou la rotation autour de Z.
-Les aimants affleurants de diamètre 8 mm et hauteur 10 mm ont leurs pôles
-sur les faces plates. Leur champ plan est calculé par charges surfaciques,
-avec quadrature et contact NSC. Les dipôles restent une variante de comparaison.
-La rotation propre autour de Z ne change pas une aimantation axiale.
-Les aimants restent mécaniquement solidaires du rotor : leur roulement propre
-(et son effet sur le frottement de contact), les dents et les collisions
-internes entre aimants restent omis.
+The SI parameters and their origins are in parameters.py.
+Voltage control by default; no imposed speed or displacement.
+The ground provides the reaction to the weight and the NSC friction. A guide
+only blocks tipping (Rx/Ry), never X, Y, Z or the rotation about Z.
+The flush magnets, 8 mm in diameter and 10 mm high, have their poles on the
+flat faces. Their planar field is computed from surface charges, with
+quadrature and NSC contact. Dipoles remain a comparison variant.
+A spin about Z does not change an axial magnetisation.
+The magnets stay rigidly attached to the rotor: their own bearing (and its
+effect on contact friction), the gear teeth and the internal collisions
+between magnets are left out.
 
-Exemples (environnement conda chrono, depuis la racine du dépôt) :
+Examples (conda env chrono, from the repo root):
     PYTHONPATH=src python -m granulobot
     PYTHONPATH=src python -m granulobot --tensions 1 2 3
     PYTHONPATH=src python -m granulobot --mode vitesse --vitesses 0.3 0.3 0.3
     PYTHONPATH=src python -m granulobot --sans-sol --sans-magnetisme
-    PYTHONPATH=src python -m granulobot --duree 0.2 --sans-gif --sortie /chemin/essai
+    PYTHONPATH=src python -m granulobot --duree 0.2 --sans-gif --sortie /path/run
 
-Sorties : GIF à vitesse réelle, CSV de mesures, JSON de paramètres/bilan.
-Sans --sortie, elles vont dans runs/sim à la racine du dépôt.
+Outputs: GIF in real time, CSV of measurements, JSON of parameters/summary.
+Without --sortie, they go to runs/sim at the repo root.
 """
 import argparse
 import csv
 import json
 from pathlib import Path
 
-from granulobot import RACINE
-from granulobot.output.animation import animation
+from granulobot import REPO_ROOT
+from granulobot.output.animation import animate
 from granulobot.parameters import Parametres
-from granulobot.simulation.loop import simuler
+from granulobot.simulation.loop import simulate
 
-# Modifier ces paramètres pour les essais. Les détails sont dans parameters.py.
-PARAMETRES = Parametres()
+# Change these parameters for trials. Details are in parameters.py.
+PARAMETERS = Parametres()
 
 
 def main():
@@ -58,27 +58,27 @@ def main():
         p = Parametres(**meta['parametres'])
         with args.rejouer.open(encoding='utf-8') as f:
             rows = [{k: float(v) for k, v in row.items()} for row in csv.DictReader(f)]
-        animation(rows, p, args.sortie or args.rejouer.with_suffix(''))
-        print('GIF régénéré à partir des mesures, sans refaire la dynamique.', flush=True)
+        animate(rows, p, args.sortie or args.rejouer.with_suffix(''))
+        print('GIF rebuilt from the measurements, without rerunning the dynamics.', flush=True)
         return
-    p = PARAMETRES
+    p = PARAMETERS
     if args.parametres:
-        donnees = json.loads(args.parametres.read_text(encoding="utf-8"))
-        for cle, valeur in donnees.get("parametres", donnees).items():
-            if cle not in p.dictionnaire():
-                raise ValueError(f"Paramètre inconnu : {cle}")
-            setattr(p, cle, valeur)
+        data = json.loads(args.parametres.read_text(encoding="utf-8"))
+        for key, value in data.get("parametres", data).items():
+            if key not in p.dictionnaire():
+                raise ValueError(f"Unknown parameter: {key}")
+            setattr(p, key, value)
     if args.robots is not None:
         p.nombre_robots = args.robots
     p.liaison_ideale = p.liaison_ideale or args.liaison_ideale
-    for option, attribut in ((args.duree, "duree"), (args.dt, "dt"), (args.mode, "mode_moteur"),
-                            (args.tensions, "tensions_cibles"), (args.vitesses, "vitesses_cibles")):
+    for option, attribute in ((args.duree, "duree"), (args.dt, "dt"), (args.mode, "mode_moteur"),
+                              (args.tensions, "tensions_cibles"), (args.vitesses, "vitesses_cibles")):
         if option is not None:
-            setattr(p, attribut, tuple(option) if isinstance(option, list) else option)
+            setattr(p, attribute, tuple(option) if isinstance(option, list) else option)
     p.moteur_actif = not args.sans_moteurs and p.moteur_actif
     p.magnetisme_actif = not args.sans_magnetisme and p.magnetisme_actif
     p.sol_actif = not args.sans_sol and p.sol_actif
-    simuler(p, args.sortie or RACINE / 'runs' / 'sim', not args.sans_gif)
+    simulate(p, args.sortie or REPO_ROOT / 'runs' / 'sim', not args.sans_gif)
 
 
 if __name__ == "__main__":

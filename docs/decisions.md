@@ -2,6 +2,20 @@
 
 Newest first. Each entry gives the decision and the reason for it.
 
+## 2026-11-23: translate the code to English (specs 004 and 005)
+
+- **Everything is translated, in two steps.** Spec 004 translates the
+  internals (names, comments, docstrings, console messages) with no change to
+  any output file, so it is checked byte for byte. Spec 005 translates the
+  interface: `Parametres` fields, CLI flags, CSV columns, JSON keys, GIF text,
+  campaign names and `configs/prototype_hugo.json`.
+- **No compatibility with old run files** (Victor's decision): after spec 005,
+  `make diag` and `make replay` will not read CSV/JSON files written before
+  it. Nothing is kept that a rerun, or Hugo's next push, cannot give back.
+- **One glossary for both specs** (`specs/004-translate-internals/spec.md`),
+  so a French word always becomes the same English word (corps: body,
+  aimant: magnet, couple: torque, tension: voltage, bilan: summary, ...).
+
 ## 2026-11-23: split the simulator (spec 003)
 
 - **`simulator.py` (670 lines) was split into `model/`, `simulation/` and

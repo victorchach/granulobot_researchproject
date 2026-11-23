@@ -1,17 +1,18 @@
-"""Interaction de deux cylindres uniformément aimantés selon Z, en vue plane.
+"""Interaction of two cylinders uniformly magnetised along Z, in a planar view.
 
-Charges magnétiques surfaciques +/- M sur les deux faces annulaires :
-U = mu0/(4*pi) * somme(qi*qj/r). Quadrature des surfaces, puis interpolation
-Hermite de l'énergie : F = -dU/dd, pour conserver force/potentiel cohérents.
-Les axes sont parallèles, les centres sont supposés à la même hauteur.
-Une rotation propre autour de Z ne change ni les pôles ni cette interaction.
-Br et l'uniformité de l'aimantation restent des hypothèses à calibrer.
-Référence de la méthode des charges surfaciques :
+Magnetic surface charges +/- M on the two annular faces:
+U = mu0/(4*pi) * sum(qi*qj/r). Quadrature over the surfaces, then Hermite
+interpolation of the energy: F = -dU/dd, so that force and potential stay
+consistent. The axes are parallel and the centres are assumed at the same
+height. A spin about Z changes neither the poles nor this interaction.
+Br and the uniformity of the magnetisation remain assumptions to calibrate.
+Reference for the surface charge method:
 https://doi.org/10.1016/j.jmmm.2022.169482
 
-Dipôles ponctuels avec potentiel régularisé : approximation des aimants finis,
-non valable comme prédiction quantitative à très courte distance sans calibration.
-appliquer_magnetisme applique l'un ou l'autre modèle aux corps Chrono à chaque pas.
+Point dipoles with a regularised potential: an approximation of finite
+magnets, not valid as a quantitative prediction at very short distance
+without calibration.
+apply_magnetism applies either model to the Chrono bodies at each step.
 """
 from bisect import bisect_right
 from functools import lru_cache
@@ -21,35 +22,35 @@ import math
 from granulobot.chrono_env import vect
 
 
-class CylindresAxiaux:
-    def __init__(self, diametre, trou, hauteur, remanence, facteur=1,
-                 epsilon=0.0002, radial=4, angulaire=16, points=161):
-        self.diametre, self.epsilon, self.hauteur = diametre, epsilon, hauteur
-        ro, ri = diametre / 2, trou / 2
+class AxialCylinders:
+    def __init__(self, diameter, hole, height, remanence, factor=1,
+                 epsilon=0.0002, radial=4, angular=16, points=161):
+        self.diameter, self.epsilon, self.height = diameter, epsilon, height
+        ro, ri = diameter / 2, hole / 2
         surface = math.pi * (ro**2 - ri**2)
-        q = facteur * remanence / (4 * math.pi * 1e-7) * surface / (radial * angulaire)
+        q = factor * remanence / (4 * math.pi * 1e-7) * surface / (radial * angular)
         self.coeff = 2e-7 * q**2
-        noeuds = []
+        nodes = []
         for k in range(radial):
-            rayon = math.sqrt(ri**2 + (ro**2 - ri**2) * (k + 0.5) / radial)
-            for j in range(angulaire):
-                a = 2 * math.pi * (j + 0.5) / angulaire
-                noeuds.append((rayon * math.cos(a), rayon * math.sin(a)))
-        self.ecarts = tuple((b[0] - a[0], b[1] - a[1]) for a in noeuds for b in noeuds)
-        # Maillage dense près du contact ; extrapolation directe au-delà.
-        debut, fin = 0.995 * diametre, max(0.3, 12 * diametre)
-        self.ds = [debut * (fin / debut)**(i / (points - 1)) for i in range(points)]
-        self.valeurs = [self.direct(d) for d in self.ds]
+            radius = math.sqrt(ri**2 + (ro**2 - ri**2) * (k + 0.5) / radial)
+            for j in range(angular):
+                a = 2 * math.pi * (j + 0.5) / angular
+                nodes.append((radius * math.cos(a), radius * math.sin(a)))
+        self.offsets = tuple((b[0] - a[0], b[1] - a[1]) for a in nodes for b in nodes)
+        # Dense grid near contact; direct computation beyond it.
+        start, end = 0.995 * diameter, max(0.3, 12 * diameter)
+        self.ds = [start * (end / start)**(i / (points - 1)) for i in range(points)]
+        self.values = [self.direct(d) for d in self.ds]
 
     def direct(self, distance):
-        """Retourne énergie et force radiale pour deux polarités identiques.
+        """Return the energy and radial force for two identical polarities.
 
-        Polarités opposées : multiplier les deux sorties par -1.
-        La quadrature intègre les quatre paires de faces ; deux paires égales.
+        Opposite polarities: multiply both outputs by -1.
+        The quadrature integrates the four pairs of faces; two pairs are equal.
         """
         u = f = 0.0
-        h2, eps2 = self.hauteur**2, self.epsilon**2
-        for dx, dy in self.ecarts:
+        h2, eps2 = self.height**2, self.epsilon**2
+        for dx, dy in self.offsets:
             x = distance + dx
             r2 = x*x + dy*dy + eps2
             r = math.sqrt(r2)
@@ -58,14 +59,14 @@ class CylindresAxiaux:
             f += x * (1 / (r2 * r) - 1 / ((r2 + h2) * s))
         return self.coeff * u, self.coeff * f
 
-    def evaluer(self, distance):
+    def evaluate(self, distance):
         if distance < self.ds[0] or distance > self.ds[-1]:
             return self.direct(distance)
         i = min(bisect_right(self.ds, distance) - 1, len(self.ds) - 2)
         h = self.ds[i + 1] - self.ds[i]
         t = (distance - self.ds[i]) / h
-        u0, f0 = self.valeurs[i]
-        u1, f1 = self.valeurs[i + 1]
+        u0, f0 = self.values[i]
+        u1, f1 = self.values[i + 1]
         m0, m1 = -f0, -f1
         u = (2*t**3-3*t*t+1)*u0 + (t**3-2*t*t+t)*h*m0 + (-2*t**3+3*t*t)*u1 + (t**3-t*t)*h*m1
         du = (6*t*t-6*t)/h*u0 + (3*t*t-4*t+1)*m0 + (-6*t*t+6*t)/h*u1 + (3*t*t-2*t)*m1
@@ -73,15 +74,15 @@ class CylindresAxiaux:
 
 
 @lru_cache(maxsize=16)
-def modele(diametre, trou, hauteur, remanence, facteur, epsilon, radial, angulaire):
-    return CylindresAxiaux(diametre, trou, hauteur, remanence, facteur,
-                          epsilon, radial, angulaire)
+def cached_model(diameter, hole, height, remanence, factor, epsilon, radial, angular):
+    return AxialCylinders(diameter, hole, height, remanence, factor,
+                          epsilon, radial, angular)
 
 
-def pour_parametres(p):
-    return modele(p.diametre_aimant_ext, p.diametre_aimant_int, p.epaisseur_aimant,
-                  p.remanence, p.facteur_moment, p.adoucissement_magnetique,
-                  p.quadrature_radiale, p.quadrature_angulaire)
+def for_parameters(p):
+    return cached_model(p.diametre_aimant_ext, p.diametre_aimant_int, p.epaisseur_aimant,
+                        p.remanence, p.facteur_moment, p.adoucissement_magnetique,
+                        p.quadrature_radiale, p.quadrature_angulaire)
 
 
 def dot(a, b):
@@ -94,12 +95,12 @@ def cross(a, b):
 
 
 def dipoles(r, mi, mj, epsilon):
-    """r = position_j - position_i ; retourne F sur j, couples i/j et énergie.
+    """r = position_j - position_i; returns F on j, torques on i/j and energy.
 
-    Force = -gradient_r U. La force sur i vaut -F. Chaque force doit être
-    appliquée AU POINT de l'aimant ; les couples retournés sont des couples
-    purs (orientation du dipôle), supplémentaires au moment de cette force.
-    Le même potentiel adouci sert aux forces et aux couples, sans plafonnement.
+    Force = -gradient_r U. The force on i is -F. Each force must be applied
+    AT THE POINT of the magnet; the returned torques are pure torques (dipole
+    orientation), on top of the moment of that force.
+    The same softened potential gives the forces and the torques, with no cap.
     """
     s2 = dot(r, r) + epsilon**2
     s3, s5, s7 = s2**1.5, s2**2.5, s2**3.5
@@ -112,35 +113,35 @@ def dipoles(r, mi, mj, epsilon):
     return force, cross(mi, bi), cross(mj, bj), 1e-7 * (c / s3 - 3 * a * b / s5)
 
 
-def appliquer_magnetisme(robots, p):
+def apply_magnetism(units, p):
     if not p.magnetisme_actif or p.liaison_ideale:
         return 0.0, 0.0
-    aimants = [(i, *u.aimant(actif, p)) for i, u in enumerate(robots) for actif in (True, False)]
-    cylindres = None
+    magnets = [(i, *u.magnet(active, p)) for i, u in enumerate(units) for active in (True, False)]
+    cylinders = None
     if p.modele_magnetique == 'cylindres':
-        cylindres = pour_parametres(p)
-    energie, force_max = 0.0, 0.0
-    for ai, aj in combinations(aimants, 2):
+        cylinders = for_parameters(p)
+    energy, max_force = 0.0, 0.0
+    for ai, aj in combinations(magnets, 2):
         i, bi, idxi, pi, mi = ai
         j, bj, idxj, pj, mj = aj
         if i == j and not p.interactions_internes:
             continue
         r = tuple(b - a for a, b in zip(pi, pj))
-        if cylindres is None:
-            f, ti, tj, potentiel = dipoles(r, mi, mj, p.adoucissement_magnetique)
+        if cylinders is None:
+            f, ti, tj, potential = dipoles(r, mi, mj, p.adoucissement_magnetique)
         else:
             d = math.hypot(r[0], r[1])
             if d < 1e-12:
-                raise RuntimeError('Centres des aimants confondus')
-            potentiel, radial = cylindres.evaluer(d)
-            signe = 1 if mi[2] * mj[2] >= 0 else -1
-            potentiel *= signe
-            f = (signe * radial * r[0] / d, signe * radial * r[1] / d, 0)
-            ti = tj = (0, 0, 0)  # Axiale : pas de couple propre autour de Z.
+                raise RuntimeError('Magnet centres coincide')
+            potential, radial = cylinders.evaluate(d)
+            sign = 1 if mi[2] * mj[2] >= 0 else -1
+            potential *= sign
+            f = (sign * radial * r[0] / d, sign * radial * r[1] / d, 0)
+            ti = tj = (0, 0, 0)  # Axial: no pure torque about Z.
         bi.AccumulateForce(idxi, vect(tuple(-c for c in f)), vect(pi), False)
         bj.AccumulateForce(idxj, vect(f), vect(pj), False)
         bi.AccumulateTorque(idxi, vect(ti), False)
         bj.AccumulateTorque(idxj, vect(tj), False)
-        energie += potentiel
-        force_max = max(force_max, math.sqrt(sum(c * c for c in f)))
-    return energie, force_max
+        energy += potential
+        max_force = max(max_force, math.sqrt(sum(c * c for c in f)))
+    return energy, max_force
