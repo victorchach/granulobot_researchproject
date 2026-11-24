@@ -2,6 +2,24 @@
 
 Newest first. Each entry gives the decision and the reason for it.
 
+## 2026-11-24: meeting slides in the repo, one deck per theme
+
+- **Marp decks in `slides/`**, in English: Markdown that both developers and
+  both agents can edit, versioned with the rest, exported to PDF (or PPTX)
+  for each meeting. A deck hosted on claude.ai looked better but only Victor
+  could have updated it.
+- **One deck per theme** (context, model, architecture, results) rather than
+  one per meeting (Victor's choice). Slides are **added, never replaced**: a
+  new architecture gets a new versioned slide after the old one, so the decks
+  show how the project evolved. Each slide's footer gives the date it was
+  added, which tells what is new at a meeting.
+- **The slides are a view, not a source**: their facts come from the
+  journal, `docs/` and the specs. The new `slides` skill holds the rules;
+  `keep-result` and `feature` offer to call it.
+- The theme takes its colours from the project's material: the red of the
+  Science Robotics paper and of the active magnets in our GIFs, the blue of
+  the free magnets.
+
 ## 2026-11-24: Hugo's rim friction model on hold (planned spec 007)
 
 - **What it is.** On his branch `granulobot-research`, Hugo replaced the

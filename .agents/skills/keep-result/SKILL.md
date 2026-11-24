@@ -85,6 +85,8 @@ Folder: [`YYYY-MM-DD-<short-name>/`](YYYY-MM-DD-<short-name>/)
 - If the run leads to a decision (a change of plan, a model choice), add it
   to `docs/decisions.md` and link the folder.
 - If it changes the roadmap status, update `docs/roadmap.md`.
+- Offer to add the run to the meeting slides with the `slides` skill (one
+  slide per journal entry in `slides/4-results.md`).
 - Show the developer the new folder, the README and the journal entry.
   Suggest a commit (English, imperative mood, no attribution); commit only
   when asked. The pre-commit hook allows CSV and GIF files inside
