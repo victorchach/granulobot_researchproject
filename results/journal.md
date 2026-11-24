@@ -60,3 +60,31 @@ Folder: [`2026-11-24-ring6-alternating/`](2026-11-24-ring6-alternating/)
 - **Next**: step 1 holds for 60 s at dt = 1e-4 s. Still open before calling
   it validated: time-step convergence, a 2 to 5 min run (and whether the
   drift stays linear), robustness to unequal voltages and perturbations.
+
+## 4. 2026-11-24: ring of 6 units, alternating ±3.25 V, 300 s
+
+Folder: [`2026-11-24-ring6-alternating-300s/`](2026-11-24-ring6-alternating-300s/)
+
+- **Why**: after entry 3, run the 5 minutes that roadmap step 1 asks for,
+  and see whether the slow drift stays linear.
+- **What we saw**: the three step 1 criteria hold for the whole 300 s. The
+  rotor directions alternate on all 59 900 samples, the sum of the rotor
+  speeds averages 0.0002 rad/s, and no pair detaches. The bodies make
+  ±146.2 turns at the same speed in the last minute as in the first. The
+  centroid drifts in a straight line at 3.4 µm/s (1.06 mm). The hexagon
+  also flattens slowly along the C-F axis: C and F move 0.8 mm away from the
+  centre and their angles close to 118.4°. Entry 3's "without deforming" was
+  wrong: the flattening had already started (0.18 mm at 60 s).
+- **Limits**: dt = 1e-4 s is still not converged, and the drift and the
+  flattening may be numerical. Ideal start, no robustness test. 300 s does
+  not tell whether the flattening stops.
+- **Next**: step 1 holds for 5 min at dt = 1e-4 s. Before calling it
+  validated: a dt convergence run, then robustness to unequal voltages and
+  perturbations. The working hypothesis is that the drift and the
+  flattening are numerical: with exact Coulomb friction at the ground and
+  balanced forces, the centres should not move, and the rims do not slip at
+  the contacts (mean slip under 10 µm/s against a rim speed of 0.104 m/s), so
+  Hugo's rim friction (spec 007) should not change them. To test it, a 20 s
+  run at dt = 1e-5 s was started on 2026-11-24
+  (`runs/ring6/uniform_dt1e5_20s`, local only, analysis pending), to compare
+  with the first 20 s of this run.
