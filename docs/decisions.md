@@ -2,6 +2,36 @@
 
 Newest first. Each entry gives the decision and the reason for it.
 
+## 2026-11-24: Hugo's rim friction model on hold (planned spec 007)
+
+- **What it is.** On his branch `granulobot-research`, Hugo replaced the
+  uniform shell friction with a rim friction that depends on the contact
+  type (`frottement_jantes` in `granulobot_physics.py`). A steric contact
+  (shells touching with no coupled magnets) slides easily, with
+  `mu_sterique = 0.05`; a contact where facing magnets attract each other
+  grips, with `mu_magnetique = 1.0`, to stand for the shallow rim teeth. An
+  engagement weight in [0, 1], recomputed at every step from the magnets'
+  alignment and gap (range 1 mm), blends the two. The values are
+  exploratory estimates with no source, following advice from the
+  supervisor that Hugo reported.
+- **Why it is on hold.** In the ideal hexagon with alternating biases,
+  neighbouring rims roll on each other without slipping, and the only
+  contacts are the six coupled pairs. The friction coefficient is then only
+  an upper bound that is never reached: uniform `mu_shells = 0.6` gives the
+  same rotation as his model (-0.847 against -0.848 turn at 2 s,
+  `results/journal.md`, entry 2). Porting it now would add a model whose
+  effect cannot be seen. Victor's choice: validate step 1 with a 5 min run
+  first, then move to step 2.
+- **When to bring it back.** When contacts slip: random starts and
+  rearrangements (roadmap step 2), equal biases (rims rubbing in opposite
+  directions), or a deformed ring with steric contacts.
+- **How to check the implementation then.** Use a targeted 2-unit test
+  rather than the ring: ramp the torque that turns one unit against the
+  other until the contact slips, once with the magnets facing (slip expected
+  near 1.0 × N) and once with the shells touching away from the magnets
+  (slip expected near 0.05 × N). Whether 0.05 and 1.0 are the right values is
+  a separate question that needs measurements on the robots.
+
 ## 2026-11-24: a journal of results, and what goes into results/
 
 - **`results/journal.md` tells the path of the project**, one kept run at a

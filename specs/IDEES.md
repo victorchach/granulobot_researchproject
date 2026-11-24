@@ -1,7 +1,9 @@
 # Ideas backlog
 
 Things to handle later. When one is scheduled, it becomes a spec and is
-removed from this list.
+removed from this list. This file is only a to-do list: a decision about an
+idea (put on hold, dropped, and why) goes to `docs/decisions.md`, so that it
+is not lost when the idea leaves this list.
 
 ## Roadmap step 1 (synchronized liquid state)
 
@@ -11,7 +13,9 @@ removed from this list.
   (`frottement_jantes` in `granulobot_physics.py`): low steric friction
   (0.05), high friction (1.0) when facing magnets are engaged, blended by an
   engagement weight. Exploratory values, no source yet. Planned as spec 007,
-  after 006; compare against his `reference_alternee` run.
+  after 006; compare against his `reference_alternee` run. On hold since
+  2026-11-24: why, when to bring it back and how to test it are in
+  `docs/decisions.md` ("Hugo's rim friction model on hold").
 - More than 26 units (spec 006 caps N at 26). The cap only comes from the
   names A..Z (`chr(65 + i)`). Lifting it needs names AA, AB, ... and a
   separator in the pair keys (`A-B_distance_m`, `max_overlap_m`): with plain
