@@ -1,4 +1,5 @@
-"""Three granulobots: motorised wheel, two rotors and free wheel, top view.
+"""Granulobots (2 facing units, or a ring of 3 to 26): motorised wheel, two
+rotors and free wheel, top view.
 
 The SI parameters and their origins are in parameters.py.
 Voltage control by default; no imposed speed or displacement.
@@ -19,6 +20,8 @@ Examples (conda env chrono, from the repo root):
     PYTHONPATH=src python -m granulobot --no-ground --no-magnetism
     PYTHONPATH=src python -m granulobot --duration 0.2 --no-gif --output /path/run
     PYTHONPATH=src python -m granulobot --params configs/prototype_hugo.json
+    PYTHONPATH=src python -m granulobot --params configs/ring6_alternating.json
+    PYTHONPATH=src python -m granulobot --units 4 --voltages 1 -1 1 -1
 
 Outputs: GIF in real time, CSV of measurements, JSON of parameters/summary.
 Without --output, they go to runs/sim at the repo root.
@@ -39,14 +42,17 @@ PARAMETERS = Parameters()
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument("--units", type=int, choices=(2, 3), help="number of units (2: bench, 3: triangle)")
+    parser.add_argument("--units", type=int, metavar="N",
+                        help="number of units, 2 to 26 (2: facing pair; N >= 3: ring, 3: triangle)")
     parser.add_argument("--ideal-link", action="store_true", help="rigid reference link between coupled magnets")
     parser.add_argument("--params", type=Path, help="JSON file of measured/estimated parameters")
     parser.add_argument("--duration", type=float, help="simulated time (s)")
     parser.add_argument("--dt", type=float, help="time step (s)")
     parser.add_argument("--mode", choices=("voltage", "speed", "torque"), help="motor control mode")
-    parser.add_argument("--voltages", type=float, nargs=3, metavar=("A", "B", "C"), help="target voltages (V)")
-    parser.add_argument("--speeds", type=float, nargs=3, metavar=("A", "B", "C"), help="target speeds (rad/s), speed mode")
+    parser.add_argument("--voltages", type=float, nargs="+", metavar="V",
+                        help="target voltages (V), one per unit in order A, B, ...")
+    parser.add_argument("--speeds", type=float, nargs="+", metavar="W",
+                        help="target speeds (rad/s), one per unit, speed mode")
     parser.add_argument("--no-motors", action="store_true")
     parser.add_argument("--no-magnetism", action="store_true")
     parser.add_argument("--no-ground", action="store_true")

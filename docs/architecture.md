@@ -21,7 +21,8 @@ src/granulobot/               the simulator package
 │   └── contacts.py           CircularContacts: analytic shell/magnet/ground contacts
 │
 ├── simulation/               HOW a run works
-│   ├── world.py              create_system: solver, ground, layout of the units
+│   ├── world.py              create_system: solver, ground, placement of the units
+│   ├── layout.py             ring_positions, coupled_pairs (no PyChrono)
 │   ├── loop.py               simulate: the time loop, summary, outputs
 │   └── recording.py          measure (one CSV row), CSV and JSON writing
 │
@@ -36,8 +37,8 @@ scripts/
 configs/                      parameter files for --params
 ```
 
-Where future work goes: a new layout (the 6-unit ring) in
-`simulation/world.py`; a new controller (eq. 7, eq. 2) in a new
+Where future work goes: a new layout in `simulation/layout.py` (the N-unit
+ring is there since spec 006); a new controller (eq. 7, eq. 2) in a new
 `model/controller.py`, called from `model/motor.py`; a new measured quantity
 in `simulation/recording.py`.
 
@@ -66,7 +67,8 @@ Each step names the file it lives in; `[PyChrono]` marks library calls.
    │     ├─ ChSystemNSC(), solver PSOR or APGD             [PyChrono]
    │     ├─ fixed reference body (ChBody), the guides' anchor
    │     ├─ the ground, if ground_enabled: ChBodyEasyBox        [PyChrono]
-   │     ├─ positions: 2 units face to face, or a triangle
+   │     ├─ positions: ring_positions(n_units, side)   [simulation/layout.py]
+   │     │    2 units face to face, or a ring of N on a regular polygon
    │     ├─ per unit: create_unit(...)                       [model/unit.py]
    │     │    shell, active rotor, free rotor, free wheel
    │     │    ├─ ChLinkMateGeneric  guide: blocks tipping only

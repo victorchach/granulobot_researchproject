@@ -44,8 +44,10 @@ def apply_motor(u, i, t, p):
         if abs(raw) < p.max_voltage or raw * error < 0:
             u.integral += error * p.dt
         voltage = raw
-    else:
+    elif p.motor_mode == "voltage":
         voltage = p.target_voltages[i] * ramp
+    else:
+        voltage = 0.0  # Torque mode: no electrical model, target_voltages unused.
     if p.motors_enabled:
         if p.motor_mode == "torque":
             torque = max(-p.max_torque, min(p.max_torque, p.target_torques[i] * ramp))

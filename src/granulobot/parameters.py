@@ -5,10 +5,12 @@ The laws that use them live in granulobot.model (motor.py, magnets.py).
 from dataclasses import dataclass, asdict
 import math
 
+from granulobot.simulation.layout import MAX_UNITS, ring_radius
+
 
 @dataclass
 class Parameters:
-    n_units: int = 3                       # 2: test bench; 3: triangle
+    n_units: int = 3                       # 2: test bench; N >= 3: ring (3: triangle), max 26
     ideal_link: bool = False                 # kinematic reference, NOT a real model
     rotor_perturbation_rad: float = 0.0          # active rotor of A, passive restoring test
     detachment_margin: float = 0.003     # diagnostic criterion, not a physical law
@@ -93,7 +95,7 @@ class Parameters:
     magnetic_softening: float = 0.0002     # numerical, to check by convergence
     internal_interactions: bool = False         # magnets of the same robot, to study
     # Dipoles assumed rigidly attached to their rotor; the magnet's own spin is omitted.
-    # Triangle, independent motors; no permanent link between neighbours.
+    # Ring of independent motors; no permanent link between neighbours.
     initial_gap: float = 5e-5                    # m between the shells
     dt: float = 1e-5                            # s, resolves the stiff motor braking
     duration: float = 3.0
@@ -123,8 +125,8 @@ class Parameters:
         return self.moment_factor * self.remanence * volume / (4 * math.pi * 1e-7)
 
     def check(self):
-        if self.n_units not in (2, 3):
-            raise ValueError("The bench accepts two or three granulobots")
+        if not isinstance(self.n_units, int) or not 2 <= self.n_units <= MAX_UNITS:
+            raise ValueError(f"n_units must be an integer from 2 to {MAX_UNITS}")
         if self.solver not in ('PSOR', 'APGD'):
             raise ValueError('solver: PSOR or APGD')
         if self.ground_model not in ('equivalent_disc', 'bullet'):
@@ -145,6 +147,10 @@ class Parameters:
                      "max_voltage", "max_current", "max_torque", "ground_width"):
             if not math.isfinite(getattr(self, name)) or getattr(self, name) <= 0:
                 raise ValueError(f"{name} must be positive and finite")
+        if self.ground_enabled and self.n_units >= 3 and (
+                ring_radius(self.n_units, 2 * self.R + self.initial_gap) + self.R
+                > self.ground_width / 2):
+            raise ValueError("The ring does not fit on the ground: increase ground_width")
         if self.body_mass <= 0 or self.magnet_radius <= 0:
             raise ValueError("Impossible mass split or magnet geometry")
         if self.outer_free_wheel and (not 0 < self.wheel_thickness < self.H / 2
@@ -158,8 +164,15 @@ class Parameters:
         if self.motor_mode not in ("speed", "voltage", "torque"):
             raise ValueError("motor_mode: speed, voltage or torque")
         for targets in (self.target_speeds, self.target_voltages, self.target_torques):
-            if len(targets) != 3 or not all(math.isfinite(v) for v in targets):
-                raise ValueError("Three finite set points are needed, for A, B and C")
+            if not all(math.isfinite(v) for v in targets):
+                raise ValueError("Set points must be finite")
+        # Only the tuple read by the current mode needs one value per unit;
+        # extra values are ignored (2-unit inputs keep an unused C value).
+        name = {"speed": "target_speeds", "voltage": "target_voltages",
+                "torque": "target_torques"}[self.motor_mode]
+        if len(getattr(self, name)) < self.n_units:
+            raise ValueError(f"{self.motor_mode} mode needs at least {self.n_units} "
+                             f"{name}, got {len(getattr(self, name))}")
         for name in ("mu_shells", "mu_ground", "gravity", "translation_damping",
                      "rotation_damping", "active_friction_torque",
                      "free_friction_torque", "free_viscosity", "initial_gap",

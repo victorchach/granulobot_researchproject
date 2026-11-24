@@ -5,6 +5,7 @@ Run in conda chrono, from the repo root:
 """
 from pathlib import Path
 import argparse
+import math
 import tempfile
 import unittest
 
@@ -101,6 +102,38 @@ class Dynamics(unittest.TestCase):
         p = Parameters(duration=0.02, startup_ramp=0)
         with tempfile.TemporaryDirectory() as tmp:
             rows, summary = simulate(p, Path(tmp) / 'powered', gif=False, verbose=False)
+        self.assertLess(max(summary['max_overlap_m'].values()), 0.001 * p.R)
+
+    def test_hexagon_ring_magnets_face_their_neighbours(self):
+        # Spec 006: same magnet gap as the triangle, active magnet towards unit i+1.
+        def gaps(p):
+            sys, units, refs = create_system(p)
+            n, out = len(units), []
+            for i, u in enumerate(units):
+                _, _, a, _ = u.magnet(True, p)
+                _, _, b, _ = units[(i + 1) % n].magnet(False, p)
+                c, c_next = u.body.GetPos(), units[(i + 1) % n].body.GetPos()
+                to_next = (c_next.x - c.x, c_next.y - c.y)
+                to_magnet = (a[0] - c.x, a[1] - c.y)
+                cross = to_next[0] * to_magnet[1] - to_next[1] * to_magnet[0]
+                dot = to_next[0] * to_magnet[0] + to_next[1] * to_magnet[1]
+                self.assertAlmostEqual(cross, 0, delta=1e-12)
+                self.assertGreater(dot, 0)
+                out.append(math.dist(a[:2], b[:2]))
+            return units, out
+        six = (3.25, -3.25, 3.25, -3.25, 3.25, -3.25)
+        units, hexagon = gaps(Parameters(n_units=6, target_voltages=six))
+        self.assertEqual(len(units), 6)
+        _, triangle = gaps(Parameters())
+        for g in hexagon:
+            self.assertAlmostEqual(g, triangle[0], delta=1e-12)
+
+    def test_hexagon_alternating_short_run(self):
+        p = Parameters(n_units=6, target_voltages=(3.25, -3.25, 3.25, -3.25, 3.25, -3.25),
+                       duration=0.003, startup_ramp=0)
+        with tempfile.TemporaryDirectory() as tmp:
+            rows, summary = simulate(p, Path(tmp) / 'ring6', gif=False, verbose=False)
+        self.assertEqual(len(summary['attachment']['pairs']), 6)
         self.assertLess(max(summary['max_overlap_m'].values()), 0.001 * p.R)
 
 
