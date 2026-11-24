@@ -98,7 +98,8 @@ def create_unit(sys, p, mat, frame, i, positions):
             # The two other magnets face outwards.
             phi = 0.0 if active else math.pi
         else:
-            neighbour = (i + 1) % 3 if active else (i - 1) % 3
+            # Ring: active magnet towards unit i+1, free magnet towards unit i-1.
+            neighbour = (i + 1) % p.n_units if active else (i - 1) % p.n_units
             phi = math.atan2(positions[neighbour][1] - y, positions[neighbour][0] - x)
         if active and i == 0:
             phi += p.rotor_perturbation_rad

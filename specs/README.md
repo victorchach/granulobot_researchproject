@@ -19,3 +19,4 @@ Status values: `draft` (waiting for approval), `approved` (being implemented),
 | 003 | split-simulator | merged | Split `simulator.py` into `model/`, `simulation/`, `output/`; move the pure laws out of `parameters.py` |
 | 004 | translate-internals | merged | Translate identifiers, comments and messages to English; outputs unchanged |
 | 005 | translate-interface | merged | Translate parameters, CLI flags, CSV/JSON, GIF, campaign to English; old run files no longer readable |
+| 006 | n-unit-ring | merged | Any number of units on a regular ring (N = 2..26); 6-unit alternating-bias config (eq. 8) |

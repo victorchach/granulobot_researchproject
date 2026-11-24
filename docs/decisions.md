@@ -2,6 +2,28 @@
 
 Newest first. Each entry gives the decision and the reason for it.
 
+## 2026-11-24: N-unit ring (spec 006)
+
+- **Any number of units from 2 to 26**, ported from the 6-unit work on Hugo's
+  branch `granulobot-research` (not merged: it starts from the pre-reorg
+  layout) and generalized beyond 6. N >= 3 is a closed ring on a regular
+  polygon with the triangle's neighbour spacing; N = 2 stays the facing pair.
+  The cap of 26 only comes from the names A..Z (Victor's choice: enough for
+  now; going further is in `specs/IDEES.md`).
+- **The triangle is unchanged**, up to rounding: the polygon formula gives its
+  corners within 1.4e-17 m. That rounding is enough to move a default 0.2 s
+  run by 5e-8 m and 1.7e-6 rad through the iterative solver; with the old
+  coordinates injected, the CSV matches `main` bit for bit.
+- **No 6-value defaults.** The set points keep their 3-value defaults; a ring
+  of N needs its set points from `--voltages` or a parameter file. Only the
+  tuple read by the current motor mode must have N values, so the 2-unit
+  inputs with an unused C value keep working.
+- **Alternating biases are a config, not a default**:
+  `configs/ring6_alternating.json` sets u_i = (-1)^i * 3.25 V, A positive
+  (paper eq. 8; 3.25 V is the default target voltage, as in Hugo's
+  `reference_alternee.json`). Friction stays uniform; Hugo's rim friction
+  model is planned as spec 007.
+
 ## 2026-11-24: English interface (spec 005)
 
 - **The run interface is in English**: `Parameters` and its fields, CLI

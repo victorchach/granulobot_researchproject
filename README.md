@@ -28,6 +28,7 @@ make test                                   # unit tests of the physics laws
 make validate                               # PyChrono dynamics checks
 make sim NAME=probe ARGS="--duration 0.2 --no-gif"
 make sim NAME=v123 ARGS="--voltages 1 2 3"  # independent voltages for A, B, C
+make sim NAME=ring6 ARGS="--params configs/ring6_alternating.json"  # 6-unit ring, ±3.25 V
 make diag CSV=runs/probe.csv                # attachment diagnostics of a run
 ```
 

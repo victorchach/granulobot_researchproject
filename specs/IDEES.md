@@ -5,15 +5,20 @@ removed from this list.
 
 ## Roadmap step 1 (synchronized liquid state)
 
-- Generalize the simulator from 2 or 3 units to N units, with a regular
-  hexagon ring for N = 6. The 2/3 assumption is hard-coded in
-  `Parameters.check`, `simulation/world.py` (`coupled_pairs`, the triangle
-  positions), `model/unit.py` (`create_unit`, rotor orientations), the 3-value
-  tuples (`target_voltages`, ...), the `--voltages A B C` CLI flags and
-  `output/analysis.py` (`analyze`).
-- Alternating open-loop biases u_i = (-1)^i |u| (paper eq. 8).
 - Long-run metrics for step 1: ring shape, alternation of rotor directions,
   sum of rotor speeds.
+- Differentiated rim friction from Hugo's branch `origin/granulobot-research`
+  (`frottement_jantes` in `granulobot_physics.py`): low steric friction
+  (0.05), high friction (1.0) when facing magnets are engaged, blended by an
+  engagement weight. Exploratory values, no source yet. Planned as spec 007,
+  after 006; compare against his `reference_alternee` run.
+- More than 26 units (spec 006 caps N at 26). The cap only comes from the
+  names A..Z (`chr(65 + i)`). Lifting it needs names AA, AB, ... and a
+  separator in the pair keys (`A-B_distance_m`, `max_overlap_m`): with plain
+  concatenation, A+AB and AA+B both give `AAB`. Nothing reads those keys back,
+  so `make diag` and `make replay` stay compatible. The real limit is then the
+  cost (magnet pairs grow as N squared, see Performance below) and the ground
+  size (`ground_width = 2 m` fits about 85 units).
 
 ## Running many configurations
 

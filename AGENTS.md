@@ -90,8 +90,9 @@ with `PYTHONPATH=src` (the Makefile sets it).
 Scenario campaigns: `PYTHONPATH=src python scripts/campaign.py --duration 0.6`
 (outputs in `runs/campaign/`).
 
-Useful simulator flags: `--units {2,3}`, `--duration`, `--dt`,
-`--mode {voltage,speed,torque}`, `--voltages A B C`, `--speeds A B C`,
+Useful simulator flags: `--units N` (2 to 26), `--duration`, `--dt`,
+`--mode {voltage,speed,torque}`, `--voltages V ...`, `--speeds W ...` (one
+value per unit, in order A, B, ...),
 `--no-motors`, `--no-magnetism`, `--no-ground`, `--no-gif`,
 `--ideal-link`, `--params file.json`. Run a short probe first
 (`--duration 0.2 --no-gif`): the default `dt = 1e-5 s` makes long runs slow.
@@ -105,12 +106,17 @@ Nothing writes into `src/`, `scripts/` or `tests/`.
 The 2-unit bench (one facing pair, active A to free B):
 `make sim NAME=bench_2 ARGS="--units 2 --voltages 0.3 0 0"`.
 
+The 6-unit ring with alternating biases (roadmap step 1, paper eq. 8):
+`make sim NAME=ring6 ARGS="--params configs/ring6_alternating.json"`. It costs
+about 4 min of computing per simulated second at `dt = 1e-5 s`.
+
 ## Architecture (src/granulobot/)
 
 `docs/architecture.md` has the file map and the call flow of a run, from the
 CLI to the outputs. Imports are absolute
-(`from granulobot.model.motor import dc_motor`). The simulator is currently
-limited to 2 or 3 units.
+(`from granulobot.model.motor import dc_motor`). The simulator takes 2 to 26
+units: a facing pair for 2, a closed ring on a regular polygon for 3 or more
+(spec 006).
 
 - `__main__.py`: the CLI (`python -m granulobot`), with `PARAMETERS`, the
   defaults used by a run, and `main`.
@@ -136,8 +142,10 @@ limited to 2 or 3 units.
     analytic contacts between the shells, between the magnets and with the
     ground, passed to the NSC solver.
 - `simulation/`, how a run works:
-  - `world.py`: `create_system` (solver, ground, layout of the units, ideal
-    link, contact callback).
+  - `world.py`: `create_system` (solver, ground, placement of the units,
+    ideal link, contact callback).
+  - `layout.py`: `ring_positions` and `coupled_pairs`, the layout of the
+    units (no PyChrono, also used by the analysis).
   - `loop.py`: `simulate`, the time loop, the summary and the outputs.
   - `recording.py`: `measure` (one CSV row) and the CSV/JSON writing.
 - `output/`, what we get out of a run (no PyChrono needed):
@@ -150,6 +158,8 @@ Outside the package:
 - `scripts/campaign.py`: scenario sweeps and convergence campaigns.
 - `configs/prototype_hugo.json`: the prototype dimensions Hugo provided, plus
   what is still to measure.
+- `configs/ring6_alternating.json`: the 6-unit ring with alternating biases
+  ±3.25 V (roadmap step 1).
 
 Outputs of a run: `<name>.csv` (200 Hz measurements, including contact
 forces), `<name>.json` (parameters, assumptions, summary) and `<name>.gif`

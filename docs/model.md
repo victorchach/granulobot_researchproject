@@ -18,6 +18,13 @@ for a one-off run, override them in `PARAMETERS = Parameters(...)`
   the motorised wheel.
 - The motor acts between the active rotor and the body, together with its
   reaction torque. It is never an external torque on the aggregate.
+- Layout (spec 006): 2 units face each other (active A to free B, the two
+  other magnets facing outwards). From 3 units on (up to 26), the units sit on
+  a regular polygon with side `2R + initial_gap`, counterclockwise from A
+  (3: the original triangle, 6: a hexagon). The active magnet of unit i
+  points at unit i+1 and its free magnet at unit i-1, so the ring closes on
+  A. In a hexagon the two magnets of a unit are 120 degrees apart, compared
+  with 60 degrees in the triangle.
 - Unit axes are vertical (top view). A guide blocks tipping (Rx/Ry) only, never
   X, Y, Z or the rotation about Z.
 - Planar projection: centres of mass and side contacts sit in a common plane.

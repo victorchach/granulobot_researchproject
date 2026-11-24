@@ -1,0 +1,7 @@
+{
+  "parameters": {
+    "n_units": 6,
+    "target_voltages": [3.25, -3.25, 3.25, -3.25, 3.25, -3.25]
+  },
+  "origin": "Roadmap step 1 reference (spec 006): regular hexagon ring with alternating open-loop biases u_i = (-1)^i |u| (paper eq. 8), A positive. |u| = 3.25 V is the default target_voltages value (estimate, about 30 rpm without load), as in Hugo's reference_alternee.json on branch granulobot-research. Friction stays uniform (mu_shells)."
+}

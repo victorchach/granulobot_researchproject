@@ -11,6 +11,7 @@ import json
 import math
 from pathlib import Path
 from granulobot.parameters import Parameters
+from granulobot.simulation.layout import coupled_pairs
 
 
 def unwrap(angles):
@@ -22,7 +23,7 @@ def unwrap(angles):
 
 def analyze(rows, p):
     names = tuple(chr(65 + i) for i in range(p.n_units))
-    coupled = ((0, 1),) if p.n_units == 2 else ((0, 1), (1, 2), (2, 0))
+    coupled = coupled_pairs(p.n_units)
     steps = [b['t_s'] - a['t_s'] for a,b in zip(rows, rows[1:])]
     result = {'time_resolution_s': max(steps) if steps else 0,
               'ideal_link': p.ideal_link,

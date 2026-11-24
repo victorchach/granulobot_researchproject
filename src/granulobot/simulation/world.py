@@ -1,17 +1,12 @@
 """The simulated world: NSC system, solver, ground, placement of the units.
 
 create_system returns the system, the units and the SWIG objects to keep.
-The layout (2 facing units or a triangle) is defined here.
+The layout (2 facing units or a ring of N) comes from simulation/layout.py.
 """
-import math
-
 from granulobot.chrono_env import chrono, vect
 from granulobot.model.contacts import CircularContacts
 from granulobot.model.unit import create_unit
-
-
-def coupled_pairs(units):
-    return ((0, 1),) if len(units) == 2 else ((0, 1), (1, 2), (2, 0))
+from granulobot.simulation.layout import coupled_pairs, ring_positions
 
 
 def create_system(p):
@@ -49,18 +44,13 @@ def create_system(p):
         if p.ground_model == 'equivalent_disc':
             ground.GetCollisionModel().SetFamilyMask(0)  # Support added by the callback.
         sys.AddBody(ground)
-    side = 2 * p.R + p.initial_gap
-    positions = ((-side / 2, -side / (2 * math.sqrt(3))),
-                 (side / 2, -side / (2 * math.sqrt(3))),
-                 (0, side / math.sqrt(3)))
-    if p.n_units == 2:
-        positions = ((-side / 2, 0), (side / 2, 0))
+    positions = ring_positions(p.n_units, 2 * p.R + p.initial_gap)
     units = [create_unit(sys, p, mat, frame, i, positions) for i in range(len(positions))]
     links = []
     if p.ideal_link:
         # Reference link, rigid and with no breaking threshold. It keeps the
         # relative pose of the two rotors, never their centres on the ground.
-        for i, j in coupled_pairs(units):
+        for i, j in coupled_pairs(p.n_units):
             _, _, a, _ = units[i].magnet(True, p)
             _, _, b, _ = units[j].magnet(False, p)
             point = vect(tuple((x + y) / 2 for x, y in zip(a, b)))
