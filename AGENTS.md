@@ -30,10 +30,11 @@ Pr. Baudouin Saintyves (Inria / INSA, CITI lab).
 | `docs/` | Roadmap, decisions, architecture and model notes (Markdown, the source of truth). |
 | `specs/` | Feature specs (`NNN-name/spec.md`), index and ideas backlog. |
 | `results/` | Runs that mark a step of the project, versioned on purpose, and `journal.md`, the path from one kept run to the next (see `results/README.md`). |
+| `slides/` | Meeting slides: one Marp deck per theme (context, model, architecture, results), `img/`, theme, dated PDF exports (see `slides/README.md`). |
 | `runs/` | Scratch simulation outputs. Ignored by git. |
 | `tools/git-hooks/` | Versioned sources of the local git hooks. |
 | `tools/agent-hooks/` | The edit guard shared by the Claude Code and Codex hooks. |
-| `.agents/skills/` | Shared agent skills (`feature`, `run-sim`, `keep-result`, `sync`, `humanizer`). Codex reads them here. |
+| `.agents/skills/` | Shared agent skills (`feature`, `run-sim`, `keep-result`, `slides`, `sync`, `humanizer`). Codex reads them here. |
 | `.claude/` | Claude Code settings; `.claude/skills/<name>` are symlinks to `.agents/skills/<name>`. |
 | `.codex/` | Codex project hooks (`hooks.json`). |
 
@@ -47,6 +48,7 @@ skills in `.agents/skills/`:
 | `feature` | Any code change (`*.py`, `*.ipynb`, `Makefile`), however small, from spec to merge |
 | `run-sim` | Running a scenario and analysing its outputs, without changing code |
 | `keep-result` | Moving a run that matters from `runs/` to `results/`, with its analysis README and a new entry in `results/journal.md` |
+| `slides` | Adding to the meeting slides (never replacing), and preparing or exporting them for a meeting |
 | `sync` | Pulling the teammate's work and checking that docs still match the code |
 | `humanizer` | Any prose meant for people (reports, README, docs, messages) |
 
@@ -87,6 +89,10 @@ with `PYTHONPATH=src` (the Makefile sets it).
 | `make diag CSV=runs/x.csv` | `PYTHONPATH=src python -m granulobot.output.analysis runs/x.csv` |
 | `make replay CSV=runs/x.csv` | `PYTHONPATH=src python -m granulobot --replay runs/x.csv` |
 | `make hooks` | copy `tools/git-hooks/*` into `.git/hooks/` |
+
+Meeting slides (Marp, needs Node.js and Google Chrome; commands in the
+`slides` skill): `npx -y @marp-team/marp-cli@4.5.1 --no-stdin --theme-set
+slides/theme --html --allow-local-files slides/<deck>.md --pdf -o <output>.pdf`.
 
 Scenario campaigns: `PYTHONPATH=src python scripts/campaign.py --duration 0.6`
 (outputs in `runs/campaign/`).

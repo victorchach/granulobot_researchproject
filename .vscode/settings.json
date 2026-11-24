@@ -2,6 +2,12 @@
   "python.terminal.activateEnvironment": true,
   "python-envs.defaultEnvManager": "ms-python.python:conda",
   "python-envs.defaultPackageManager": "ms-python.python:conda",
-  "python.analysis.extraPaths": ["src"],
-  "makefile.configureOnOpen": true
+  "python.analysis.extraPaths": [
+    "src"
+  ],
+  "makefile.configureOnOpen": true,
+  "markdown.marp.themes": [
+    "./slides/theme/granulobot.css"
+  ],
+  "markdown.marp.html": "all"
 }

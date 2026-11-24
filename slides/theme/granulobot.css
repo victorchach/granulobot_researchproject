@@ -1,0 +1,139 @@
+/*
+ * @theme granulobot
+ * @auto-scaling true
+ *
+ * Colours taken from the project's own material: the red of the Science
+ * Robotics paper and of the active magnets in our GIFs, the blue of the free
+ * magnets, on a white page like the paper's figures.
+ */
+@import 'default';
+
+:root {
+  --red: #c8102e;      /* active magnet, paper header */
+  --blue: #1f5fa8;     /* free magnet */
+  --ink: #1d1d1f;
+  --muted: #6b6b70;
+  --rule: #e4e1dc;
+  --tint: #f6f4f1;
+}
+
+section {
+  background: #ffffff;
+  color: var(--ink);
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 25px;
+  line-height: 1.4;
+  padding: 64px 72px 56px;
+  border-top: 10px solid var(--red);
+  justify-content: flex-start;
+}
+
+/* Slide title: red, with a thin rule under it. */
+h2 {
+  color: var(--red);
+  font-size: 1.45em;
+  font-weight: 700;
+  margin: 0 0 0.55em;
+  padding-bottom: 0.25em;
+  border-bottom: 2px solid var(--rule);
+}
+h3 { color: var(--blue); font-size: 1.05em; margin: 0.6em 0 0.25em; }
+
+strong { color: inherit; }
+em { color: var(--muted); }
+a { color: var(--blue); }
+
+ul, ol { margin: 0.2em 0; padding-left: 1.1em; }
+li { margin: 0.12em 0; }
+li::marker { color: var(--red); }
+
+code {
+  background: var(--tint);
+  color: var(--ink);
+  border-radius: 4px;
+  padding: 0.05em 0.3em;
+  font-size: 0.88em;
+}
+pre {
+  background: var(--tint);
+  border-left: 4px solid var(--blue);
+  border-radius: 4px;
+  font-size: 0.62em;
+  line-height: 1.35;
+  padding: 0.7em 1em;
+}
+pre code { background: none; padding: 0; }
+
+table { border-collapse: collapse; font-size: 0.8em; margin: 0.3em 0; }
+th { background: var(--tint); color: var(--ink); border-bottom: 2px solid var(--red); }
+th, td { border: none; border-bottom: 1px solid var(--rule); padding: 0.35em 0.7em; }
+table tr:nth-child(2n) { background: transparent; }
+
+blockquote {
+  border-left: 4px solid var(--red);
+  color: var(--muted);
+  margin: 0.4em 0;
+  padding: 0.1em 0.9em;
+}
+
+/* Header: deck name, top right. Footer: when the slide was added. */
+header {
+  color: var(--muted);
+  font-size: 0.55em;
+  left: auto;
+  right: 72px;
+  top: 22px;
+}
+footer {
+  color: var(--muted);
+  font-size: 0.52em;
+  left: 72px;
+  bottom: 22px;
+}
+section::after { color: var(--muted); font-size: 0.55em; }
+
+/* Two columns: <div class="cols"><div>...</div><div>...</div></div> */
+.cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4em; align-items: start; }
+.cols-wide-left { display: grid; grid-template-columns: 1.5fr 1fr; gap: 1.2em; align-items: start; }
+
+/* Small grey note at the bottom of a slide (sources, caveats). */
+.note { color: var(--muted); font-size: 0.62em; margin-top: 0.6em; }
+
+/* A coloured pill: <span class="tag">v2</span> */
+.tag {
+  display: inline-block;
+  background: var(--red);
+  color: #fff;
+  border-radius: 999px;
+  font-size: 0.6em;
+  font-weight: 700;
+  padding: 0.1em 0.7em;
+  vertical-align: middle;
+}
+.tag.blue { background: var(--blue); }
+.tag.grey { background: var(--muted); }
+
+/* Title slide of a deck. */
+section.title {
+  border-top: none;
+  border-left: 18px solid var(--red);
+  justify-content: center;
+  padding-left: 90px;
+}
+section.title h1 {
+  color: var(--ink);
+  font-size: 2.1em;
+  margin: 0 0 0.2em;
+  border: none;
+}
+section.title h1 + p { color: var(--red); font-size: 1.1em; font-weight: 700; margin: 0 0 1.4em; }
+section.title p { color: var(--muted); }
+
+/* Section divider inside a deck (for example one per architecture version). */
+section.divider {
+  background: var(--tint);
+  justify-content: center;
+}
+section.divider h2 { border: none; font-size: 1.8em; }
+
+img { background: transparent; }

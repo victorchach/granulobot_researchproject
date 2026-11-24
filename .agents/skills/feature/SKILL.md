@@ -107,7 +107,9 @@ Set the spec status to `review`. Suggest a commit; commit only when they ask
 Set the status to `merged` in `specs/README.md`. Push only when the developer
 asks, but suggest pushing soon after the merge so the teammate gets the work. Delete the branch
 only if the developer agrees. Move any idea that came up along the way into
-`specs/IDEES.md`.
+`specs/IDEES.md`. If the change alters the model or the code architecture,
+offer to add a slide with the `slides` skill (a new versioned slide, never a
+replacement).
 
 ## Final checks
 
