@@ -1,6 +1,6 @@
 ---
 name: run-sim
-description: Use to run a simulation scenario and analyse its outputs without changing code. Examples of requests: "run the triangle at 1 V", "what happens without magnetism?", "run the simulator for 10 s", "check whether the ring holds", "compare dt 1e-5 and 5e-6", "regenerate the GIF of this run", "keep this result". If the scenario needs code changes (new geometry, new controller, new default), use the feature skill instead.
+description: Use to run a simulation scenario and analyse its outputs without changing code. Examples of requests: "run the triangle at 1 V", "what happens without magnetism?", "run the simulator for 10 s", "check whether the ring holds", "compare dt 1e-5 and 5e-6", "regenerate the GIF of this run". To keep a run in results/, use keep-result. If the scenario needs code changes (new geometry, new controller, new default), use the feature skill instead.
 ---
 
 # Run and analyse a simulation
@@ -48,9 +48,9 @@ description: Use to run a simulation scenario and analyse its outputs without ch
 
 ## 5. Keep a result (only when asked)
 
-Copy the outputs to `results/YYYY-MM-DD-NAME/` and add the `README.md`
-described in `results/README.md` (command, commit, question, key numbers).
-Suggest a commit.
+Use the `keep-result` skill: it copies the outputs to
+`results/YYYY-MM-DD-NAME/`, writes the analysis README and adds the entry in
+`results/journal.md`.
 
 ## Final checks
 

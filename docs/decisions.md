@@ -2,6 +2,18 @@
 
 Newest first. Each entry gives the decision and the reason for it.
 
+## 2026-11-24: a journal of results, and what goes into results/
+
+- **`results/journal.md` tells the path of the project**, one kept run at a
+  time: why each run was made given the previous one, what it showed, and
+  what was decided (Victor's idea, after the TIP project's `suivi*.txt`
+  logs). It is updated whenever a run moves from `runs/` to `results/`.
+- **A new shared skill, `keep-result`**, does that move: folder, analysis
+  README, journal entry. `run-sim` hands over to it.
+- **GIFs are versioned in `results/`; a CSV over about 5 MB is not.** The
+  60 s hexagon run has a 46 MB CSV: it stays in `runs/`, and its README gives
+  the command that regenerates it. The JSON keeps every parameter.
+
 ## 2026-11-24: N-unit ring (spec 006)
 
 - **Any number of units from 2 to 26**, ported from the 6-unit work on Hugo's

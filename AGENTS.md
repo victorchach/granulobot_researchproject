@@ -29,11 +29,11 @@ Pr. Baudouin Saintyves (Inria / INSA, CITI lab).
 | `cad/` | CAD files (STL) of the real unit. Read only. |
 | `docs/` | Roadmap, decisions, architecture and model notes (Markdown, the source of truth). |
 | `specs/` | Feature specs (`NNN-name/spec.md`), index and ideas backlog. |
-| `results/` | Runs worth keeping, versioned on purpose (see `results/README.md`). |
+| `results/` | Runs that mark a step of the project, versioned on purpose, and `journal.md`, the path from one kept run to the next (see `results/README.md`). |
 | `runs/` | Scratch simulation outputs. Ignored by git. |
 | `tools/git-hooks/` | Versioned sources of the local git hooks. |
 | `tools/agent-hooks/` | The edit guard shared by the Claude Code and Codex hooks. |
-| `.agents/skills/` | Shared agent skills (`feature`, `run-sim`, `sync`, `humanizer`). Codex reads them here. |
+| `.agents/skills/` | Shared agent skills (`feature`, `run-sim`, `keep-result`, `sync`, `humanizer`). Codex reads them here. |
 | `.claude/` | Claude Code settings; `.claude/skills/<name>` are symlinks to `.agents/skills/<name>`. |
 | `.codex/` | Codex project hooks (`hooks.json`). |
 
@@ -46,6 +46,7 @@ skills in `.agents/skills/`:
 | --- | --- |
 | `feature` | Any code change (`*.py`, `*.ipynb`, `Makefile`), however small, from spec to merge |
 | `run-sim` | Running a scenario and analysing its outputs, without changing code |
+| `keep-result` | Moving a run that matters from `runs/` to `results/`, with its analysis README and a new entry in `results/journal.md` |
 | `sync` | Pulling the teammate's work and checking that docs still match the code |
 | `humanizer` | Any prose meant for people (reports, README, docs, messages) |
 
@@ -192,7 +193,8 @@ the known limitations.
 
 - Never edit or delete `references/` or `cad/`.
 - Never commit derived outputs (CSV, GIF, MP4, logs, run JSON) outside
-  `results/`. The `.gitignore` and the pre-commit hook enforce this.
+  `results/`. The `.gitignore` and the pre-commit hook enforce this. In
+  `results/`, a CSV over about 5 MB stays local too (`keep-result`).
   Input files (parameter JSON, `requirements.txt`, ...) are versioned: a
   parameter file worth keeping goes in `configs/` (or next to the result it
   produced in `results/`). `runs/` is ignored whole, so a file there is
