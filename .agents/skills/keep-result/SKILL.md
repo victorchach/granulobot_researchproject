@@ -48,7 +48,9 @@ The README is the analysis of the run. Follow the existing ones
   the commit, which files are versioned and which stay local.
 - **Question**: what the run was meant to answer.
 - **Key numbers**: from the JSON summary and the CSV, never from the GIF
-  alone, with units.
+  alone, with units. Use the definitions in the "Measures" section of
+  `results/README.md` (centroid, drift, shape, angles, slip, ...) and link
+  to it. A new measure gets its definition there first.
 - **Interpretation**: what the numbers mean physically.
 - **Caveats**: time-step convergence, estimated parameters, duration,
   idealised start, anything not tested.

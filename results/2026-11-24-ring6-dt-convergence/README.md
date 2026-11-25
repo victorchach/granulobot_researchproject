@@ -29,11 +29,13 @@ Not versioned:
 - the plotting script (a scratch script outside the repo, as for the 300 s
   run).
 
-How the figure measures things. The centroid is the mean of the six unit
-centres, recomputed at every sample. The drift is the centroid's distance
-from its position at t = 0. The shape is measured by each unit's distance to
-the centroid at the same instant, minus its value at t = 0.6 s (after the
-start ramp). A rigid drift of the ring leaves those distances unchanged.
+How the figure measures things, in short: the centroid is the mean of the
+six unit centres, recomputed at every sample. The drift is the centroid's
+distance from its position at t = 0. The shape is measured by each unit's
+distance to the centroid at the same instant, minus its value at t = 0.6 s
+(after the start ramp). A rigid drift of the ring leaves those distances
+unchanged. The full definitions, including the angles, the rotor sum and the
+slip at the contacts, are in [`../README.md`](../README.md#measures).
 
 ## Question
 

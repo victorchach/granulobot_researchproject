@@ -32,6 +32,9 @@ Not versioned:
   figures can only be redrawn from them for now. Putting them in the repo is
   a code change, so it needs a spec.
 
+The centroid, the drift, the distances to the centroid, the angles and the
+exaggerated shape are defined in [`../README.md`](../README.md#measures).
+
 ## Question
 
 Does the liquid state seen over 60 s (journal entry 3) hold for 5 minutes?
