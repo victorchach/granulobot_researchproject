@@ -105,3 +105,19 @@ Supervisors: Baudouin Saintyves (Inria / INSA, CITI lab), Olivier Simonin
 - Cross-cutting: two friction regimes (magnetic contacts roll, steric contacts slip), the paper's dimensions, computing time.
 
 <div class="note">docs/roadmap.md</div>
+
+---
+
+<!-- _footer: "Added 2026-11-25 · docs/roadmap.md" -->
+
+## <span class="tag">update</span> Roadmap
+
+| Step | Goal | Status |
+| --- | --- | --- |
+| **1** | Ring of 6 units, alternating biases (eq. 8): keep the liquid state for 2 to 5 min | <span class="tag">in progress</span> holds 5 min; rotation same at dt = 10⁻⁵ s; the shape slowly flattens |
+| **2** | Reach the synchronised state from random starts (eq. 7), synchronisation metric | <span class="tag grey">next</span> |
+| **3** | Compare with the real robots, calibrate magnets, friction, motor | <span class="tag grey">later</span> |
+
+- Proposed: consider the slow flattening of the hexagon negligible (< 1 mm, < 2° in 5 min) and move on to step 2.
+
+<div class="note">docs/roadmap.md, results/journal.md entries 4 and 5</div>

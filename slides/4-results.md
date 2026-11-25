@@ -100,3 +100,97 @@ The ring drifts slowly **as a block**: 0.25 mm in 60 s, cause unknown.
 
 ### Questions for the meeting
 - Which data can we get for calibration (magnet force, friction, motor)? Do μ = 0.05 and 1.0 match the robots?
+
+---
+
+<!-- _footer: "Added 2026-11-25 · journal entry 4 · results/2026-11-24-ring6-alternating-300s/" -->
+
+## 4. Ring of 6, alternating ±3.25 V, 300 s
+
+![w:880](img/ring6_300s_drift_shape.png)
+
+- Step 1 criteria hold for **5 min**: alternation on all 59 900 samples, rotor sum 0.0002 rad/s, no detachment; **±146.2 turns** at a steady 2.967 rad/s.
+- The ring drifts in a **straight line** (3.4 µm/s, 1.06 mm) and slowly **flattens**: C and F move 0.8 mm out.
+- Entry 3's "as a block" was wrong: the flattening had started at 60 s (0.18 mm).
+
+---
+
+<!-- _footer: "Added 2026-11-25 · results/README.md, section Measures" -->
+
+## How we measure the drift and the shape
+
+- **Centroid** C(t): the mean of the six unit centres, recomputed at every sample (200 per second). No unit sits there.
+- **Drift**: \|C(t) − C(0)\|, how far the ring moves as a block.
+- **Shape**: each unit's distance to the centroid *at the same instant*, minus its value at 0.6 s (after the start ramp). A rigid drift or rotation leaves it unchanged.
+- **Interior angles**: the angle at each unit between its two neighbours, 120° in a regular hexagon.
+- **Slip at a contact**: tangential speed of one rim against the other at the contact point; only its time average is meaningful.
+
+<div class="note">Full definitions in results/README.md (Measures). Computed for now by plotting scripts outside the repo.</div>
+
+---
+
+<!-- _footer: "Added 2026-11-25 · results/2026-11-24-ring6-alternating-300s/" -->
+
+## Why the hexagon can flatten
+
+<div class="cols">
+<div>
+
+![w:470](img/ring6_300s_shape_x30.png)
+
+</div>
+<div>
+
+- The magnet pairs hold the **sides**: neighbour distances stay within 0.3 µm.
+- Nothing holds the **angles**: A and C do not touch, so the angle at B is free.
+- 6 points in the plane: 12 coordinates − 3 (move and turn the whole ring) − 6 sides = **3 free shape modes**. A triangle has 0.
+- The discs roll around each other without slipping, so no friction resists, and small disturbances build up.
+
+</div>
+</div>
+
+<div class="note">Shape at 300 s against the regular hexagon, drift and rigid rotation removed, deformation ×30. Labels: interior angle and change of distance to the centre.</div>
+
+---
+
+<!-- _footer: "Added 2026-11-25 · journal entry 5 · results/2026-11-24-ring6-dt-convergence/" -->
+
+## 5. Same ring, 20 s at dt = 10⁻⁵ s
+
+<div class="cols-wide-left">
+<div>
+
+![w:600](img/ring6_dt_comparison.png)
+
+</div>
+<div>
+
+| First 20 s | 10⁻⁴ s | 10⁻⁵ s |
+| --- | --- | --- |
+| Body speed | 2.967 | 2.941 rad/s |
+| Alternation | 100 % | 100 % |
+| Drift | 4.2 | 3.7 µm/s |
+| Shape spread | 0.15 | 0.94 mm |
+| Magnets touching | 100 % | ~1 % |
+
+</div>
+</div>
+
+- **Rotation and drift do not depend on dt**: not numerical artefacts.
+- The flattening is there at both steps, 6× faster and along B–E at 10⁻⁵ s: a real mode, **not converged**.
+
+---
+
+<!-- _footer: "Added 2026-11-25 · after journal entry 5" -->
+
+## <span class="tag">update</span> Open points and next steps
+
+- **Step 1**: the liquid state holds for **5 min** at dt = 10⁻⁴ s, and the rotation regime is the same at 10⁻⁵ s.
+- **The slow drift and flattening**: < 1 mm and < 2° in 5 min, for units of 70 mm.
+  - no effect on alternation, rotor sum or magnet pairs: every step 1 criterion holds;
+  - a liquid state has no shape to keep (paper: "ability to move and morph"): the ring flows slowly under tiny forces;
+  - we keep an eye on it: interior angles checked in every run.
+- **Tooling**: move the measures and figures from scratch scripts into the code (a spec).
+
+### Our conclusion
+- We consider this drift **negligible** and move on to **step 2: random starts** (eq. 7). **Do you agree?**
