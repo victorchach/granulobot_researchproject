@@ -16,10 +16,11 @@ Agreed at the team meeting that reviewed `test_3_granulobots.gif`
     detaches;
   - the rotor directions keep alternating;
   - the sum of the rotor speeds stays close to zero.
-- Status (2026-11-24): the three criteria hold over 300 s at dt = 1e-4 s,
-  with a slow linear drift and a slow flattening of the hexagon
-  (`results/journal.md`, entry 4). Time-step convergence and robustness are
-  still open.
+- Status (2026-11-25): the three criteria hold over 300 s at dt = 1e-4 s
+  (`results/journal.md`, entry 4). The rotation regime is the same at
+  dt = 1e-5 s, but the hexagon slowly flattens at both time steps, at a
+  speed and along an axis that depend on dt (entry 5). Open: whether the
+  shape is expected (compare with the real robots), and robustness.
 
 ## Step 2: from a transient regime to the synchronized state
 

@@ -88,3 +88,27 @@ Folder: [`2026-11-24-ring6-alternating-300s/`](2026-11-24-ring6-alternating-300s
   run at dt = 1e-5 s was started on 2026-11-24
   (`runs/ring6/uniform_dt1e5_20s`, local only, analysis pending), to compare
   with the first 20 s of this run.
+
+## 5. 2026-11-24: ring of 6 units, 20 s at dt = 1e-5 s
+
+Folder: [`2026-11-24-ring6-dt-convergence/`](2026-11-24-ring6-dt-convergence/)
+
+- **Why**: entry 4 left the hypothesis that the drift and the flattening
+  were numerical. Same ring, dt ten times smaller, 20 s, compared with the
+  first 20 s of entry 4. It also answers the dt question open since entry 2.
+- **What we saw**: the rotation regime does not depend on dt: body speed
+  2.941 against 2.967 rad/s, perfect alternation, rotors still locked. The
+  drift does not either (3.7 against 4.2 µm/s). The flattening is six times
+  larger (0.94 against 0.15 mm of spread at 20 s) and along another axis
+  (B-E instead of C-F). The magnets of each pair now hover within 0.15 mm
+  and touch only about 1 % of the time, against 100 % at dt = 1e-4 s.
+- **Limits**: two time steps and 20 s only. The magnet contact and the
+  speed and axis of the flattening are not converged. The ideal start is
+  unchanged.
+- **Next**: the hypothesis of entry 4 does not hold: neither the drift nor
+  the flattening comes from the time step. The flattening looks like a real
+  behaviour of the model: the six sides are held, the angles are free, and
+  small disturbances build up. Step 1 holds for the rotation regime. The
+  shape of the ring is the open question. Next: robustness runs (unequal
+  voltages, a small initial perturbation) and a comparison with the real
+  robots (paper videos, Hugo's prototype).
