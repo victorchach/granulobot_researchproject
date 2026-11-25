@@ -11,9 +11,11 @@ per theme:
 | [`3-architecture.md`](3-architecture.md) | code architecture, version by version, and the workflow |
 | [`4-results.md`](4-results.md) | results, in the order of [`results/journal.md`](../results/journal.md) |
 
-Slides are only added, never replaced: a new architecture or model gets a new
-slide after the old one, so the decks tell how the project evolved. Each slide
-says in its footer when it was added. The `slides` skill
+The decks tell a coherent story. A real evolution (a new architecture, a new
+model) gets a new versioned slide after the old one, so the decks show how the
+project evolved. A slide that turns out wrong or out of date is fixed in place.
+The results deck follows our reasoning from one run to the next. Each slide
+says in its footer when it was added, and when it was revised. The `slides` skill
 (`.agents/skills/slides/SKILL.md`) holds the rules and the commands.
 
 - `theme/granulobot.css`: the theme (white, the paper's red, the magnets' red

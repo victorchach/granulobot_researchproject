@@ -94,7 +94,20 @@ tests/  scripts/  configs/  results/  runs/ (ignored)
 
 ---
 
-<!-- _footer: "Added 2026-11-24" -->
+<!-- _footer: "Added 2026-11-24 · spec 006, merged 2026-11-24" -->
+
+## <span class="tag">v3</span> Spec 006: a ring of N units
+
+- New `simulation/layout.py`, with no PyChrono:
+  - `ring_positions(n, side)`: units on a **regular polygon**, neighbours `2R + gap` apart;
+  - `coupled_pairs(n)`: unit i's active magnet faces unit i+1's free magnet, and the last unit closes the ring on A.
+- **N = 2 to 26** (names A to Z); N = 3 gives back the old triangle.
+- `--voltages` takes one value per unit; the 6-unit alternating reference is a config file: `configs/ring6_alternating.json`.
+- Ported from Hugo's 6-unit branch, without merging it: it started from v1.
+
+---
+
+<!-- _footer: "Added 2026-11-24, revised 2026-11-25 · code of v3" -->
 
 ## What happens in one run
 
@@ -116,20 +129,7 @@ make sim NAME=ring6 ARGS="--params configs/ring6_alternating.json"
   └─ runs/ring6.csv, .json, .gif                output/animation.py
 ```
 
-<div class="note">docs/architecture.md has the full call flow.</div>
-
----
-
-<!-- _footer: "Added 2026-11-24 · spec 006, merged 2026-11-24" -->
-
-## <span class="tag">v3</span> Spec 006: a ring of N units
-
-- New `simulation/layout.py`, with no PyChrono:
-  - `ring_positions(n, side)`: units on a **regular polygon**, neighbours `2R + gap` apart;
-  - `coupled_pairs(n)`: unit i's active magnet faces unit i+1's free magnet, and the last unit closes the ring on A.
-- **N = 2 to 26** (names A to Z); N = 3 gives back the old triangle.
-- `--voltages` takes one value per unit; the 6-unit alternating reference is a config file: `configs/ring6_alternating.json`.
-- Ported from Hugo's 6-unit branch, without merging it: it started from v1.
+<div class="note">docs/architecture.md has the full call flow. The drift and shape measures (Results deck) are computed outside the package for now, by scratch plotting scripts.</div>
 
 ---
 

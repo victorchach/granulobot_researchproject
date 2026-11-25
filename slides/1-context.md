@@ -43,7 +43,7 @@ Supervisors: Baudouin Saintyves (Inria / INSA, CITI lab), Olivier Simonin
 
 ---
 
-<!-- _footer: "Added 2026-11-24" -->
+<!-- _footer: "Added 2026-11-24, revised 2026-11-25" -->
 
 ## Our approach
 
@@ -62,6 +62,7 @@ Supervisors: Baudouin Saintyves (Inria / INSA, CITI lab), Olivier Simonin
 - First the aggregate's **collective states**, starting with the **active liquid state** of a ring of 6 units.
 - Then convergence to that state from any start.
 - Later, **calibrate** against the real robots.
+- Why: the paper builds its **locomotion gaits** on these states (Fig. 7), which is where the assignment leads.
 
 </div>
 </div>
@@ -92,32 +93,16 @@ Supervisors: Baudouin Saintyves (Inria / INSA, CITI lab), Olivier Simonin
 
 ---
 
-<!-- _footer: "Added 2026-11-24" -->
+<!-- _footer: "Added 2026-11-24, revised 2026-11-25 · docs/roadmap.md, results/journal.md" -->
 
 ## Roadmap
 
 | Step | Goal | Status |
 | --- | --- | --- |
-| **1** | Ring of 6 units, alternating biases (eq. 8): keep the liquid state for 2 to 5 min | <span class="tag">in progress</span> holds 60 s; 5 min run running |
-| **2** | Reach the synchronised state from random starts (eq. 7), synchronisation metric | <span class="tag grey">next</span> |
+| **1** | Ring of 6 units, alternating biases (eq. 8): keep the liquid state for 2 to 5 min | <span class="tag">done?</span> holds 5 min, same rotation at dt = 10⁻⁵ s; a slow drift we propose to neglect |
+| **2** | Reach the liquid state from random starts (eq. 7), choose a metric | <span class="tag grey">next</span> |
 | **3** | Compare with the real robots, calibrate magnets, friction, motor | <span class="tag grey">later</span> |
 
 - Cross-cutting: two friction regimes (magnetic contacts roll, steric contacts slip), the paper's dimensions, computing time.
 
-<div class="note">docs/roadmap.md</div>
-
----
-
-<!-- _footer: "Added 2026-11-25 · docs/roadmap.md" -->
-
-## <span class="tag">update</span> Roadmap
-
-| Step | Goal | Status |
-| --- | --- | --- |
-| **1** | Ring of 6 units, alternating biases (eq. 8): keep the liquid state for 2 to 5 min | <span class="tag">in progress</span> holds 5 min; rotation same at dt = 10⁻⁵ s; the shape slowly flattens |
-| **2** | Reach the synchronised state from random starts (eq. 7), synchronisation metric | <span class="tag grey">next</span> |
-| **3** | Compare with the real robots, calibrate magnets, friction, motor | <span class="tag grey">later</span> |
-
-- Proposed: consider the slow flattening of the hexagon negligible (< 1 mm, < 2° in 5 min) and move on to step 2.
-
-<div class="note">docs/roadmap.md, results/journal.md entries 4 and 5</div>
+<div class="note">Step 1 is "done" pending the supervisor's approval (see the Results deck).</div>

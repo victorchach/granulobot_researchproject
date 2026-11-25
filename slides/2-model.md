@@ -43,12 +43,12 @@ What one unit is, and how units interact
 
 ---
 
-<!-- _footer: "Added 2026-11-24" -->
+<!-- _footer: "Added 2026-11-24, revised 2026-11-25" -->
 
 ## Contacts (NSC)
 
 - **Shell to shell, magnet to magnet**: analytic circular geometry, passed to the NSC solver through a custom collision callback. Normal contacts are constraints; friction is **exact Coulomb**. No permanent springs.
-- **Ground**: equivalent disc, with a normal reaction, Coulomb friction and a torsion resistance μ·N·2R/3 (uniform pressure).
+- **Ground**: equivalent disc, with a normal reaction, Coulomb friction (μ = 0.1, about 0.1 N per unit) and a torsion resistance μ·N·2R/3 (uniform pressure). It is the only force that resists the units sliding on the support.
 - **Tiny compliance** to share load between flush contacts: shells 10⁻⁷ m/N, magnets 10⁻⁸ m/N. Zero gives back the rigid reference.
 - Uniform shell friction μ = 0.6 (estimate). Hugo's contact-dependent rim friction is **on hold** (see the Results deck).
 
@@ -84,7 +84,7 @@ What one unit is, and how units interact
 
 ---
 
-<!-- _footer: "Added 2026-11-24" -->
+<!-- _footer: "Added 2026-11-24, revised 2026-11-25 · journal entry 5" -->
 
 ## Where the numbers come from
 
@@ -97,6 +97,6 @@ What one unit is, and how units interact
 | Remanence 1.45 T (N54) | Assumed, to confirm |
 | dt, softening, tolerances | Numerical, to check by convergence |
 
-> **Not established yet: convergence in dt.** At dt = 10⁻⁵ s the magnets touch about 25 % of the time, against 100 % at 10⁻⁴ s.
+> **Convergence in dt, partly established.** From 10⁻⁴ to 10⁻⁵ s the rotation regime is the same (−0.9 %), but the magnet pairs go from resting in contact to hovering within 0.15 mm (in contact ~1 % of the time), and the slow flattening of the ring speeds up.
 
 <div class="note">docs/model.md, "Parameter origins"</div>

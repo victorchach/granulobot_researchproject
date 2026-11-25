@@ -2,6 +2,22 @@
 
 Newest first. Each entry gives the decision and the reason for it.
 
+## 2026-11-25: slides tell a coherent story, wrong slides are fixed in place
+
+- The "added, never replaced" rule (2026-11-24, below) left contradictions
+  in the decks: "update" slides that disagreed with older ones, an old
+  "open points" slide still asking about Hugo's friction model after we had
+  set it aside, a criterion named "keeps its shape" next to a ring that
+  flattens.
+- New rule (Victor's choice): a real evolution (a new code architecture, a
+  new model) still gets a new versioned slide after the old one. A slide
+  that is wrong, out of date or badly framed is fixed in place, and its
+  footer says "revised YYYY-MM-DD". The results deck tells our reasoning:
+  each slide follows from the previous one and the deck ends with where we
+  stand and the question for the meeting.
+- The four decks were reworked this way on 2026-11-25. The rules are in the
+  `slides` skill.
+
 ## 2026-11-24: meeting slides in the repo, one deck per theme
 
 - **Marp decks in `slides/`**, in English: Markdown that both developers and

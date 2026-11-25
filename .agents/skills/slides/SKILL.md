@@ -23,17 +23,24 @@ English, like everything in the repo.
 
 ## Rules
 
-- **Add, never replace.** When something changes (a new architecture, a
-  revised model), add a new slide after the old one and say what changed and
-  why. Keep the old slide: the decks tell how the project evolved. Mark
-  versions with a tag in the title, for example
-  `## <span class="tag">v3</span> ...`. Fix a slide in place only for an error.
+- **The decks tell a coherent story, not a pile of updates.**
+  - A real evolution of the project (a new code architecture, a new model)
+    gets a new slide after the old one, with a version tag in the title
+    (`## <span class="tag">v3</span> ...`), and says what changed and why.
+    The old slide stays: it shows how the project evolved.
+  - A slide that is wrong, out of date or badly framed is fixed in place.
+    Do not add an "update" slide that contradicts an older one in the same
+    deck.
 - **Every slide carries its date** in its footer:
   `<!-- _footer: "Added YYYY-MM-DD" -->`, plus its source when useful
-  (`· journal entry 3 · results/...`). That is how a meeting finds what is new.
-- **Results follow the journal**: one slide per journal entry, in the same
-  order and with the same numbers, plus a slide for a key explanation when
-  it helps.
+  (`· journal entry 3 · results/...`). A slide fixed later adds
+  `, revised YYYY-MM-DD`. That is how a meeting finds what is new.
+- **The results deck tells our reasoning**, in the order of the journal:
+  one slide per journal entry with the same numbers, plus slides for the
+  key explanations, the side questions and the decisions in between. Each
+  slide should follow from the one before: the question left open, the run
+  or the argument that answers it, what we concluded. It ends with where we
+  stand and the question for the meeting.
 - **One line per bullet in the source.** Marp turns every line break inside
   a paragraph or bullet into a visible break, so never wrap a bullet over
   several lines.
@@ -106,7 +113,8 @@ warns about it, which is expected.
 ## Final checks
 
 - [ ] Every new slide has an "Added YYYY-MM-DD" footer and its facts come from the repo's sources
-- [ ] No old slide was replaced; changes are new slides with a version tag
+- [ ] Real evolutions are new versioned slides; wrong or out-of-date slides are fixed in place and marked "revised"
+- [ ] The results deck reads as one line of reasoning, with no contradiction between slides
 - [ ] The rendered slides do not overflow and have no broken lines
 - [ ] Results slides match `results/journal.md`
 - [ ] Nothing committed or pushed without the developer's approval

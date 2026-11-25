@@ -48,7 +48,7 @@ skills in `.agents/skills/`:
 | `feature` | Any code change (`*.py`, `*.ipynb`, `Makefile`), however small, from spec to merge |
 | `run-sim` | Running a scenario and analysing its outputs, without changing code |
 | `keep-result` | Moving a run that matters from `runs/` to `results/`, with its analysis README and a new entry in `results/journal.md` |
-| `slides` | Adding to the meeting slides (never replacing), and preparing or exporting them for a meeting |
+| `slides` | Keeping the meeting slides a coherent story (new versioned slides for real evolutions, wrong slides fixed in place), and preparing or exporting them for a meeting |
 | `sync` | Pulling the teammate's work and checking that docs still match the code |
 | `humanizer` | Any prose meant for people (reports, README, docs, messages) |
 
