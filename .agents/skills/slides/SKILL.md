@@ -11,7 +11,7 @@ are four Marp decks, one per theme, in `slides/`:
 | Deck | Theme | Main source |
 | --- | --- | --- |
 | `1-context.md` | Granulobots, the assignment, goal, roadmap | `references/`, `docs/roadmap.md` |
-| `2-model.md` | the physical model and where the numbers come from | `docs/model.md`, `src/granulobot/parameters.py` |
+| `2-model.md` | how the simulator works, for a physicist: bodies, forces, contacts, time step, parameters and limits | `docs/model.md`, `src/granulobot/`; diagrams drawn from the code's parameters |
 | `3-architecture.md` | code architecture, its versions, the workflow | `docs/architecture.md`, `specs/`, `AGENTS.md` |
 | `4-results.md` | results, in the order of the journal | `results/journal.md`, `results/*/README.md` |
 

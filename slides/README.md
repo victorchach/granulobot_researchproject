@@ -7,7 +7,7 @@ per theme:
 | Deck | Theme |
 | --- | --- |
 | [`1-context.md`](1-context.md) | Granulobots, the assignment, goal, roadmap |
-| [`2-model.md`](2-model.md) | the physical model and where its numbers come from |
+| [`2-model.md`](2-model.md) | how the simulator works, for a physicist: bodies, forces, contacts, time step, parameters and limits |
 | [`3-architecture.md`](3-architecture.md) | code architecture, version by version, and the workflow |
 | [`4-results.md`](4-results.md) | results, in the order of [`results/journal.md`](../results/journal.md) |
 

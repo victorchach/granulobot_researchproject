@@ -2,7 +2,7 @@
 marp: true
 theme: granulobot
 paginate: true
-header: "Granulobot simulation · 2. Model"
+header: "Granulobot simulation · 2. How the simulator works"
 ---
 
 <!-- _class: title -->
@@ -11,80 +11,90 @@ header: "Granulobot simulation · 2. Model"
 
 # Granulobot simulation
 
-2. The physical model
+2. How the simulator works
 
-What one unit is, and how units interact
+The physics behind each run: bodies, forces, contacts, time step
 
 ---
 
-<!-- _footer: "Added 2026-11-24" -->
+<!-- _footer: "Added 2026-11-24, revised 2026-11-25 · docs/model.md · src/granulobot/model/unit.py" -->
 
 ## One unit: four rigid bodies
 
 <div class="cols">
 <div>
 
-- **Shell** (body), Ø 70 mm, 50 mm high, 98 g in total.
-- **Active rotor**, driven by the motor, carries the <span style="color:#c8102e">**active magnet**</span>.
-- **Free rotor** on a pivot, carries the <span style="color:#1f5fa8">**free magnet**</span>.
-- **Outer free wheel** on its own pivot.
+![w:560](img/model_unit.png)
 
 </div>
 <div>
 
-- The motor acts **between the active rotor and the shell**: an internal torque, never an external one.
-- Axes stay vertical: a guide blocks tipping only, never X, Y, Z or the rotation about Z.
-- **Planar projection**: XY forces and Z torques kept, tipping moments dropped.
+- **Shell** 44 g, **active rotor** 36 g, **free rotor** 10 g, **outer free wheel** 8 g: 98 g in all (paper).
+- The motor acts **between the active rotor and the shell**: an internal torque τ, with −τ on the shell. Never an external torque.
+- The free rotor and the wheel turn on pivots with a small friction.
+- Units lie flat; a guide keeps the axes vertical. Motion is **planar**: forces in XY, torques about Z.
 
 </div>
 </div>
 
-<div class="note">docs/model.md · src/granulobot/model/unit.py</div>
-
 ---
 
-<!-- _footer: "Added 2026-11-24, revised 2026-11-25" -->
+<!-- _footer: "Added 2026-11-25 · src/granulobot/model/motor.py · paper, fig. 8" -->
 
-## Contacts (NSC)
-
-- **Shell to shell, magnet to magnet**: analytic circular geometry, passed to the NSC solver through a custom collision callback. Normal contacts are constraints; friction is **exact Coulomb**. No permanent springs.
-- **Ground**: equivalent disc, with a normal reaction, Coulomb friction (μ = 0.1, about 0.1 N per unit) and a torsion resistance μ·N·2R/3 (uniform pressure). It is the only force that resists the units sliding on the support.
-- **Tiny compliance** to share load between flush contacts: shells 10⁻⁷ m/N, magnets 10⁻⁸ m/N. Zero gives back the rigid reference.
-- Uniform shell friction μ = 0.6 (estimate). Hugo's contact-dependent rim friction is **on hold** (see the Results deck).
-
-<div class="note">src/granulobot/model/contacts.py · docs/decisions.md</div>
-
----
-
-<!-- _footer: "Added 2026-11-24" -->
-
-## Magnets and motor
+## The motor
 
 <div class="cols">
 <div>
 
-### Magnets
-- Ø 8 × 10 mm, flush, **axial poles**, 31 mm from the axis.
-- Field of **finite uniformly magnetised cylinders** by surface-charge quadrature; F = −∇U holds exactly.
-- About **12 N** of attraction at contact.
-- Point dipoles kept for comparison.
+![w:520](img/model_motor.png)
 
 </div>
 <div>
 
-### Motor
-- DC motor, quasi-static: U − K<sub>e</sub>·β·ω = R·I, torque β·K<sub>t</sub>·I.
-- Gear ratio β = 379, R = 9.6 Ω, dry friction 0.024 N·m (paper, fig. 8).
-- Control in **voltage** (default), speed or torque; 0.5 s start ramp.
+- DC motor, inductance neglected: **U − K<sub>e</sub> β ω = R I**, torque **τ = β K<sub>t</sub> I** after the gearbox.
+- ω is the rotor speed **relative to the shell**. β = 379, R = 9.6 Ω, K<sub>t</sub>, K<sub>e</sub> from the paper (fig. 8), not yet our motor.
+- At 3.25 V: about 3.2 rad/s with no load (≈ 31 rpm). Torque capped at 0.1 N·m.
+- Internal dry friction 0.024 N·m, smoothed (tanh). Voltages ramp up over 0.5 s.
 
 </div>
 </div>
-
-<div class="note">src/granulobot/model/magnets.py, motor.py</div>
 
 ---
 
-<!-- _footer: "Added 2026-11-24, revised 2026-11-25 · journal entry 5" -->
+<!-- _footer: "Added 2026-11-25 · src/granulobot/model/magnets.py, contacts.py" -->
+
+## What acts between two units, and with the ground
+
+![w:930](img/model_pair_forces.png)
+
+- **Magnets**: finite cylinders, axial poles, 1.45 T (assumed), between **every pair of magnets**.
+- **Coulomb friction**: shells μ<sub>s</sub> = 0.6, ground μ<sub>g</sub> = 0.1 (estimates).
+
+---
+
+<!-- _footer: "Added 2026-11-24, revised 2026-11-25 · docs/decisions.md · src/granulobot/model/contacts.py" -->
+
+## Contacts: rigid constraints, not springs
+
+![w:880](img/model_contacts.png)
+
+- The contact force is an **unknown**, solved at each step: no overlap, exact Coulomb (stick below μN, slip at μN).
+- No stiffness to tune; only a tiny compliance (10⁻⁷ to 10⁻⁸ m/N) to share load between flush contacts.
+
+---
+
+<!-- _footer: "Added 2026-11-25 · src/granulobot/simulation/loop.py · docs/architecture.md" -->
+
+## One time step
+
+![w:820](img/model_timestep.png)
+
+- Motor and magnetic forces come **from the current state**; contact forces from the **solver** (PSOR).
+- dt = 10⁻⁵ s by default (4 min of computing per simulated second); 10⁻⁴ s for long runs.
+
+---
+
+<!-- _footer: "Added 2026-11-24, revised 2026-11-25 · docs/model.md, \"Parameter origins\" · journal entry 5" -->
 
 ## Where the numbers come from
 
@@ -95,8 +105,17 @@ What one unit is, and how units interact
 | 3.25 V target | Estimate: about 30 rpm without load |
 | μ shells 0.6, μ ground 0.1, other masses | Estimates, to measure |
 | Remanence 1.45 T (N54) | Assumed, to confirm |
-| dt, softening, tolerances | Numerical, to check by convergence |
+| dt, softening, tolerances | Numerical, checked by convergence |
 
 > **Convergence in dt, partly established.** From 10⁻⁴ to 10⁻⁵ s the rotation regime is the same (−0.9 %), but the magnet pairs go from resting in contact to hovering within 0.15 mm (in contact ~1 % of the time), and the slow flattening of the ring speeds up.
 
-<div class="note">docs/model.md, "Parameter origins"</div>
+---
+
+<!-- _footer: "Added 2026-11-25 · docs/model.md" -->
+
+## What the model leaves out
+
+- **Planar projection**: the units cannot tip; tipping moments are dropped, and the magnets' centres are assumed at the same height.
+- **No gear teeth** on the rims: they are smooth cylinders with Coulomb friction.
+- **Motor**: no inductance, no gearbox inertia; the internal dry friction is smoothed, so there is no exact static threshold.
+- **To calibrate on the robots**: magnet pull-off force, motor speed with and without load, friction between shells and on the table.
