@@ -112,3 +112,11 @@ Folder: [`2026-11-24-ring6-dt-convergence/`](2026-11-24-ring6-dt-convergence/)
   shape of the ring is the open question. Next: robustness runs (unequal
   voltages, a small initial perturbation) and a comparison with the real
   robots (paper videos, Hugo's prototype).
+- **Expected shape (note added 2026-11-27)**: a real ring in the liquid
+  state can deform under an external load, gravity for example. Our runs
+  start from a synchronised, symmetric position with no load, and from there
+  the ring should keep its shape as far as possible. The flattening is
+  therefore a departure from what we expect, not a property of the liquid
+  state. It stays small (under 1 mm and 2° in 5 min at dt = 1e-4 s, for
+  units 70 mm across; faster at dt = 1e-5 s) and leaves every step 1 criterion intact, so we propose to the supervisor
+  to neglect it and move on to step 2.
